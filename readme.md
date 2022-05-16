@@ -7,3 +7,5 @@
 [ebnf online tool](https://mdkrajnak.github.io/ebnftest/)
 
 [trello](https://trello.com/b/tzuCkf8f/gf2)
+
+[circuit diagram maker](https://www.circuit-diagram.org/editor/)

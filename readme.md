@@ -1,3 +1,3 @@
 # gf2 project
 
-
+[first interrim report](https://docs.google.com/document/d/13J--wVBn_TJkKOhSqWX3dsohJQ6f2xr1H8x0ZUKEEas/edit?usp=sharing)

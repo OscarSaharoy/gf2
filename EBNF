@@ -1,1 +1,11 @@
+device          = "DEVICE", deviceName, "=", type, [size], ";" ;
 
+signal          = device, [".", pinName], ";" ;
+
+connection      = signal, "TO", signal, ";" ;
+
+
+
+devices         = "DEVICES", device, {",", device}, ";" ;
+
+connections     = "CONNECTIONS", connection, {",", connection}, ";" ;

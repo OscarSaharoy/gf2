@@ -1,4 +1,4 @@
-device          = "DEVICE", deviceName, "=", type, [parameter], ";" ;
+device          = "DEVICE", deviceName, "=", typeName, "(", [parameter], {",", parameter}, ")", ";" ;
 
 signal          = deviceName, [".", pinName], ";" ;
 

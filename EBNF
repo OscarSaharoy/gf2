@@ -9,3 +9,5 @@ connection      = signal, "TO", signal, ";" ;
 devices         = "DEVICES", device, {",", device}, ";" ;
 
 connections     = "CONNECTIONS", connection, {",", connection}, ";" ;
+
+outputs         = "OUTPUTS", signal, {",", signal}, ";" ;

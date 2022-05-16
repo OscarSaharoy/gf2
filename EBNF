@@ -1,4 +1,4 @@
-device          = "DEVICE", deviceName, "=", typeName, "(", [parameter], {",", parameter}, ")", ";" ;
+device          = "DEVICE ", deviceName, "=", typeName, ["(", [parameter], {",", parameter}, ")"], ";" ;
 
 signal          = deviceName, [".", pinName], ";" ;
 
@@ -6,9 +6,9 @@ connection      = signal, "->", signal ;
 
 
 
-devices         = "DEVICES", "{", deviceName, {",", deviceName}, "}", ";" ;
+devices         = ("DEVICES ", "{" | "DEVICES{"), deviceName, {",", deviceName}, "}", ";" ;
 
-connections     = "CONNECTIONS", "{", connection, {",", connection}, "}", ";" ;
+connections     = ("CONNECTIONS", "{" | "CONNECTIONS{"), connection, {",", connection}, "}", ";" ;
 
-outputs         = "OUTPUTS", "{", signal, {",", signal}, "}", ";" ;
+outputs         = ("OUTPUTS", "{" | "OUTPUTS{"), "{", signal, {",", signal}, "}", ";" ;
 

@@ -1,13 +1,14 @@
-device          = "DEVICE", deviceName, "=", type, [size], ";" ;
+device          = "DEVICE", deviceName, "=", type, [parameter], ";" ;
 
-signal          = device, [".", pinName], ";" ;
+signal          = deviceName, [".", pinName], ";" ;
 
-connection      = signal, "TO", signal, ";" ;
+connection      = signal, "->", signal ;
 
 
 
-devices         = "DEVICES", device, {",", device}, ";" ;
+devices         = "DEVICES", "{", deviceName, {",", deviceName}, "}", ";" ;
 
-connections     = "CONNECTIONS", connection, {",", connection}, ";" ;
+connections     = "CONNECTIONS", "{", connection, {",", connection}, "}", ";" ;
 
-outputs         = "OUTPUTS", signal, {",", signal}, ";" ;
+outputs         = "OUTPUTS", "{", signal, {",", signal}, "}", ";" ;
+

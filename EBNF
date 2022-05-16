@@ -1,6 +1,6 @@
 device          = "DEVICE ", deviceName, "=", typeName, ["(", [parameter], {",", parameter}, ")"], ";" ;
 
-signal          = deviceName, [".", pinName], ";" ;
+signal          = deviceName, [".", pinName] ;
 
 connection      = signal, "->", signal ;
 

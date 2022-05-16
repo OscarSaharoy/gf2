@@ -4,11 +4,12 @@ signal          = deviceName, [".", pinName] ;
 
 connection      = signal, "->", signal ;
 
+output          = signal, "--", displayName ;
 
 
 devices         = ("DEVICES ", "{" | "DEVICES{"), deviceName, {",", deviceName}, "}", ";" ;
 
 connections     = ("CONNECTIONS", "{" | "CONNECTIONS{"), connection, {",", connection}, "}", ";" ;
 
-outputs         = ("OUTPUTS", "{" | "OUTPUTS{"), "{", signal, {",", signal}, "}", ";" ;
+outputs         = ("OUTPUTS", "{" | "OUTPUTS{"), "{", output, {",", output}, "}", ";" ;
 

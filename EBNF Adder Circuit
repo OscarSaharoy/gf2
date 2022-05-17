@@ -1,6 +1,6 @@
-DEVICE a = SWITCH("A");
-DEVICE b = SWITCH("B");
-DEVICE c = SWITCH("C");
+DEVICE a = SWITCH("A",0);
+DEVICE b = SWITCH("B",0);
+DEVICE c = SWITCH("C",0);
 
 DEVICE xor1 = XOR();
 DEVICE xor2 = XOR();

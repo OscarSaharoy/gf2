@@ -1,0 +1,38 @@
+START
+DEVICES {
+  a = SWITCH(0);
+  b = SWITCH(0);
+  c = SWITCH(0);
+
+  xor1 = XOR;
+  xor2 = XOR;
+
+  and1 = AND(2);
+  and2 = AND(2);
+
+  or1 = OR(2);
+
+}
+CONNECTIONS {
+  A -> xor1.I1;
+  B -> xor1.I2;
+  
+  xor1 -> xor2.I1;
+  C -> xor2.I2;
+  
+  C -> and1.I1;
+  xor1 -> and1.I2;
+  
+  A -> and2.I1;
+  B -> and2.I2;
+  
+  and1 -> or1.I1;
+  and2 -> or1.I2;
+}
+
+OUTPUTS {
+  xor1 -- "SUM";
+  or1 -- "CARRY";
+}
+
+END

@@ -1,0 +1,42 @@
+program         = "START ", devices, connections, outputs, "END" ;
+
+
+device          = deviceName, "=", type, ";" ;
+
+
+
+type            = clock | switch | and | nand | or | nor | dtype | xor ;
+
+clock           = "CLOCK", "(", number , ")" ;
+
+switch          = "SWITCH", "(", number , ")"  ;
+
+and             = "AND", "(", number , ")" ;
+
+nand            = "NAND", "(", number , ")" ;
+
+or              = "OR", "(", number , ")" ;
+
+nor             = "NOR", "(", number , ")" ;
+
+dtype           = "DTYPE" ;
+
+xor             = "XOR" ;
+
+
+
+signal          = deviceName, [".", pinName] ;
+
+connection      = signal, "->", signal, ";" ;
+
+output          = signal, "--", displayName, ";" ;
+
+
+devices         = "DEVICES", "{", device, {device}, "}";
+
+connections     = "CONNECTIONS", "{", connection, {connection}, "}" ;
+
+outputs         = "OUTPUTS", "{", output, {output}, "}";
+
+comment         = "#", {any_character}, "#" ; 
+

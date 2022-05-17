@@ -14,17 +14,17 @@ DEVICES {
 
 }
 CONNECTIONS {
-  A -> xor1.I1;
-  B -> xor1.I2;
+  a -> xor1.I1;
+  b -> xor1.I2;
   
   xor1 -> xor2.I1;
-  C -> xor2.I2;
+  c -> xor2.I2;
   
-  C -> and1.I1;
+  c -> and1.I1;
   xor1 -> and1.I2;
   
-  A -> and2.I1;
-  B -> and2.I2;
+  a -> and2.I1;
+  b -> and2.I2;
   
   and1 -> or1.I1;
   and2 -> or1.I2;

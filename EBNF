@@ -2,14 +2,14 @@ device          = deviceName, "=", typeName, ["(", [parameter], {",", parameter}
 
 signal          = deviceName, [".", pinName] ;
 
-connection      = signal, "->", signal ;
+connection      = signal, "->", signal, ";" ;
 
-output          = signal, "--", displayName ;
+output          = signal, "--", displayName, ";" ;
 
 
-devices         = ("DEVICES ", "{" | "DEVICES{"), device, {",", device}, "}", ";" ;
+devices         = ("DEVICES ", "{" | "DEVICES{"), {device}, "}" ;
 
-connections     = ("CONNECTIONS", "{" | "CONNECTIONS{"), connection, {",", connection}, "}", ";" ;
+connections     = ("CONNECTIONS", "{" | "CONNECTIONS{"), {connection}, "}" ;
 
-outputs         = ("OUTPUTS", "{" | "OUTPUTS{"), "{", output, {",", output}, "}", ";" ;
+outputs         = ("OUTPUTS", "{" | "OUTPUTS{"), "{", {output}, "}" ;
 

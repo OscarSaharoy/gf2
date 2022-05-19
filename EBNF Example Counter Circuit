@@ -1,8 +1,10 @@
+START
+
 DEVICES {
-  ff0 = DTYPE();
-  ff1 = DTYPE();
-  ff2 = DTYPE();
-  ff3 = DTYPE();
+  ff0 = DTYPE;
+  ff1 = DTYPE;
+  ff2 = DTYPE;
+  ff3 = DTYPE;
   
   clk = CLOCK(1);
   clear = SWITCH(0);
@@ -31,3 +33,5 @@ OUTPUTS {
   ff2.Q -- "Q2";
   ff3.Q -- "Q3";
 }
+
+END

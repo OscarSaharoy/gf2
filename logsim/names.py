@@ -65,7 +65,8 @@ class Names:
         """
 
         if not all(isinstance(item, str) for item in name_list):
-            raise ValueError("All items in argument of Names.lookup must be strings")
+            raise ValueError(
+                "All items in argument of Names.lookup must be strings")
 
         new_names = list(set(name_list) - set(self.name_map.keys()))
 

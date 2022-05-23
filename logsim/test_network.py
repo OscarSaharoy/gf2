@@ -30,6 +30,7 @@ def network_with_devices():
 
     return new_network
 
+
 @pytest.mark.skip(reason="todo")
 def test_get_connected_output(network_with_devices):
     """Test if the output connected to a given input port is correct."""
@@ -237,9 +238,6 @@ def test_execute_non_xor_gates(new_network, gate_id, switch_outputs,
     [AND1_ID, OR1_ID, NAND1_ID, NOR1_ID, SW1_ID, SW2_ID, SW3_ID, I1, I2,
      I3] = names.lookup(["And1", "Or1", "Nand1", "Nor1", "Sw1", "Sw2", "Sw3",
                          "I1", "I2", "I3"])
-
-    LOW = devices.LOW
-    HIGH = devices.HIGH
 
     # Make devices
     gate_id = eval(gate_id)

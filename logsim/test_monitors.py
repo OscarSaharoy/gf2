@@ -33,6 +33,7 @@ def new_monitors():
 
     return new_monitors
 
+
 @pytest.mark.skip(reason="todo")
 def test_make_monitor(new_monitors):
     """Test if make_monitor correctly updates the monitors dictionary."""

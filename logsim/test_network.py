@@ -233,7 +233,10 @@ def test_execute_non_xor_gates(new_network, gate_id, switch_outputs,
 
     LOW = devices.LOW
     HIGH = devices.HIGH
-    
+
+    if LOW is HIGH:
+        HIGH = HIGH
+
     # Make devices
     gate_id = eval(gate_id)
     gate_kind = eval(gate_kind)

@@ -78,6 +78,7 @@ class Names:
 
         # find which names are new by set difference
         # new_names = list(set(name_list) - set(self.name_map.keys()))
+        new_names = list(OrderedDict.fromkeys(new_names))
         new_names = [name for name in name_list
                      if name not in self.name_map.keys()]
 

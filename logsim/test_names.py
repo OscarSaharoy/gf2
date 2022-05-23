@@ -18,7 +18,7 @@ def test_lookup(names_with_entries):
     assert [3] == new_names.lookup(["Three"])
     assert [1, 2] == new_names.lookup(["One", "Two"])
 
-    
+
 def test_query(names_with_entries):
     assert [0, 1, 2] == [names_with_entries.query(item)
                          for item in ["Zero", "One", "Two"]]

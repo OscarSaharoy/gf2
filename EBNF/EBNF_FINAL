@@ -1,8 +1,10 @@
 program         = "START ", devices, connections, outputs, "END" ;
 
 
-device          = deviceName, "=", type, ";" ;
+name            = letter, {letter | digit | "_"} ;
 
+
+device          = name, "=", type, ";" ;
 
 
 type            = clock | switch | and | nand | or | nor | dtype | xor ;
@@ -25,11 +27,11 @@ xor             = "XOR" ;
 
 
 
-signal          = deviceName, [".", pinName] ;
+signal          = name, [".", name] ;
 
 connection      = signal, "->", signal, ";" ;
 
-output          = signal, "--", displayName, ";" ;
+output          = signal, "--", name, ";" ;
 
 
 devices         = "DEVICES", "{", device, {device}, "}";

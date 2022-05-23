@@ -73,7 +73,7 @@ class Names:
 
         # make sure all items in name list are strings
         if not all(isinstance(item, str) for item in name_list):
-            raise ValueError(
+            raise TypeError(
                 "All items in argument of Names.lookup must be strings")
 
         # find which names are new by set difference

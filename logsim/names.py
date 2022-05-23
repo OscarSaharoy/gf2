@@ -78,10 +78,9 @@ class Names:
             raise TypeError(
                 "All items in argument of Names.lookup must be strings")
 
-        # find which names are new by set difference
-        # new_names = list(set(name_list) - set(self.name_map.keys()))
-        # Remove duplicate elements
+        # Filter duplicate elements from name_list
         name_list_filtered = list(OrderedDict.fromkeys(name_list))
+        # Create list of all names that are not in name_map
         new_names = [name for name in name_list_filtered
                      if name not in self.name_map.keys()]
 

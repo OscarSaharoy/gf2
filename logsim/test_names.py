@@ -29,7 +29,7 @@ def test_lookup_exceptions():
     new_names = Names()
     # Test that non-strings raise an error
     with pytest.raises(Exception):
-        new_names.lookup(["Hi", "Hi"])
+        new_names.lookup(["Hi", 1])
 
 
 def test_query():

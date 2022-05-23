@@ -9,11 +9,15 @@ def test_lookup():
     assert [0] == new_names.lookup(["Zero"])  # Adding new name
     # An existing name and a new name
     assert [0, 1] == new_names.lookup(["Zero", "One"])
-    [ID2, ID3] = new_names.lookup(["Two", "Three"])  # Two new names
-    # Check that the IDs for the names are correct
-    assert [ID2, ID3] == new_names.lookup(["Two", "Three"])
-    assert [ID3, 0, ID2, 1] == new_names.lookup(
-        ["Three", "Zero", "Two", "One"])  # All four names random order
+    # Try adding several names at the same time
+    assert [2, 3, 4] == new_names.lookup(["Two", "Three", 
+                                          "Four"])
+    # Lookup existing names
+    assert [2, 1] == new_names.lookup(["Two", "One"])
+
+    # Test that non-strings raise an error
+    with pytest.raises(Exception):
+        new_names.lookup(["Hi", 1])
 
 
 def test_query():
@@ -24,7 +28,7 @@ def test_query():
                    for item in ["Zero", "One", "Two"]]
     # Check that querying an absent name returns None
     assert (new_names.query("nonexistant") is None)
-    
+
 
 def test_get_name_string():
     new_names = Names()
@@ -33,5 +37,5 @@ def test_get_name_string():
     # Check that the correct names are returned
     assert ["Zero", "One", "Two"] == [new_names.query(ID)
                                       for ID in IDs]
-    # Check that an unused id number returns None
+    # Check that an unused ID number returns None
     assert (new_names.get_name_string(3) is None)

@@ -27,7 +27,6 @@ def devices_with_items():
     return new_devices
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_device(devices_with_items):
     """Test if get_device returns the correct device."""
     names = devices_with_items.names
@@ -39,7 +38,6 @@ def test_get_device(devices_with_items):
         assert devices_with_items.get_device(X_ID) is None
 
 
-@pytest.mark.skip(reason="todo")
 def test_find_devices(devices_with_items):
     """Test if find_devices returns the correct devices of the given kind."""
     devices = devices_with_items
@@ -54,7 +52,6 @@ def test_find_devices(devices_with_items):
     assert devices.find_devices(devices.XOR) == []
 
 
-@pytest.mark.skip(reason="todo")
 def test_make_device(new_devices):
     """Test if make_device correctly makes devices with their properties."""
     names = new_devices.names
@@ -103,7 +100,6 @@ def test_make_device(new_devices):
     # Note: XOR device X2_ID will have been made earlier in the function
     ("(X2_ID, new_devices.XOR)", "new_devices.DEVICE_PRESENT"),
 ])
-@pytest.mark.skip(reason="todo")
 def test_make_device_gives_errors(new_devices, function_args, error):
     """Test if make_device returns the appropriate errors."""
     names = new_devices.names
@@ -119,7 +115,6 @@ def test_make_device_gives_errors(new_devices, function_args, error):
     assert left_expression == right_expression
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_signal_name(devices_with_items):
     """Test if get_signal_name returns the correct signal name."""
     devices = devices_with_items
@@ -130,7 +125,6 @@ def test_get_signal_name(devices_with_items):
     assert devices.get_signal_name(AND1, None) == "And1"
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_signal_ids(devices_with_items):
     """Test if get_signal_ids returns the correct signal IDs."""
     devices = devices_with_items
@@ -141,7 +135,6 @@ def test_get_signal_ids(devices_with_items):
     assert devices.get_signal_ids("And1") == [AND1, None]
 
 
-@pytest.mark.skip(reason="todo")
 def test_set_switch(new_devices):
     """Test if set_switch changes the switch state correctly."""
     names = new_devices.names

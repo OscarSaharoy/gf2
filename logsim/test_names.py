@@ -16,9 +16,9 @@ def test_lookup():
     assert [0] == new_names.lookup(["Zero"])  # Adding new name
     assert [0, 1] == new_names.lookup(["Zero", "One"])
     # An existing name and a new name
-    IDs = new_names.lookup(["Two", "Three"])  # Two new names
-    assert IDs == new_names.lookup(["Two", "Three"])
-    assert [3, 0, 2, 1] == new_names.lookup(
+    [ID2, ID3] = new_names.lookup(["Two", "Three"])  # Two new names
+    assert [ID2, ID3] == new_names.lookup(["Two", "Three"])
+    assert [ID3, 0, ID2, 1] == new_names.lookup(
         ["Three", "Zero", "Two", "One"])  # All four names random order
 
 

@@ -77,9 +77,9 @@ class Names:
                 "All items in argument of Names.lookup must be strings")
 
         # find which names are new by set difference
-        #new_names = list(set(name_list) - set(self.name_map.keys()))
+        # new_names = list(set(name_list) - set(self.name_map.keys()))
         new_names = [name for name in name_list
-                     if not name in self.name_map.keys()]
+                     if name not in self.name_map.keys()]
 
         # create map of new names to ids
         new_names_map = {new_name: i + self.name_count

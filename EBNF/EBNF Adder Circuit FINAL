@@ -31,8 +31,8 @@ CONNECTIONS {
 }
 
 OUTPUTS {
-  xor1 -- "SUM";
-  or1 -- "CARRY";
+  xor1 -- SUM;
+  or1 -- CARRY;
 }
 
 END

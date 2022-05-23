@@ -33,7 +33,7 @@ def test_query():
 def test_get_name_string():
     new_names = Names()
     # Populate names
-    IDs = new_names.get_name_string(["Zero", "One", "Two"])
+    IDs = new_names.lookup(["Zero", "One", "Two"])
     # Check that the correct names are returned
     assert ["Zero", "One", "Two"] == [new_names.query(ID)
                                       for ID in IDs]

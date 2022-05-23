@@ -52,5 +52,11 @@ class Scanner:
     def __init__(self, path, names):
         """Open specified file and initialise reserved words and IDs."""
 
+        self.names = names
+
+        self.symbol_types = [self.EOF, self.SEMICOLON, self.EQUALS, self.COMMA,
+                             self.DOT, self.TILDE, self.ARROW, self.B_OPEN,
+                             self.B_CLOSE, self.C_OPEN, self.C_CLOSE]
+
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""

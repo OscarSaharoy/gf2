@@ -23,4 +23,4 @@ def test_lookup(names_with_entries):
 def test_query(names_with_entries):
     assert [0, 1, 2] == [names_with_entries.query(item)
                          for item in ["Zero", "One", "Two"]]
-    assert (names_with_entries.query(["string"]) is None)
+    assert (names_with_entries.query("string") is None)

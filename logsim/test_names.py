@@ -10,7 +10,7 @@ def test_lookup():
     # An existing name and a new name
     assert [0, 1] == new_names.lookup(["Zero", "One"])
     # Try adding several names at the same time
-    assert [2, 3, 4] == new_names.lookup(["Two", "Three", 
+    assert [2, 3, 4] == new_names.lookup(["Two", "Three",
                                           "Four"])
     # Lookup existing names
     assert [2, 1] == new_names.lookup(["Two", "One"])

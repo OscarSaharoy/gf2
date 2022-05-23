@@ -34,7 +34,6 @@ def new_monitors():
     return new_monitors
 
 
-@pytest.mark.skip(reason="todo")
 def test_make_monitor(new_monitors):
     """Test if make_monitor correctly updates the monitors dictionary."""
     names = new_monitors.names
@@ -45,7 +44,6 @@ def test_make_monitor(new_monitors):
                                                 (OR1_ID, None): []}
 
 
-@pytest.mark.skip(reason="todo")
 def test_make_monitor_gives_errors(new_monitors):
     """Test if make_monitor returns the correct errors."""
     names = new_monitors.names
@@ -68,7 +66,6 @@ def test_make_monitor_gives_errors(new_monitors):
     assert new_monitors.make_monitor(SW3_ID, None) == new_monitors.NO_ERROR
 
 
-@pytest.mark.skip(reason="todo")
 def test_remove_monitor(new_monitors):
     """Test if remove_monitor correctly updates the monitors dictionary."""
     names = new_monitors.names
@@ -79,7 +76,6 @@ def test_remove_monitor(new_monitors):
                                                 (OR1_ID, None): []}
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_signal_names(new_monitors):
     """Test if get_signal_names returns the correct signal name lists."""
     names = new_monitors.names
@@ -93,7 +89,6 @@ def test_get_signal_names(new_monitors):
                                                ["D1.Q", "D1.QBAR"]]
 
 
-@pytest.mark.skip(reason="todo")
 def test_record_signals(new_monitors):
     """Test if record_signals records the correct signals."""
     names = new_monitors.names
@@ -125,7 +120,6 @@ def test_record_signals(new_monitors):
         (OR1_ID, None): [LOW, HIGH, HIGH]}
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_margin(new_monitors):
     """Test if get_margin returns the length of the longest monitor name."""
     names = new_monitors.names
@@ -142,7 +136,6 @@ def test_get_margin(new_monitors):
     assert new_monitors.get_margin() == 11
 
 
-@pytest.mark.skip(reason="todo")
 def test_reset_monitors(new_monitors):
     """Test if reset_monitors clears the signal lists of all the monitors."""
     names = new_monitors.names
@@ -161,7 +154,6 @@ def test_reset_monitors(new_monitors):
                                                 (OR1_ID, None): []}
 
 
-@pytest.mark.skip(reason="todo")
 def test_display_signals(capsys, new_monitors):
     """Test if signal traces are displayed correctly on the console."""
     names = new_monitors.names

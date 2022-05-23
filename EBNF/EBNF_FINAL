@@ -40,5 +40,3 @@ connections     = "CONNECTIONS", "{", connection, {connection}, "}" ;
 
 outputs         = "OUTPUTS", "{", output, {output}, "}";
 
-comment         = "#", {any_character}, "#" ; 
-

@@ -25,3 +25,13 @@ def test_query():
     # Check that querying an absent name returns None
     assert (names_with_entries.query("nonexistant") is None)
     
+
+def test_get_name_string():
+    new_names = Names()
+    # Populate names
+    IDs = new_names.get_name_string(["Zero", "One", "Two"])
+    # Check that the correct names are returned
+    assert ["Zero", "One", "Two"] == [names_with_entries.query(ID)
+                         for ID in IDs]
+    # Check that an unused id number returns None
+    assert (names_with_entries.get_name_string(3) is None)

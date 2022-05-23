@@ -14,25 +14,25 @@ DEVICES {
 
 }
 CONNECTIONS {
-  a -> xor1.I1;
-  b -> xor1.I2;
+  a > xor1.I1;
+  b > xor1.I2;
   
-  xor1 -> xor2.I1;
-  c -> xor2.I2;
+  xor1 > xor2.I1;
+  c > xor2.I2;
   
-  c -> and1.I1;
-  xor1 -> and1.I2;
+  c > and1.I1;
+  xor1 > and1.I2;
   
-  a -> and2.I1;
-  b -> and2.I2;
+  a > and2.I1;
+  b > and2.I2;
   
-  and1 -> or1.I1;
-  and2 -> or1.I2;
+  and1 > or1.I1;
+  and2 > or1.I2;
 }
 
 OUTPUTS {
-  xor1 -- SUM;
-  or1 -- CARRY;
+  xor1 - SUM;
+  or1 - CARRY;
 }
 
 END

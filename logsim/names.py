@@ -10,6 +10,7 @@ Names - maps variable names and string names to unique integers.
 
 from collections import OrderedDict
 
+
 class Names:
 
     """Map variable names and string names to unique integers.

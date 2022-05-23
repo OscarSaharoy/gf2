@@ -81,8 +81,8 @@ class Names:
         # find which names are new by set difference
         # new_names = list(set(name_list) - set(self.name_map.keys()))
         # Remove duplicate elements
-        name_list = list(OrderedDict.fromkeys(name_list))
-        new_names = [name for name in name_list
+        name_list_filtered = list(OrderedDict.fromkeys(name_list))
+        new_names = [name for name in name_list_filtered
                      if name not in self.name_map.keys()]
 
         # create map of new names to ids

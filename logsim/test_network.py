@@ -31,7 +31,6 @@ def network_with_devices():
     return new_network
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_connected_output(network_with_devices):
     """Test if the output connected to a given input port is correct."""
     network = network_with_devices
@@ -55,7 +54,6 @@ def test_get_connected_output(network_with_devices):
     assert network.get_connected_output(SW1_ID, I2) is None
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_input_signal(network_with_devices):
     """Test if the signal at a given input port is correct"""
     network = network_with_devices
@@ -80,7 +78,6 @@ def test_get_input_signal(network_with_devices):
     assert network.get_input_signal(OR1_ID, I2) == devices.HIGH
 
 
-@pytest.mark.skip(reason="todo")
 def test_get_output_signal(network_with_devices):
     """Test if the signal level at the given output is correct."""
     network = network_with_devices
@@ -98,7 +95,6 @@ def test_get_output_signal(network_with_devices):
     assert network.get_output_signal(OR1_ID, None) == devices.HIGH
 
 
-@pytest.mark.skip(reason="todo")
 def test_check_network(network_with_devices):
     """Test if the signal at a given input port is correct."""
     network = network_with_devices
@@ -119,7 +115,6 @@ def test_check_network(network_with_devices):
     assert network.check_network()
 
 
-@pytest.mark.skip(reason="todo")
 def test_make_connection(network_with_devices):
     """Test if the make_connection function correctly connects devices."""
     network = network_with_devices
@@ -164,7 +159,6 @@ def test_make_connection(network_with_devices):
     # Note: Or1.I1 will have been connected earlier in the function
     ("(SW1_ID, None, OR1_ID, I1)", "network.INPUT_CONNECTED"),
 ])
-@pytest.mark.skip(reason="todo")
 def test_make_connection_gives_error(network_with_devices,
                                      function_args, error):
     """Test if the make_connection function returns the correct errors."""
@@ -184,7 +178,6 @@ def test_make_connection_gives_error(network_with_devices,
     assert left_expression == right_expression
 
 
-@pytest.mark.skip(reason="todo")
 def test_execute_xor(new_network):
     """Test if execute_network returns the correct output for XOR gates."""
     network = new_network
@@ -227,7 +220,6 @@ def test_execute_xor(new_network):
     ("NOR1_ID", ["HIGH", "LOW", "HIGH"], "LOW", "devices.NOR"),
     ("NOR1_ID", ["LOW", "LOW", "LOW"], "HIGH", "devices.NOR"),
 ])
-@pytest.mark.skip(reason="todo")
 def test_execute_non_xor_gates(new_network, gate_id, switch_outputs,
                                gate_output, gate_kind):
     """Test if execute_network returns the correct output for non-XOR gates."""
@@ -239,6 +231,9 @@ def test_execute_non_xor_gates(new_network, gate_id, switch_outputs,
      I3] = names.lookup(["And1", "Or1", "Nand1", "Nor1", "Sw1", "Sw2", "Sw3",
                          "I1", "I2", "I3"])
 
+    LOW = devices.LOW
+    HIGH = devices.HIGH
+    
     # Make devices
     gate_id = eval(gate_id)
     gate_kind = eval(gate_kind)
@@ -261,7 +256,6 @@ def test_execute_non_xor_gates(new_network, gate_id, switch_outputs,
     assert network.get_output_signal(gate_id, None) == eval(gate_output)
 
 
-@pytest.mark.skip(reason="todo")
 def test_execute_non_gates(new_network):
     """Test if execute_network returns the correct output for non-gate devices.
 
@@ -340,7 +334,6 @@ def test_execute_non_gates(new_network):
                 HIGH, LOW, HIGH, HIGH, LOW, HIGH]
 
 
-@pytest.mark.skip(reason="todo")
 def test_oscillating_network(new_network):
     """Test if the execute_network returns False for oscillating networks."""
     network = new_network

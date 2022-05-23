@@ -28,7 +28,7 @@ def test_lookup_duplicates():
 def test_lookup_exceptions():
     new_names = Names()
     # Test that non-strings raise an error
-    with pytest.raises(Exception):
+    with pytest.raises(TypeError):
         new_names.lookup(["Hi", 1])
 
 

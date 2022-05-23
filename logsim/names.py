@@ -58,28 +58,45 @@ class Names:
         If the name string is not present in the names list, return None.
         """
 
+        # try to get the name id from the name map
+        # and if it isnt there return none
+        try:
+            return self.name_map[name_string]
+        except KeyError:
+            return None
+
     def lookup(self, name_list):
         """Return a list of name IDs for each name string in name_string_list.
 
         If the name string is not present in the names list, add it.
         """
 
+        # make sure all items in name list are strings
         if not all(isinstance(item, str) for item in name_list):
             raise ValueError(
                 "All items in argument of Names.lookup must be strings")
 
+        # find which names are new by set difference
         new_names = list(set(name_list) - set(self.name_map.keys()))
 
+        # create map of new names to ids
         new_names_map = {new_name: i + self.name_count
                          for i, new_name in enumerate(new_names)}
         self.name_count += len(new_names)
 
+        # combine new and existing name maps
         self.name_map = {**self.name_map, **new_names_map}
 
+        # find ids of names and return them
         return [self.name_map[name] for name in name_list]
 
-    def get_name_string(self, name_id):
+    def get_name_string(self, query_id):
         """Return the corresponding name string for name_id.
 
         If the name_id is not an index in the names list, return None.
         """
+
+        # use a generator to find name string matching id,
+        # None at end means None is returned if no match found
+        return next((name for name, name_id in self.name_map.items()
+                     if name_id == query_id), None)

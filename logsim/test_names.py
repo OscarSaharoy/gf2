@@ -20,10 +20,10 @@ def test_query():
     new_names = Names()
     IDs = new_names.lookup(["Zero", "One", "Two"])  # Populate names
     # Test query for a set of present names
-    assert IDs == [names_with_entries.query(item)
-                         for item in ["Zero", "One", "Two"]]
+    assert IDs == [new_names.query(item)
+                   for item in ["Zero", "One", "Two"]]
     # Check that querying an absent name returns None
-    assert (names_with_entries.query("nonexistant") is None)
+    assert (new_names.query("nonexistant") is None)
     
 
 def test_get_name_string():
@@ -31,7 +31,7 @@ def test_get_name_string():
     # Populate names
     IDs = new_names.get_name_string(["Zero", "One", "Two"])
     # Check that the correct names are returned
-    assert ["Zero", "One", "Two"] == [names_with_entries.query(ID)
-                         for ID in IDs]
+    assert ["Zero", "One", "Two"] == [new_names.query(ID)
+                                      for ID in IDs]
     # Check that an unused id number returns None
-    assert (names_with_entries.get_name_string(3) is None)
+    assert (new_names.get_name_string(3) is None)

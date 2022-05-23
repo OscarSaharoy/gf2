@@ -16,7 +16,7 @@ def test_lookup():
     assert [2, 1] == new_names.lookup(["Two", "One"])
 
     # Test that non-strings raise an error
-    with pytest.raises(Exception):
+    with pytest.raises(TypeError):
         new_names.lookup(["Hi", 1])
 
 

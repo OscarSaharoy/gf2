@@ -26,6 +26,7 @@ def devices_with_items():
 
     return new_devices
 
+
 @pytest.mark.skip(reason="todo")
 def test_get_device(devices_with_items):
     """Test if get_device returns the correct device."""

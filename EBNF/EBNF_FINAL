@@ -29,9 +29,9 @@ xor             = "XOR" ;
 
 signal          = name, [".", name] ;
 
-connection      = signal, "->", signal, ";" ;
+connection      = signal, ">", signal, ";" ;
 
-output          = signal, "--", name, ";" ;
+output          = signal, "~", name, ";" ;
 
 
 devices         = "DEVICES", "{", device, {device}, "}";

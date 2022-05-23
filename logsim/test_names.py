@@ -14,7 +14,7 @@ def names_with_entries():
 def test_lookup(names_with_entries):
     new_names = Names()
     assert [0] == new_names.lookup(["Zero"])  # Adding new name
-    assert [0, 1] == new_names.lookup(["Zero", "One"])  
+    assert [0, 1] == new_names.lookup(["Zero", "One"])
     # An existing name and a new name
     assert [2, 3] == new_names.lookup(["Two", "Three"])  # Two new names
     assert [2, 1] == new_names.lookup(["Two", "One"])  # Two existing names

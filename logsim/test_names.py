@@ -35,7 +35,7 @@ def test_get_name_string():
     # Populate names
     IDs = new_names.lookup(["Zero", "One", "Two"])
     # Check that the correct names are returned
-    assert ["Zero", "One", "Two"] == [new_names.query(ID)
+    assert ["Zero", "One", "Two"] == [new_names.get_name_string(ID)
                                       for ID in IDs]
     # Check that an unused ID number returns None
     assert (new_names.get_name_string(3) is None)

@@ -1,7 +1,7 @@
 program         = "START ", devices, connections, outputs, "END" ;
 
 
-name            = letter, {letter | digit | "_"} ;
+name            = (letter | "_"), {letter | digit | "_"} ;
 
 
 device          = name, "=", type, ";" ;

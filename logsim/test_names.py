@@ -4,7 +4,7 @@ import pytest
 from names import Names
 
 
-def test_lookup():
+def test_lookup_normal():
     new_names = Names()
     assert [0] == new_names.lookup(["Zero"])  # Adding new name
     # An existing name and a new name
@@ -15,9 +15,21 @@ def test_lookup():
     # Lookup existing names
     assert [2, 1] == new_names.lookup(["Two", "One"])
 
+
+def test_lookup_duplicates():
+    new_names = Names()
+    # Lookup the same string several times
+    assert [0, 0, 0] == new_names.lookup(["Zero", "Zero",
+                                          "Zero"])
+    assert [1, 0, 1] == new_names.lookup(["One", "Zero",
+                                          "One"])
+
+
+def test_lookup_exceptions():
+    new_names = Names()
     # Test that non-strings raise an error
-    with pytest.raises(TypeError):
-        new_names.lookup(["Hi", 1])
+    with pytest.raises(Exception):
+        new_names.lookup(["Hi", "Hi"])
 
 
 def test_query():

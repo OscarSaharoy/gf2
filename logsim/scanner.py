@@ -56,7 +56,26 @@ class Scanner:
 
         self.symbol_types = [self.EOF, self.SEMICOLON, self.EQUALS, self.COMMA,
                              self.DOT, self.TILDE, self.ARROW, self.B_OPEN,
-                             self.B_CLOSE, self.C_OPEN, self.C_CLOSE]
+                             self.B_CLOSE, self.C_OPEN, self.C_CLOSE] = range(11)
+        """Symbols:
+        
+        EOF:        End of file
+        B_OPEN:     (
+        B_CLOSE:    )
+        C_OPEN:     {
+        C_CLOSE:    }
+        ARROW:      >
+        """
+        
+        self.keywords = ["START", "END", "DEVICES", "CONNECTIONS", "OUTPUTS",
+                        "CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR", "XOR",
+                         "DTYPE"]
+        [self.START_ID, self.END_ID, self.DEVICES_ID, self.CONNECTIONS_ID,
+        self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
+        self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
+        self.DTYPE_ID] = self.names.lookup(self.keywords)
+        
+        self.current_character = ""
 
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""

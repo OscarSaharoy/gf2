@@ -42,9 +42,40 @@ class Parser:
         self.monitors = monitors
         self.scanner = scanner
 
+        self.sym = None  # latest symbol from the scanner
+        self.error_count = 0
+
     def parse_network(self):
         """Parse the circuit definition file."""
         # For now just return True, so that userint and gui can run in the
         # skeleton code. When complete, should return False when there are
         # errors in the circuit definition file.
-        return True
+
+        self.check_for(self.scanner.KEYWORD, self.scanner.START_ID)
+
+        self.parse_devices()
+        self.parse_connections()
+        self.parse_outputs()
+
+        self.check_for(self.scanner.KEYWORD, self.scanner.END_ID)
+
+        return self.error_count == 0
+
+    def error(self):
+        self.error_count += 1
+
+    def check_for(self, sym_type, sym_id):
+
+        self.sym = self.scanner.get_symbol()
+
+        if self.sym.type != sym_type or self.sym.id != sym_id:
+            self.error()
+
+    def parse_devices(self):
+        pass
+
+    def parse_connections(self):
+        pass
+
+    def parse_outputs(self):
+        pass

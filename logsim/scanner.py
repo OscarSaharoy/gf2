@@ -9,6 +9,8 @@ Scanner - reads definition file and translates characters into symbols.
 Symbol - encapsulates a symbol and stores its properties.
 """
 import sys
+from names import Names
+
 
 def space_or_line(character):
     if character.isspace() or character == "/n":
@@ -42,7 +44,7 @@ class Symbol:
             return False
 
         return self.type == other.type and \
-               self.id == other.id
+            self.id == other.id
 
 
 class Scanner:
@@ -68,19 +70,20 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
 
         self.names = Names()
-        
+
         self.comment = "#"
-        
+
         self.symbol_characters = ["", ";", "=", ",", ".", "~", ">", "(", ")",
-                                 "{", "}"]
-        
+                                  "{", "}"
+                                 ]
+
         self.symbol_types = [self.EOF, self.SEMICOLON, self.EQUALS, self.COMMA,
                              self.DOT, self.TILDE, self.ARROW, self.B_OPEN,
                              self.B_CLOSE, self.C_OPEN, self.C_CLOSE,
                              self.KEYWORD, self.NUMBER, self.NAME,
                             ] = range(14)
         """Symbols:
-        
+
         EOF:        End of file
         B_OPEN:     (
         B_CLOSE:    )
@@ -88,15 +91,18 @@ class Scanner:
         C_CLOSE:    }
         ARROW:      >
         """
-        
+
         self.keywords = ["START", "END", "DEVICES", "CONNECTIONS", "OUTPUTS",
                         "CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR", "XOR",
-                         "DTYPE"]
+                         "DTYPE"
+                        ]
+
         [self.START_ID, self.END_ID, self.DEVICES_ID, self.CONNECTIONS_ID,
-        self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
-        self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
-        self.DTYPE_ID] = self.names.lookup(self.keywords)
-        
+            self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
+            self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
+            self.DTYPE_ID
+        ] = self.names.lookup(self.keywords)
+
         self.current_character = ""
         self.advance()
 
@@ -152,7 +158,8 @@ class Scanner:
         alphanumeric character.
         """
         word = ""
-        while self.current_character.isalnum() and not self.current_character == "":
+        while self.current_character.isalnum() and
+                not self.current_character == "":
             word = word + self.current_character
             self.advance()
         return word
@@ -161,7 +168,8 @@ class Scanner:
         """Returns the integer represented by the next block of alphanumeric characters
         """
         number = ""
-        while self.current_character.isdigit() and not self.current_character == "":
+        while self.current_character.isdigit() and
+                not self.current_character == "":
             number = number + self.current_character
             self.advance()
         return int(number)
@@ -178,7 +186,7 @@ class Scanner:
         """
         is_comment = False
         self.skip_spaces_and_lines()
-        
+
         if self.current_character == self.comment:
             is_comment = True
 
@@ -187,13 +195,11 @@ class Scanner:
             # Advance until the comment end is found
             if self.current_character == self.comment:
                 is_comment = False
-                
+
                 # Comment has ended, skip any following whitespace
                 self.advance()
                 self.skip_spaces_and_lines()
-                
+
                 # Check that the comment is not followed by a second comment
                 if self.current_character == self.comment:
                     is_comment = True
-
-

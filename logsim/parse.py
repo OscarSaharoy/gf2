@@ -1,3 +1,5 @@
+# from scanner import Symbol
+
 """Parse the definition file and build the logic network.
 
 Used in the Logic Simulator project to analyse the syntactic and semantic
@@ -42,8 +44,11 @@ class Parser:
         self.monitors = monitors
         self.scanner = scanner
 
-        self.sym = None  # latest symbol from the scanner
+        self.sym = None  # current symbol from the scanner
+        self.lookahead = None  # one symbol ahead of the current symbol
         self.error_count = 0
+
+        self.test_symbols = []
 
     def parse_network(self):
         """Parse the circuit definition file."""
@@ -64,18 +69,92 @@ class Parser:
     def error(self):
         self.error_count += 1
 
-    def check_for(self, sym_type, sym_id):
+    def check_for(self, sym_type, sym_id=None):
 
-        self.sym = self.scanner.get_symbol()
+        self.sym = self.lookahead
+        # self.lookahead = self.scanner.get_symbol()
+        self.lookahead = self.test_symbols.pop(0)
 
-        if self.sym.type != sym_type or self.sym.id != sym_id:
+        if self.sym.type != sym_type or sym_id and self.sym.id != sym_id:
             self.error()
 
+    def parse_block(self, opening_symbol, inner_rule):
+
+        # block = opening_symbol, "{", inner_rule, {inner_rule}, "}"
+
+        self.check_for(opening_symbol.type, opening_symbol.id)
+        self.check_for(self.scanner.C_OPEN)
+
+        while self.lookahead.type != self.scanner.C_CLOSE:
+            inner_rule()
+
+        self.check_for(self.scanner.C_CLOSE)
+
     def parse_devices(self):
-        pass
+
+        # devices = "DEVICES", "{", device, {device}, "}"
+
+        self.check_for(self.scanner.KEYWORD, self.scanner.DEVICES_ID)
+        self.check_for(self.scanner.C_OPEN)
+
+        while self.lookahead.type != self.scanner.C_CLOSE:
+            self.parse_device()
+
+        self.check_for(self.scanner.C_CLOSE)
 
     def parse_connections(self):
-        pass
+
+        # connections = "CONNECTIONS", "{", connection, {connection}, "}"
+
+        self.check_for(self.scanner.KEYWORD, self.scanner.CONNECTIONS_ID)
+        self.check_for(self.scanner.C_OPEN)
+
+        while self.lookahead.type != self.scanner.C_CLOSE:
+            self.parse_connection()
+
+        self.check_for(self.scanner.C_CLOSE)
 
     def parse_outputs(self):
+
+        # outputs = "OUTPUTS", "{", output, {output}, "}"
+
+        self.check_for(self.scanner.KEYWORD, self.scanner.OUTPUTS_ID)
+        self.check_for(self.scanner.C_OPEN)
+
+        while self.lookahead.type != self.scanner.C_CLOSE:
+            self.parse_output()
+
+        self.check_for(self.scanner.C_CLOSE)
+
+    def parse_device(self):
+
+        # device = name, "=", type, ";"
+
+        self.parse_name()
+        self.check_for(self.scanner.EQUALS)
+        self.parse_type()
+        self.check_for(self.scanner.SEMICOLON)
+
+    def parse_connection(self):
+
+        # connection = signal, ">", signal, ";"
+
+        self.parse_signal()
+        self.check_for(self.scanner.ARROW)
+        self.parse_signal()
+        self.check_for(self.scanner.SEMICOLON)
+
+    def parse_output(self):
+
+        # output = signal, "~", name, ";"
+
+        self.parse_signal()
+        self.check_for(self.scanner.TILDE)
+        self.parse_name()
+        self.check_for(self.scanner.SEMICOLON)
+
+    def parse_name(self):
+        pass
+
+    def parse_signal(self):
         pass

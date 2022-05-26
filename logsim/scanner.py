@@ -30,10 +30,19 @@ class Symbol:
     No public methods.
     """
 
-    def __init__(self):
+    def __init__(self, sym_type=None, sym_id=None):
         """Initialise symbol properties."""
-        self.type = None
-        self.id = None
+        self.type = sym_type
+        self.id = sym_id
+
+    def __eq__(self, other):
+        """Check if this Symbol is the same as other."""
+
+        if not isinstance(other, Symbol):
+            return False
+
+        return self.type == other.type and \
+               self.id == other.id
 
 
 class Scanner:

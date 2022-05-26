@@ -75,13 +75,13 @@ class Scanner:
 
         self.symbol_characters = ["", ";", "=", ",", ".", "~", ">", "(", ")",
                                   "{", "}"
-                                 ]
+                                  ]
 
         self.symbol_types = [self.EOF, self.SEMICOLON, self.EQUALS, self.COMMA,
                              self.DOT, self.TILDE, self.ARROW, self.B_OPEN,
                              self.B_CLOSE, self.C_OPEN, self.C_CLOSE,
                              self.KEYWORD, self.NUMBER, self.NAME
-                            ] = range(14)
+                             ] = range(14)
         """Symbols:
 
         EOF:        End of file
@@ -101,7 +101,7 @@ class Scanner:
             self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
             self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
             self.DTYPE_ID
-            ] = self.names.lookup(self.keywords)
+        ] = self.names.lookup(self.keywords)
 
         self.current_character = ""
         self.advance()

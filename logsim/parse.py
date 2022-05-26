@@ -48,7 +48,8 @@ class Parser:
         self.lookahead = None  # one symbol ahead of the current symbol
         self.error_count = 0
 
-        self.test_symbols = []
+        self.test_symbols = [
+        ]
 
     def parse_network(self):
         """Parse the circuit definition file."""
@@ -56,26 +57,29 @@ class Parser:
         # skeleton code. When complete, should return False when there are
         # errors in the circuit definition file.
 
-        self.check_for(self.scanner.KEYWORD, self.scanner.START_ID)
+        START = Symbol(sym_type=self.scanner.KEYWORD, sym_id=self.scanner.START_ID)
+        END = Symbol(sym_type=self.scanner.KEYWORD, sym_id=self.scanner.END_ID)
+
+        self.check_for(START)
 
         self.parse_devices()
         self.parse_connections()
         self.parse_outputs()
 
-        self.check_for(self.scanner.KEYWORD, self.scanner.END_ID)
+        self.check_for(END)
 
         return self.error_count == 0
 
     def error(self):
         self.error_count += 1
 
-    def check_for(self, sym_type, sym_id=None):
+    def check_for(self, sym):
 
         self.sym = self.lookahead
         # self.lookahead = self.scanner.get_symbol()
         self.lookahead = self.test_symbols.pop(0)
 
-        if self.sym.type != sym_type or sym_id and self.sym.id != sym_id:
+        if self.sym != sym:
             self.error()
 
     def parse_block(self, opening_symbol, inner_rule):

@@ -80,7 +80,7 @@ class Scanner:
         self.symbol_types = [self.EOF, self.SEMICOLON, self.EQUALS, self.COMMA,
                              self.DOT, self.TILDE, self.ARROW, self.B_OPEN,
                              self.B_CLOSE, self.C_OPEN, self.C_CLOSE,
-                             self.KEYWORD, self.NUMBER, self.NAME,
+                             self.KEYWORD, self.NUMBER, self.NAME
                             ] = range(14)
         """Symbols:
 
@@ -93,15 +93,15 @@ class Scanner:
         """
 
         self.keywords = ["START", "END", "DEVICES", "CONNECTIONS", "OUTPUTS",
-                        "CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR", "XOR",
+                         "CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR", "XOR",
                          "DTYPE"
-                        ]
+                         ]
 
         [self.START_ID, self.END_ID, self.DEVICES_ID, self.CONNECTIONS_ID,
             self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
             self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
             self.DTYPE_ID
-        ] = self.names.lookup(self.keywords)
+            ] = self.names.lookup(self.keywords)
 
         self.current_character = ""
         self.advance()

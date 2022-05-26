@@ -89,6 +89,7 @@ class Scanner:
         self.DTYPE_ID] = self.names.lookup(self.keywords)
         
         self.current_character = ""
+        self.advance()
 
     def advance(self):
         """Move forward by one character in the file"""
@@ -105,23 +106,57 @@ class Scanner:
             sys.exit()
 
     def get_symbol(self):
-        """Translate the next sequence of characters into a symbol."""
-        
-        self.skip_meaningless()  # Needs defining
-        
+        """Translate the next sequence of characters into a symbol.
+        """
+        self.skip_meaningless()
+
         symbol = Symbol()
-        
+
         if self.current_character.isalpha():
             # This is a name or a keyword
+            word = self.get_word()
+            if word in self.keywords:
+                symbol.type = self.KEYWORD
+            else:
+                symbol.type = self.NAME
+            [symbol.id] = self.names.lookup([word])
 
-        elif self.current_character.isdigit():  # Number
-            pass
-        elif self.current_character in self.symbol_characters:  # Special symbol
-            pass
+        elif self.current_character.isdigit():
+            # This is a number. Only integers are accepted
+            symbol.type = self.NUMBER
+            symbol.id = self.get_number()
+
+        elif self.current_character in self.symbol_characters:
+            # Special symbol. Assign the appropriate type
+            index = self.symbol_characters.index(self.current_character)
+            symbol.type = self.symbol_types[index]
+            self.advance()
+
         else:
             # Something else, has no meaning, just skip it
             self.advance()
-        
+
+        return symbol
+
+    def get_word(self):
+        """Returns the string of characters up until the next non-
+        alphanumeric character.
+        """
+        word = ""
+        while self.current_character.isalnum() and not self.current_character == "":
+            word = word + self.current_character
+            self.advance()
+        return word
+
+    def get_number(self):
+        """Returns the integer represented by the next block of alphanumeric characters
+        """
+        number = ""
+        while self.current_character.isdigit() and not self.current_character == "":
+            number = number + self.current_character
+            self.advance()
+        return int(number)
+
     def skip_spaces_and_lines(self):
         """A function to advance to the next character that is not a space or newline.
         """

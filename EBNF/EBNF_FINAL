@@ -1,4 +1,4 @@
-program         = "START ", devices, connections, outputs, "END" ;
+program         = "START", devices, connections, outputs, "END" ;
 
 
 name            = (letter | "_"), {letter | digit | "_"} ;

@@ -8,6 +8,13 @@ Classes
 Scanner - reads definition file and translates characters into symbols.
 Symbol - encapsulates a symbol and stores its properties.
 """
+import sys
+
+def space_or_line(character):
+    if character.isspace() or character == "/n":
+        return True
+    else:
+        return False
 
 
 class Symbol:
@@ -48,11 +55,12 @@ class Scanner:
     get_symbol(self): Translates the next sequence of characters into a symbol
                       and returns the symbol.
     """
-
     def __init__(self, path, names):
         """Open specified file and initialise reserved words and IDs."""
 
         self.names = Names()
+        
+        self.comment = "#"
         
         self.symbol_characters = ["", ";", "=", ",", ".", "~", ">", "(", ")",
                                  "{", "}"]
@@ -82,24 +90,66 @@ class Scanner:
         
         self.current_character = ""
 
+    def advance(self):
+        """Move forward by one character in the file"""
+        self.current_character = self.file.read(1)
+
+    def open_file(self, path):
+        """Open and return the file specified by path."""
+        try:
+            self.file = open(path, 'r')
+            self.advance()
+
+        except(IOError):
+            print("Error! Specified file was not found.")
+            sys.exit()
+
     def get_symbol(self):
         """Translate the next sequence of characters into a symbol."""
         
-        self.skip_spaces()  # Needs defining
+        self.skip_meaningless()  # Needs defining
         
         symbol = Symbol()
         
-        if self.current_character.isalpha():  # Name
-            pass
+        if self.current_character.isalpha():
+            # This is a name or a keyword
+
         elif self.current_character.isdigit():  # Number
             pass
         elif self.current_character in self.symbol_characters:  # Special symbol
             pass
-        else:  # Something else
-            pass
+        else:
+            # Something else, has no meaning, just skip it
+            self.advance()
         
-    def skip_spaces(self):
-        """A function to advance to the next character that is not a space, newline
-        or part of a comment.
+    def skip_spaces_and_lines(self):
+        """A function to advance to the next character that is not a space or newline.
         """
-        pass
+        while space_or_line(self.current_character):
+            self.advance()
+
+    def skip_meaningless(self):
+        """Advance until the current character is not a space, newline or
+        part of a comment.
+        """
+        is_comment = False
+        self.skip_spaces_and_lines()
+        
+        if self.current_character == self.comment:
+            is_comment = True
+
+        while is_comment:
+            self.advance()
+            # Advance until the comment end is found
+            if self.current_character == self.comment:
+                is_comment = False
+                
+                # Comment has ended, skip any following whitespace
+                self.advance()
+                self.skip_spaces_and_lines()
+                
+                # Check that the comment is not followed by a second comment
+                if self.current_character == self.comment:
+                    is_comment = True
+
+

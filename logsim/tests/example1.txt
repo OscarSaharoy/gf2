@@ -1,0 +1,11 @@
+START
+#This should be
+ignored
+#
+();
+#This should also#
+
+#be ignored#
+
+##
+END

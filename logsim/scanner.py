@@ -98,10 +98,10 @@ class Scanner:
                          ]
 
         [self.START_ID, self.END_ID, self.DEVICES_ID, self.CONNECTIONS_ID,
-            self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
-            self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
-            self.DTYPE_ID
-        ] = self.names.lookup(self.keywords)
+         self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
+         self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
+         self.DTYPE_ID
+         ] = self.names.lookup(self.keywords)
 
         self.current_character = ""
         self.advance()

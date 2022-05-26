@@ -158,7 +158,7 @@ class Scanner:
         alphanumeric character.
         """
         word = ""
-        while self.current_character.isalnum() and
+        while self.current_character.isalnum() and \
                 not self.current_character == "":
             word = word + self.current_character
             self.advance()
@@ -168,7 +168,7 @@ class Scanner:
         """Returns the integer represented by the next block of alphanumeric characters
         """
         number = ""
-        while self.current_character.isdigit() and
+        while self.current_character.isdigit() and \
                 not self.current_character == "":
             number = number + self.current_character
             self.advance()

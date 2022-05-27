@@ -12,7 +12,7 @@ from parse import Parser
 def new_parser():
     """Return a new instance of the Parser class."""
    
-    test_file_path = "test.txt"
+    test_file_path = "tests/example2.txt"
 
     names = Names()
     devices = Devices(names)

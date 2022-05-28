@@ -38,74 +38,6 @@ class Parser:
     def __init__(self, names, devices, network, monitors, scanner):
         """Initialise constants."""
 
-        self.test_symbols = [
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=scanner.START_ID),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=scanner.DEVICES_ID),
-            Symbol(sym_type=scanner.C_OPEN),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c1"])[0]),
-            Symbol(sym_type=scanner.EQUALS),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=names.lookup(["CLOCK"])[0]),
-            Symbol(sym_type=scanner.B_OPEN),
-            Symbol(sym_type=scanner.NUMBER,
-                   sym_id=1),
-            Symbol(sym_type=scanner.B_CLOSE),
-            Symbol(sym_type=scanner.SEMICOLON),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c1"])[0]),
-            Symbol(sym_type=scanner.EQUALS),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=names.lookup(["XOR"])[0]),
-            Symbol(sym_type=scanner.SEMICOLON),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c2"])[0]),
-            Symbol(sym_type=scanner.EQUALS),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=names.lookup(["CLOCK"])[0]),
-            Symbol(sym_type=scanner.B_OPEN),
-            Symbol(sym_type=scanner.NUMBER,
-                   sym_id=4),
-            Symbol(sym_type=scanner.B_CLOSE),
-            Symbol(sym_type=scanner.SEMICOLON),
-            Symbol(sym_type=scanner.C_CLOSE),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=scanner.CONNECTIONS_ID),
-            Symbol(sym_type=scanner.C_OPEN),
-            # Symbol(sym_type=scanner.C_OPEN, string="}"),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c2"])[0]),
-            Symbol(sym_type=scanner.ARROW),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c1"])[0]),
-            Symbol(sym_type=scanner.DOT),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["out"])[0]),
-            Symbol(sym_type=scanner.SEMICOLON),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c1"])[0]),
-            Symbol(sym_type=scanner.ARROW),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c2"])[0]),
-            Symbol(sym_type=scanner.SEMICOLON),
-            Symbol(sym_type=scanner.C_CLOSE),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=scanner.OUTPUTS_ID),
-            Symbol(sym_type=scanner.C_OPEN),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["c1"])[0]),
-            Symbol(sym_type=scanner.TILDE),
-            Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["clock"])[0]),
-            Symbol(sym_type=scanner.SEMICOLON),
-            Symbol(sym_type=scanner.C_CLOSE),
-            Symbol(sym_type=scanner.KEYWORD,
-                   sym_id=scanner.END_ID),
-            Symbol(sym_type=scanner.EOF)
-        ]
-
         self.names = names
         self.devices = devices
         self.network = network
@@ -113,7 +45,6 @@ class Parser:
         self.scanner = scanner
 
         self.sym = None  # current symbol from the scanner
-        # self.lookahead = self.test_symbols.pop(0)
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
 
@@ -124,7 +55,6 @@ class Parser:
             return
 
         self.lookahead = self.scanner.get_symbol()
-        # self.lookahead = self.test_symbols.pop(0)
 
     def parse_literal(self, sym):
 

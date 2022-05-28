@@ -31,10 +31,11 @@ class Symbol:
     No public methods.
     """
 
-    def __init__(self, sym_type=None, sym_id=None):
+    def __init__(self, sym_type=None, sym_id=None, string=None):
         """Initialise symbol properties."""
         self.type = sym_type
         self.id = sym_id
+        self.string = string
 
     def __eq__(self, other):
         """Check if this Symbol is the same as other."""

@@ -45,22 +45,64 @@ class Parser:
                    sym_id=scanner.DEVICES_ID),
             Symbol(sym_type=scanner.C_OPEN),
             Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["test1"])[0]),
+                   sym_id=names.lookup(["c1"])[0]),
             Symbol(sym_type=scanner.EQUALS),
+            Symbol(sym_type=scanner.KEYWORD,
+                   sym_id=names.lookup(["CLOCK"])[0]),
+            Symbol(sym_type=scanner.B_OPEN),
+            Symbol(sym_type=scanner.NUMBER,
+                   sym_id=1),
+            Symbol(sym_type=scanner.B_CLOSE),
+            Symbol(sym_type=scanner.SEMICOLON),
             Symbol(sym_type=scanner.NAME,
-                   sym_id=names.lookup(["test1"])[0]),
+                   sym_id=names.lookup(["c1"])[0]),
+            Symbol(sym_type=scanner.EQUALS),
+            Symbol(sym_type=scanner.KEYWORD,
+                   sym_id=names.lookup(["XOR"])[0]),
+            Symbol(sym_type=scanner.SEMICOLON),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["c2"])[0]),
+            Symbol(sym_type=scanner.EQUALS),
+            Symbol(sym_type=scanner.KEYWORD,
+                   sym_id=names.lookup(["CLOCK"])[0]),
+            Symbol(sym_type=scanner.B_OPEN),
+            Symbol(sym_type=scanner.NUMBER,
+                   sym_id=4),
+            Symbol(sym_type=scanner.B_CLOSE),
             Symbol(sym_type=scanner.SEMICOLON),
             Symbol(sym_type=scanner.C_CLOSE),
             Symbol(sym_type=scanner.KEYWORD,
                    sym_id=scanner.CONNECTIONS_ID),
             Symbol(sym_type=scanner.C_OPEN),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["c2"])[0]),
+            Symbol(sym_type=scanner.ARROW),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["c1"])[0]),
+            Symbol(sym_type=scanner.DOT),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["out"])[0]),
+            Symbol(sym_type=scanner.SEMICOLON),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["c1"])[0]),
+            Symbol(sym_type=scanner.ARROW),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["c2"])[0]),
+            Symbol(sym_type=scanner.SEMICOLON),
             Symbol(sym_type=scanner.C_CLOSE),
             Symbol(sym_type=scanner.KEYWORD,
                    sym_id=scanner.OUTPUTS_ID),
             Symbol(sym_type=scanner.C_OPEN),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["c1"])[0]),
+            Symbol(sym_type=scanner.TILDE),
+            Symbol(sym_type=scanner.NAME,
+                   sym_id=names.lookup(["clock"])[0]),
+            Symbol(sym_type=scanner.SEMICOLON),
             Symbol(sym_type=scanner.C_CLOSE),
             Symbol(sym_type=scanner.KEYWORD,
                    sym_id=scanner.END_ID),
+            Symbol(sym_type=scanner.EOF)
         ]
 
         self.names = names
@@ -73,26 +115,13 @@ class Parser:
         self.lookahead = self.test_symbols.pop(0)  # one symbol ahead
         self.error_count = 0
 
-        DEVICES = Symbol(sym_type=self.scanner.KEYWORD,
-                         sym_id=self.scanner.DEVICES_ID)
-        CONNECTIONS = Symbol(sym_type=self.scanner.KEYWORD,
-                             sym_id=self.scanner.CONNECTIONS_ID)
-        OUTPUTS = Symbol(sym_type=self.scanner.KEYWORD,
-                         sym_id=self.scanner.OUTPUTS_ID)
-
-        self.parse_devices = lambda: \
-            self.parse_block(DEVICES, self.parse_device)
-        self.parse_connections = lambda: \
-            self.parse_block(CONNECTIONS, self.parse_connection)
-        self.parse_outputs = lambda: \
-            self.parse_block(OUTPUTS, self.parse_output)
-
     def check_for(self, sym, error_info=None):
 
         self.sym = self.lookahead
 
         if sym and self.sym != sym:
-            print(f"expected {sym.id}, found {self.sym.id}")
+            print(f"expected {sym.type, sym.id}, \
+                    found {self.sym.type, self.sym.id}")
             self.error(error_info)
 
         if not self.test_symbols:
@@ -101,9 +130,10 @@ class Parser:
         # self.lookahead = self.scanner.get_symbol()
         self.lookahead = self.test_symbols.pop(0)
 
-    def error(self, error_info):
+    def error(self, error_info=None):
 
         self.error_count += 1
+        raise ValueError
 
         if not error_info:
             return
@@ -117,16 +147,34 @@ class Parser:
                        sym_id=self.scanner.START_ID)
         END = Symbol(sym_type=self.scanner.KEYWORD,
                      sym_id=self.scanner.END_ID)
+        EOF = Symbol(sym_type=self.scanner.EOF)
+
+        DEVICES = Symbol(sym_type=self.scanner.KEYWORD,
+                         sym_id=self.scanner.DEVICES_ID)
+        CONNECTIONS = Symbol(sym_type=self.scanner.KEYWORD,
+                             sym_id=self.scanner.CONNECTIONS_ID)
+        OUTPUTS = Symbol(sym_type=self.scanner.KEYWORD,
+                         sym_id=self.scanner.OUTPUTS_ID)
+
+        def parse_devices():
+            self.parse_block(DEVICES, self.parse_device)
+
+        def parse_connections():
+            self.parse_block(CONNECTIONS, self.parse_connection)
+
+        def parse_outputs():
+            self.parse_block(OUTPUTS, self.parse_output)
 
         # program = "START", devices, connections, outputs, "END" ;
 
         self.check_for(START, error_info={"message": "error: expected START"})
 
-        self.parse_devices()
-        self.parse_connections()
-        self.parse_outputs()
+        parse_devices()
+        parse_connections()
+        parse_outputs()
 
         self.check_for(END)
+        self.check_for(EOF)
 
         return self.error_count == 0
 
@@ -152,10 +200,12 @@ class Parser:
 
         # device = name, "=", type, ";"
 
-        self.parse_name()
+        device_name = self.parse_name()
         self.check_for(EQUALS)
-        self.parse_type()
+        device_type, device_argument = self.parse_type()
         self.check_for(SEMICOLON)
+
+        return device_name, device_type, device_argument
 
     def parse_connection(self):
 
@@ -164,10 +214,12 @@ class Parser:
 
         # connection = signal, ">", signal, ";"
 
-        self.parse_signal()
+        lhs_signal_name, lhs_signal_pin = self.parse_signal()
         self.check_for(ARROW)
-        self.parse_signal()
+        rhs_signal_name, rh2_signal_pin = self.parse_signal()
         self.check_for(SEMICOLON)
+
+        return lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin
 
     def parse_output(self):
 
@@ -176,23 +228,110 @@ class Parser:
 
         # output = signal, "~", name, ";"
 
-        self.parse_signal()
+        signal_name, signal_pin = self.parse_signal()
         self.check_for(TILDE)
-        self.parse_name()
+        output_name = self.parse_name()
         self.check_for(SEMICOLON)
+
+        return signal_name, signal_pin, output_name
 
     def parse_type(self):
 
+        CLOCK = Symbol(sym_type=self.scanner.KEYWORD,
+                       sym_id=self.scanner.CLOCK_ID)
+        SWITCH = Symbol(sym_type=self.scanner.KEYWORD,
+                        sym_id=self.scanner.SWITCH_ID)
+        AND = Symbol(sym_type=self.scanner.KEYWORD,
+                     sym_id=self.scanner.AND_ID)
+        NAND = Symbol(sym_type=self.scanner.KEYWORD,
+                      sym_id=self.scanner.NAND_ID)
+        OR = Symbol(sym_type=self.scanner.KEYWORD,
+                    sym_id=self.scanner.OR_ID)
+        NOR = Symbol(sym_type=self.scanner.KEYWORD,
+                     sym_id=self.scanner.NOR_ID)
+        DTYPE = Symbol(sym_type=self.scanner.KEYWORD,
+                       sym_id=self.scanner.DTYPE_ID)
+        XOR = Symbol(sym_type=self.scanner.KEYWORD,
+                     sym_id=self.scanner.XOR_ID)
+
         # type = clock | switch | and | nand | or | nor | dtype | xor
 
-        # type_parsers = { 0 : self.parse_clock }
+        type_parsers = {
+            CLOCK.id: lambda: self.parse_type_func(CLOCK, self.parse_number),
+            SWITCH.id: lambda: self.parse_type_func(SWITCH, self.parse_number),
+            AND.id: lambda: self.parse_type_func(AND, self.parse_number),
+            NAND.id: lambda: self.parse_type_func(NAND, self.parse_number),
+            OR.id: lambda: self.parse_type_func(OR, self.parse_number),
+            NOR.id: lambda: self.parse_type_func(NOR, self.parse_number),
+            DTYPE.id: lambda: self.parse_type_func(DTYPE),
+            XOR.id: lambda: self.parse_type_func(XOR),
+        }
 
-        # type_parser = None
+        try:
+            return type_parsers[self.lookahead.id]()
+        except KeyError:
+            self.error()
 
-        self.check_for(None)
+    def parse_type_func(self, opening_symbol, inside_rule=None):
+
+        B_OPEN = Symbol(sym_type=self.scanner.B_OPEN)
+        B_CLOSE = Symbol(sym_type=self.scanner.B_CLOSE)
+        argument = None
+
+        # type_func = opening_symbol, "(", inside_rule, ")" ;
+
+        self.check_for(opening_symbol)
+
+        if inside_rule:
+            self.check_for(B_OPEN)
+            argument = inside_rule()
+            self.check_for(B_CLOSE)
+
+        return opening_symbol, argument
+
+    def parse_number(self):
+
+        self.sym = self.lookahead
+
+        if self.sym.type != self.scanner.NUMBER:
+            self.error()
+
+        if not self.test_symbols:
+            self.error()
+            return
+
+        # self.lookahead = self.scanner.get_symbol()
+        self.lookahead = self.test_symbols.pop(0)
+
+        return self.sym
 
     def parse_name(self):
-        self.check_for(None)
+
+        self.sym = self.lookahead
+
+        if self.sym.type != self.scanner.NAME:
+            self.error()
+
+        if not self.test_symbols:
+            self.error()
+            return
+
+        # self.lookahead = self.scanner.get_symbol()
+        self.lookahead = self.test_symbols.pop(0)
+
+        return self.sym
 
     def parse_signal(self):
-        self.check_for(None)
+
+        DOT = Symbol(sym_type=self.scanner.DOT)
+        device = pin = None
+
+        # signal = name, [ ".", name ]
+
+        device = self.parse_name()
+
+        if self.lookahead == DOT:
+            self.check_for(DOT)
+            pin = self.parse_name()
+
+        return device, pin

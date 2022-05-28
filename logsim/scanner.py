@@ -103,8 +103,10 @@ class Scanner:
          self.DTYPE_ID
          ] = self.names.lookup(self.keywords)
 
+        self.open_file(path)
+
         self.current_character = ""
-        # self.advance()
+        self.advance()
 
     def advance(self):
         """Move forward by one character in the file"""

@@ -184,7 +184,7 @@ class Parser:
     def parse_type(self):
 
         # type = clock | switch | and | nand | or | nor | dtype | xor
-        
+
         # type_parsers = { 0 : self.parse_clock }
 
         # type_parser = None

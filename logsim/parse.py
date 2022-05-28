@@ -113,7 +113,8 @@ class Parser:
         self.scanner = scanner
 
         self.sym = None  # current symbol from the scanner
-        self.lookahead = self.test_symbols.pop(0)  # one symbol ahead
+        # self.lookahead = self.test_symbols.pop(0)
+        self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
 
     def next_sym(self):
@@ -122,15 +123,16 @@ class Parser:
         if not self.test_symbols:
             return
 
-        # self.lookahead = self.scanner.get_symbol()
-        self.lookahead = self.test_symbols.pop(0)
+        self.lookahead = self.scanner.get_symbol()
+        # self.lookahead = self.test_symbols.pop(0)
 
     def parse_literal(self, sym):
 
         self.next_sym()
 
         if sym and self.sym != sym:
-            self.error()
+            self.error(message=f'expected "{sym.string}", \
+                                 found "{self.sym.string}"')
 
     def error(self, message="error!"):
 
@@ -270,7 +272,8 @@ class Parser:
         try:
             return type_parsers[self.lookahead.id]()
         except KeyError:
-            self.error()
+            self.error(message=f'expected a device type name,\
+                                 found "{self.lookahead.string}"')
 
     def parse_type_func(self, opening_symbol, inside_rule=None):
 

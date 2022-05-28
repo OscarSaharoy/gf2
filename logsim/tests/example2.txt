@@ -1,15 +1,16 @@
 START
 
 DEVICES {
-
+    a = CLOCK(2);
+    b = CLOCK(2);
 }
 
 CONNECTIONS {
-
+    a > b;
 }
 
 OUTPUTS {
-
+    a.out ~ firstClock;
 }
 
 END

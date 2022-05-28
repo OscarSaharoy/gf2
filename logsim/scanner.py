@@ -116,7 +116,6 @@ class Scanner:
         """Open and return the file specified by path."""
         try:
             self.file = open(path, 'r')
-            self.advance()
 
         except(IOError):
             print("Error! Specified file was not found.")

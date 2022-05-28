@@ -8,10 +8,11 @@ from monitors import Monitors
 from scanner import Scanner
 from parse import Parser
 
+
 @pytest.fixture
 def new_parser():
     """Return a new instance of the Parser class."""
-   
+
     test_file_path = "tests/example2.txt"
 
     names = Names()
@@ -23,6 +24,9 @@ def new_parser():
 
     return parser
 
-def test_1(new_parser):
 
-    new_parser.parse_network()
+def test_basic_parse(new_parser):
+
+    parse_success = new_parser.parse_network()
+
+    assert parse_success

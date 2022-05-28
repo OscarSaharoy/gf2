@@ -74,6 +74,7 @@ class Parser:
             Symbol(sym_type=scanner.KEYWORD,
                    sym_id=scanner.CONNECTIONS_ID),
             Symbol(sym_type=scanner.C_OPEN),
+            # Symbol(sym_type=scanner.C_OPEN, string="}"),
             Symbol(sym_type=scanner.NAME,
                    sym_id=names.lookup(["c2"])[0]),
             Symbol(sym_type=scanner.ARROW),
@@ -115,14 +116,8 @@ class Parser:
         self.lookahead = self.test_symbols.pop(0)  # one symbol ahead
         self.error_count = 0
 
-    def check_for(self, sym, error_info=None):
-
+    def next_sym(self):
         self.sym = self.lookahead
-
-        if sym and self.sym != sym:
-            print(f"expected {sym.type, sym.id}, \
-                    found {self.sym.type, self.sym.id}")
-            self.error(error_info)
 
         if not self.test_symbols:
             return
@@ -130,15 +125,20 @@ class Parser:
         # self.lookahead = self.scanner.get_symbol()
         self.lookahead = self.test_symbols.pop(0)
 
-    def error(self, error_info=None):
+    def parse_literal(self, sym):
+
+        self.next_sym()
+
+        if sym and self.sym != sym:
+            self.error()
+
+    def error(self, message="error!"):
 
         self.error_count += 1
+
+        print(f">>> error: {message}")
+
         raise ValueError
-
-        if not error_info:
-            return
-
-        print(error_info["message"])
 
     def parse_network(self):
         """Parse the circuit definition file."""
@@ -167,14 +167,14 @@ class Parser:
 
         # program = "START", devices, connections, outputs, "END" ;
 
-        self.check_for(START, error_info={"message": "error: expected START"})
+        self.parse_literal(START)
 
         parse_devices()
         parse_connections()
         parse_outputs()
 
-        self.check_for(END)
-        self.check_for(EOF)
+        self.parse_literal(END)
+        self.parse_literal(EOF)
 
         return self.error_count == 0
 
@@ -185,13 +185,13 @@ class Parser:
 
         # block = opening_symbol, "{", inner_rule, {inner_rule}, "}"
 
-        self.check_for(opening_symbol)
-        self.check_for(C_OPEN)
+        self.parse_literal(opening_symbol)
+        self.parse_literal(C_OPEN)
 
         while self.lookahead != C_CLOSE:
             inner_rule()
 
-        self.check_for(C_CLOSE)
+        self.parse_literal(C_CLOSE)
 
     def parse_device(self):
 
@@ -201,9 +201,9 @@ class Parser:
         # device = name, "=", type, ";"
 
         device_name = self.parse_name()
-        self.check_for(EQUALS)
+        self.parse_literal(EQUALS)
         device_type, device_argument = self.parse_type()
-        self.check_for(SEMICOLON)
+        self.parse_literal(SEMICOLON)
 
         return device_name, device_type, device_argument
 
@@ -215,9 +215,9 @@ class Parser:
         # connection = signal, ">", signal, ";"
 
         lhs_signal_name, lhs_signal_pin = self.parse_signal()
-        self.check_for(ARROW)
+        self.parse_literal(ARROW)
         rhs_signal_name, rh2_signal_pin = self.parse_signal()
-        self.check_for(SEMICOLON)
+        self.parse_literal(SEMICOLON)
 
         return lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin
 
@@ -229,9 +229,9 @@ class Parser:
         # output = signal, "~", name, ";"
 
         signal_name, signal_pin = self.parse_signal()
-        self.check_for(TILDE)
+        self.parse_literal(TILDE)
         output_name = self.parse_name()
-        self.check_for(SEMICOLON)
+        self.parse_literal(SEMICOLON)
 
         return signal_name, signal_pin, output_name
 
@@ -280,44 +280,30 @@ class Parser:
 
         # type_func = opening_symbol, "(", inside_rule, ")" ;
 
-        self.check_for(opening_symbol)
+        self.parse_literal(opening_symbol)
 
         if inside_rule:
-            self.check_for(B_OPEN)
+            self.parse_literal(B_OPEN)
             argument = inside_rule()
-            self.check_for(B_CLOSE)
+            self.parse_literal(B_CLOSE)
 
         return opening_symbol, argument
 
     def parse_number(self):
 
-        self.sym = self.lookahead
+        self.next_sym()
 
         if self.sym.type != self.scanner.NUMBER:
-            self.error()
-
-        if not self.test_symbols:
-            self.error()
-            return
-
-        # self.lookahead = self.scanner.get_symbol()
-        self.lookahead = self.test_symbols.pop(0)
+            self.error(message=f'expected a number, found "{self.sym.string}"')
 
         return self.sym
 
     def parse_name(self):
 
-        self.sym = self.lookahead
+        self.next_sym()
 
         if self.sym.type != self.scanner.NAME:
-            self.error()
-
-        if not self.test_symbols:
-            self.error()
-            return
-
-        # self.lookahead = self.scanner.get_symbol()
-        self.lookahead = self.test_symbols.pop(0)
+            self.error(message=f'expected a name, found "{self.sym.string}"')
 
         return self.sym
 
@@ -331,7 +317,7 @@ class Parser:
         device = self.parse_name()
 
         if self.lookahead == DOT:
-            self.check_for(DOT)
+            self.parse_literal(DOT)
             pin = self.parse_name()
 
         return device, pin

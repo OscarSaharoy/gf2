@@ -135,16 +135,19 @@ class Scanner:
             else:
                 symbol.type = self.NAME
             [symbol.id] = self.names.lookup([word])
+            symbol.string = word
 
         elif self.current_character.isdigit():
             # This is a number. Only integers are accepted
             symbol.type = self.NUMBER
             symbol.id = self.get_number()
+            symbol.string = str(symbol.id)
 
         elif self.current_character in self.symbol_characters:
             # Special symbol. Assign the appropriate type
             index = self.symbol_characters.index(self.current_character)
             symbol.type = self.symbol_types[index]
+            symbol.string = self.current_character
             self.advance()
 
         else:

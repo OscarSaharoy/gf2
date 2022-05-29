@@ -1,4 +1,5 @@
 from scanner import Symbol
+import functools
 
 """Parse the definition file and build the logic network.
 
@@ -48,12 +49,14 @@ class Parser:
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
 
+    def make_keyword_symbol(self, string):
+
+        return Symbol(sym_type=self.scanner.KEYWORD,
+                      sym_id=self.names.lookup([string])[0],
+                      string=string)
+
     def next_sym(self):
         self.sym = self.lookahead
-
-        if not self.test_symbols:
-            return
-
         self.lookahead = self.scanner.get_symbol()
 
     def parse_literal(self, sym):
@@ -61,8 +64,8 @@ class Parser:
         self.next_sym()
 
         if sym and self.sym != sym:
-            self.error(message=f'expected "{sym.string}", \
-                                 found "{self.sym.string}"')
+            self.error(message=f'expected "{sym.string}", '
+                               f'found "{self.sym.string}"')
 
     def error(self, message="error!"):
 
@@ -75,18 +78,13 @@ class Parser:
     def parse_network(self):
         """Parse the circuit definition file."""
 
-        START = Symbol(sym_type=self.scanner.KEYWORD,
-                       sym_id=self.scanner.START_ID)
-        END = Symbol(sym_type=self.scanner.KEYWORD,
-                     sym_id=self.scanner.END_ID)
-        EOF = Symbol(sym_type=self.scanner.EOF)
+        START = self.make_keyword_symbol("START")
+        END = self.make_keyword_symbol("END")
+        EOF = Symbol(sym_type=self.scanner.EOF, string="EOF")
 
-        DEVICES = Symbol(sym_type=self.scanner.KEYWORD,
-                         sym_id=self.scanner.DEVICES_ID)
-        CONNECTIONS = Symbol(sym_type=self.scanner.KEYWORD,
-                             sym_id=self.scanner.CONNECTIONS_ID)
-        OUTPUTS = Symbol(sym_type=self.scanner.KEYWORD,
-                         sym_id=self.scanner.OUTPUTS_ID)
+        DEVICES = self.make_keyword_symbol("DEVICES")
+        CONNECTIONS = self.make_keyword_symbol("CONNECTIONS")
+        OUTPUTS = self.make_keyword_symbol("OUTPUTS")
 
         def parse_devices():
             self.parse_block(DEVICES, self.parse_device)
@@ -112,8 +110,8 @@ class Parser:
 
     def parse_block(self, opening_symbol, inner_rule):
 
-        C_OPEN = Symbol(sym_type=self.scanner.C_OPEN)
-        C_CLOSE = Symbol(sym_type=self.scanner.C_CLOSE)
+        C_OPEN = Symbol(sym_type=self.scanner.C_OPEN, string="{")
+        C_CLOSE = Symbol(sym_type=self.scanner.C_CLOSE, string="}")
 
         # block = opening_symbol, "{", inner_rule, {inner_rule}, "}"
 
@@ -127,8 +125,8 @@ class Parser:
 
     def parse_device(self):
 
-        EQUALS = Symbol(sym_type=self.scanner.EQUALS)
-        SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON)
+        EQUALS = Symbol(sym_type=self.scanner.EQUALS, string="=")
+        SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
         # device = name, "=", type, ";"
 
@@ -141,8 +139,8 @@ class Parser:
 
     def parse_connection(self):
 
-        ARROW = Symbol(sym_type=self.scanner.ARROW)
-        SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON)
+        ARROW = Symbol(sym_type=self.scanner.ARROW, string=">")
+        SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
         # connection = signal, ">", signal, ";"
 
@@ -155,8 +153,8 @@ class Parser:
 
     def parse_output(self):
 
-        TILDE = Symbol(sym_type=self.scanner.TILDE)
-        SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON)
+        TILDE = Symbol(sym_type=self.scanner.TILDE, string="~")
+        SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
         # output = signal, "~", name, ";"
 
@@ -169,35 +167,26 @@ class Parser:
 
     def parse_type(self):
 
-        CLOCK = Symbol(sym_type=self.scanner.KEYWORD,
-                       sym_id=self.scanner.CLOCK_ID)
-        SWITCH = Symbol(sym_type=self.scanner.KEYWORD,
-                        sym_id=self.scanner.SWITCH_ID)
-        AND = Symbol(sym_type=self.scanner.KEYWORD,
-                     sym_id=self.scanner.AND_ID)
-        NAND = Symbol(sym_type=self.scanner.KEYWORD,
-                      sym_id=self.scanner.NAND_ID)
-        OR = Symbol(sym_type=self.scanner.KEYWORD,
-                    sym_id=self.scanner.OR_ID)
-        NOR = Symbol(sym_type=self.scanner.KEYWORD,
-                     sym_id=self.scanner.NOR_ID)
-        DTYPE = Symbol(sym_type=self.scanner.KEYWORD,
-                       sym_id=self.scanner.DTYPE_ID)
-        XOR = Symbol(sym_type=self.scanner.KEYWORD,
-                     sym_id=self.scanner.XOR_ID)
+        types_taking_arg = ["CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR"]
+        types_without_arg = ["DTYPE", "XOR"]
+
+        taking_arg_symbols = [self.make_keyword_symbol(string)
+                              for string in types_taking_arg]
+        no_arg_symbols = [self.make_keyword_symbol(string)
+                          for string in types_without_arg]
+
+        arg_type_parsers = \
+            {symbol.id: functools.partial(self.parse_type_func,
+                                          symbol, self.parse_number)
+             for symbol in taking_arg_symbols}
+
+        no_arg_type_parsers = \
+            {symbol.id: functools.partial(self.parse_type_func, symbol)
+             for symbol in no_arg_symbols}
+
+        type_parsers = {**arg_type_parsers, **no_arg_type_parsers}
 
         # type = clock | switch | and | nand | or | nor | dtype | xor
-
-        type_parsers = {
-            CLOCK.id: lambda: self.parse_type_func(CLOCK, self.parse_number),
-            SWITCH.id: lambda: self.parse_type_func(SWITCH, self.parse_number),
-            AND.id: lambda: self.parse_type_func(AND, self.parse_number),
-            NAND.id: lambda: self.parse_type_func(NAND, self.parse_number),
-            OR.id: lambda: self.parse_type_func(OR, self.parse_number),
-            NOR.id: lambda: self.parse_type_func(NOR, self.parse_number),
-            DTYPE.id: lambda: self.parse_type_func(DTYPE),
-            XOR.id: lambda: self.parse_type_func(XOR),
-        }
 
         try:
             return type_parsers[self.lookahead.id]()
@@ -207,8 +196,8 @@ class Parser:
 
     def parse_type_func(self, opening_symbol, inside_rule=None):
 
-        B_OPEN = Symbol(sym_type=self.scanner.B_OPEN)
-        B_CLOSE = Symbol(sym_type=self.scanner.B_CLOSE)
+        B_OPEN = Symbol(sym_type=self.scanner.B_OPEN, string="(")
+        B_CLOSE = Symbol(sym_type=self.scanner.B_CLOSE, string=")")
         argument = None
 
         # type_func = opening_symbol, "(", inside_rule, ")" ;
@@ -242,7 +231,7 @@ class Parser:
 
     def parse_signal(self):
 
-        DOT = Symbol(sym_type=self.scanner.DOT)
+        DOT = Symbol(sym_type=self.scanner.DOT, string=".")
         device = pin = None
 
         # signal = name, [ ".", name ]

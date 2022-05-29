@@ -106,11 +106,18 @@ class Scanner:
         self.open_file(path)
 
         self.current_character = ""
+        self.line = 0
+        self.char_offset = 0
         self.advance()
 
     def advance(self):
         """Move forward by one character in the file"""
+        if self.current_character == '\n':
+            self.line += 1
+            self.char_offset = 0
+
         self.current_character = self.file.read(1)
+        self.char_offset += 1
 
     def open_file(self, path):
         """Open and return the file specified by path."""

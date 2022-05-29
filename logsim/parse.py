@@ -97,7 +97,9 @@ class Parser:
     def error(self, message="error!"):
 
         self.error_count += 1
-        print(f">>> error: {message}")
+        print(f"at line {self.scanner.line},"
+              f"offset {self.scanner.char_offset}\n"
+              f">>> error: {message}\n")
 
         self.recovery = True
 
@@ -141,6 +143,7 @@ class Parser:
         self.parse_literal(END)
         self.parse_literal(EOF)
 
+        print(f"number of errors: {self.error_count}")
         return self.error_count == 0
 
     def parse_block(self, opening_symbol, inner_rule):

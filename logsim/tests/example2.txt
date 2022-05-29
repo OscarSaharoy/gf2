@@ -7,6 +7,7 @@ DEVICES {
 
 CONNECTIONS {
     a > b;
+    a > b;
 }
 
 OUTPUTS {

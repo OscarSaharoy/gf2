@@ -48,9 +48,9 @@ class Parser:
         self.sym = None  # current symbol from the scanner
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
+        self.recovery = False
 
     def make_keyword_symbol(self, string):
-
         return Symbol(sym_type=self.scanner.KEYWORD,
                       sym_id=self.names.lookup([string])[0],
                       string=string)
@@ -63,17 +63,52 @@ class Parser:
 
         self.next_sym()
 
+        if self.recovery:
+            return self.recovery_step()
+
         if sym and self.sym != sym:
             self.error(message=f'expected "{sym.string}", '
                                f'found "{self.sym.string}"')
 
+    def parse_number(self):
+
+        self.next_sym()
+
+        if self.recovery:
+            return self.recovery_step()
+
+        if self.sym.type != self.scanner.NUMBER:
+            self.error(message=f'expected a number, found "{self.sym.string}"')
+
+        return self.sym
+
+    def parse_name(self):
+
+        self.next_sym()
+
+        if self.recovery:
+            return self.recovery_step()
+
+        if self.sym.type != self.scanner.NAME:
+            self.error(message=f'expected a name, found "{self.sym.string}"')
+
+        return self.sym
+
     def error(self, message="error!"):
 
         self.error_count += 1
-
         print(f">>> error: {message}")
 
-        raise ValueError
+        self.recovery = True
+
+    def recovery_step(self):
+
+        C_CLOSE = Symbol(self.scanner.C_CLOSE)
+        SEMICOLON = Symbol(self.scanner.SEMICOLON)
+        EOF = Symbol(self.scanner.EOF)
+
+        if self.sym in [C_CLOSE, SEMICOLON, EOF]:
+            self.recovery = False
 
     def parse_network(self):
         """Parse the circuit definition file."""
@@ -95,7 +130,7 @@ class Parser:
         def parse_outputs():
             self.parse_block(OUTPUTS, self.parse_output)
 
-        # program = "START", devices, connections, outputs, "END" ;
+        # program = "START", devices, connections, outputs, "END"
 
         self.parse_literal(START)
 
@@ -191,8 +226,8 @@ class Parser:
         try:
             return type_parsers[self.lookahead.id]()
         except KeyError:
-            self.error(message=f'expected a device type name,\
-                                 found "{self.lookahead.string}"')
+            self.error(message=f'expected a device type name, '
+                               f'found "{self.lookahead.string}"')
 
     def parse_type_func(self, opening_symbol, inside_rule=None):
 
@@ -200,7 +235,7 @@ class Parser:
         B_CLOSE = Symbol(sym_type=self.scanner.B_CLOSE, string=")")
         argument = None
 
-        # type_func = opening_symbol, "(", inside_rule, ")" ;
+        # type_func = opening_symbol, "(", inside_rule, ")"
 
         self.parse_literal(opening_symbol)
 
@@ -210,24 +245,6 @@ class Parser:
             self.parse_literal(B_CLOSE)
 
         return opening_symbol, argument
-
-    def parse_number(self):
-
-        self.next_sym()
-
-        if self.sym.type != self.scanner.NUMBER:
-            self.error(message=f'expected a number, found "{self.sym.string}"')
-
-        return self.sym
-
-    def parse_name(self):
-
-        self.next_sym()
-
-        if self.sym.type != self.scanner.NAME:
-            self.error(message=f'expected a name, found "{self.sym.string}"')
-
-        return self.sym
 
     def parse_signal(self):
 

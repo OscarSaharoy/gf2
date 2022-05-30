@@ -18,7 +18,7 @@ def new_parser(path):
     network = Network(names, devices)
     monitors = Monitors(names, devices, network)
     scanner = Scanner(path, names)
-    new_parser = Parser(names, devices, network, monitors, scanner)
+    new_parser = Parser(names, devices, network, monitors, scanner, True)
 
     return new_parser
 
@@ -81,6 +81,5 @@ def test_bad_outputs(new_parser):
 
 @pytest.mark.parametrize('path', ["logsim/tests/duplicatestatements.txt"])
 def test_duplicate_statements(new_parser):
-
     new_parser.parse_network()
     assert new_parser.error_count == 3

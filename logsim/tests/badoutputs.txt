@@ -4,7 +4,7 @@ DEVICES {
     b = NOR(1);
 }
 CONNECTIONS {
-    a > b.i1;
+    a > b.I1;
 }
 OUTPUTS {
     a -- badoutput1;

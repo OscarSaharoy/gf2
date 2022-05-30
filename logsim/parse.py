@@ -185,6 +185,7 @@ class Parser:
         device_type, device_argument = self.parse_type()
         self.parse_literal(SEMICOLON)
 
+        # self.make_device(device_name, device_type, device_argument)
         return device_name, device_type, device_argument
 
     def parse_connection(self):
@@ -276,3 +277,18 @@ class Parser:
             pin = self.parse_name()
 
         return device, pin
+
+    def make_device(self, device_name, device_type, device_argument):
+        error_type = self.devices.make_device(device_name, device_type, device_argument)
+        
+        if error_type != self.devices.NO_ERROR:
+            elif error_type == self.devices.INVALID_QUALIFIER:
+                self.error("invalid qualifier")
+            elif error_type == self.devices.NO_QUALIFIER:
+                self.error("no qualifier")
+            elif error_type == self.devices.QUALIFIER_PRESENT:
+                self.error("unexpected qualifier")
+            elif error_type == self.devices.DEVICE_PRESENT:
+                self.error("device already defined")
+            else:
+                self.error("bad device")

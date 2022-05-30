@@ -1,0 +1,24 @@
+START
+DEVICES {
+    a = CLOCK(1);
+    b = OR(2);
+    c = SWITCH(1);
+}
+CONNECTIONS {
+    # Connect a signal to a device with no specified pin #
+    a = b;
+
+    # Connect two signals to same input #
+    c > b.I1;
+    a > b.I1;
+
+    # Connect two inputs #
+    b.I1 > b.I2;
+    
+    # A correct assignment #
+    b > b.I2;
+}
+OUTPUTS {
+    b ~ out;
+}
+END

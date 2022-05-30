@@ -282,6 +282,7 @@ class Parser:
         return device, pin
 
     def make_device(self, device_name, device_type, device_argument):
+        print(device_type)
         error_type = self.devices.make_device(
             device_name, device_type, device_argument)
 

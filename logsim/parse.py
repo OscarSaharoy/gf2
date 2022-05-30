@@ -200,8 +200,8 @@ class Parser:
         rhs_signal_name, rh2_signal_pin = self.parse_signal()
         self.parse_literal(SEMICOLON)
 
-        self.make_connection(lhs_signal_name, lhs_signal_pin,
-                             rhs_signal_name, rh2_signal_pin)
+        self.make_connection(lhs_signal_name.id, lhs_signal_pin,
+                             rhs_signal_name.id, rh2_signal_pin)
         return lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin
 
     def parse_output(self):

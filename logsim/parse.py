@@ -293,25 +293,23 @@ class Parser:
         return device, pin
 
     def make_device(self, device_name, device_type, device_argument):
-        print("device_name" + str(device_name))
-        error_type = self.devices.make_device(
-            device_name, device_type, device_argument)
+        if self.error_count == 0:
+            error_type = self.devices.make_device(
+                device_name, device_type, device_argument)
 
-        if error_type != self.devices.NO_ERROR:
-            if error_type == self.devices.INVALID_QUALIFIER:
-                self.error("invalid qualifier")
-            elif error_type == self.devices.NO_QUALIFIER:
-                self.error("no qualifier")
-            elif error_type == self.devices.QUALIFIER_PRESENT:
-                self.error("unexpected qualifier")
-            elif error_type == self.devices.DEVICE_PRESENT:
-                self.error("device already defined")
-            else:
-                self.error("bad device")
+            if error_type != self.devices.NO_ERROR:
+                if error_type == self.devices.INVALID_QUALIFIER:
+                    self.error("invalid qualifier")
+                elif error_type == self.devices.NO_QUALIFIER:
+                    self.error("no qualifier")
+                elif error_type == self.devices.QUALIFIER_PRESENT:
+                    self.error("unexpected qualifier")
+                elif error_type == self.devices.DEVICE_PRESENT:
+                    self.error("device already defined")
+                else:
+                    self.error("bad device")
 
     def make_connection(self, device_1, pin_1, device_2, pin_2):
-        print("device1_name" + str(device_1))
-        print("device2_name" + str(device_2))
         if self.error_count == 0:
             error_type = self.network.make_connection(
                 device_1, pin_1, device_2, pin_2)

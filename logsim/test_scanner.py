@@ -1,5 +1,5 @@
 """Test the scanner module"""
-# import pytest
+import pytest
 from scanner import Scanner, Symbol
 from names import Names
 

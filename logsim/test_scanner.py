@@ -26,7 +26,7 @@ def test_symbol_types(symbols, new_scanner):
     assert symbols[1].type == new_scanner.B_OPEN
     assert symbols[2].type == new_scanner.B_CLOSE
     assert symbols[3].type == new_scanner.SEMICOLON
-    assert symbols[4].type == new_scanner.KEYWORD
+    assert symbols[4].type == new_scanner.SEMICOLON
     assert symbols[5].type == new_scanner.EOF
 
 

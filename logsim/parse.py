@@ -282,7 +282,7 @@ class Parser:
         return device, pin
 
     def make_device(self, device_name, device_type, device_argument):
-        print(device_type)
+        print("device_name" + str(device_name))
         error_type = self.devices.make_device(
             device_name, device_type, device_argument)
 
@@ -299,6 +299,8 @@ class Parser:
                 self.error("bad device")
 
     def make_connection(self, device_1, pin_1, device_2, pin_2):
+        print("device1_name" + str(device_1))
+        print("device2_name" + str(device_2))
         if self.error_count == 0:
             error_type = self.network.make_connection(
                 device_1, pin_1, device_2, pin_2)

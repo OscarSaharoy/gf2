@@ -9,6 +9,7 @@ Scanner - reads definition file and translates characters into symbols.
 Symbol - encapsulates a symbol and stores its properties.
 """
 import sys
+import linecache
 
 
 def space_or_line(character):
@@ -70,6 +71,7 @@ class Scanner:
         """Open specified file and initialise reserved words and IDs."""
 
         self.names = names
+        self.path = path
 
         self.comment = "#"
 
@@ -106,7 +108,7 @@ class Scanner:
         self.open_file(path)
 
         self.current_character = ""
-        self.line = 0
+        self.line = 1
         self.char_offset = 0
         self.advance()
 
@@ -214,3 +216,6 @@ class Scanner:
                 # Check that the comment is not followed by a second comment
                 if self.current_character == self.comment:
                     is_comment = True
+
+    def get_file_line(self, line_number):
+        return linecache.getline(self.path, line_number)

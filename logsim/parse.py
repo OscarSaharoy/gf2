@@ -49,6 +49,7 @@ class Parser:
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
         self.recovery = False
+        self.i = 0
 
     def make_keyword_symbol(self, string):
         return Symbol(sym_type=self.scanner.KEYWORD,
@@ -101,9 +102,16 @@ class Parser:
               f"offset {self.scanner.char_offset}\n"
               f">>> error: {message}\n")
 
+        print(self.scanner.get_file_line(self.scanner.line).strip('\n'))
+
         self.recovery = True
 
     def recovery_step(self):
+
+        print(self.sym)
+        self.i += 1
+        if self.i > 10:
+            raise
 
         C_CLOSE = Symbol(self.scanner.C_CLOSE)
         SEMICOLON = Symbol(self.scanner.SEMICOLON)

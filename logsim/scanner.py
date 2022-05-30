@@ -136,6 +136,8 @@ class Scanner:
         self.skip_meaningless()
 
         symbol = Symbol()
+        symbol.line = self.line
+        symbol.char_offset = self.char_offset
 
         if self.current_character.isalpha():
             # This is a name or a keyword

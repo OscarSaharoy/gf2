@@ -52,7 +52,6 @@ class Parser:
         self.sym = None  # current symbol from the scanner
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
-        self.i = 0
 
     def make_keyword_symbol(self, string):
         return Symbol(sym_type=self.scanner.KEYWORD,
@@ -91,11 +90,17 @@ class Parser:
 
     def error(self, message="error!"):
 
+        if not self.error_count:
+            print("errors detected in input file :(")
+
         self.error_count += 1
-        print(f"\nat line {self.scanner.line}, "
-              f"offset {self.scanner.char_offset}")
-        print(self.scanner.get_file_line(self.scanner.line).strip('\n'))
-        print(" " * self.scanner.char_offset + "^")
+
+        print("sym:", self.sym.string)
+
+        print(f"\nat line {self.sym.line}, "
+              f"offset {self.sym.char_offset}")
+        print(self.scanner.get_file_line(self.sym.line).strip('\n'))
+        print(" " * (self.sym.char_offset - 1) + "^")
         print(f">>> error: {message}\n")
 
         raise ParseError

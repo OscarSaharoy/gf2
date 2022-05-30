@@ -52,7 +52,6 @@ class Parser:
         self.sym = None  # current symbol from the scanner
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
         self.error_count = 0
-        self.recovery = False
         self.i = 0
 
     def make_keyword_symbol(self, string):
@@ -68,9 +67,6 @@ class Parser:
 
         self.next_sym()
 
-        if self.recovery:
-            return self.recovery_step()
-
         if sym and self.sym != sym:
             self.error(message=f'expected "{sym.string}", '
                                f'found "{self.sym.string}"')
@@ -78,9 +74,6 @@ class Parser:
     def parse_number(self):
 
         self.next_sym()
-
-        if self.recovery:
-            return self.recovery_step()
 
         if self.sym.type != self.scanner.NUMBER:
             self.error(message=f'expected a number, found "{self.sym.string}"')
@@ -91,9 +84,6 @@ class Parser:
 
         self.next_sym()
 
-        if self.recovery:
-            return self.recovery_step()
-
         if self.sym.type != self.scanner.NAME:
             self.error(message=f'expected a name, found "{self.sym.string}"')
 
@@ -102,11 +92,11 @@ class Parser:
     def error(self, message="error!"):
 
         self.error_count += 1
-        print(f"at line {self.scanner.line},"
-              f"offset {self.scanner.char_offset}\n"
-              f">>> error: {message}\n")
-
+        print(f"\nat line {self.scanner.line}, "
+              f"offset {self.scanner.char_offset}")
         print(self.scanner.get_file_line(self.scanner.line).strip('\n'))
+        print(" " * self.scanner.char_offset + "^")
+        print(f">>> error: {message}\n")
 
         raise ParseError
 

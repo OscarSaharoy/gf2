@@ -185,7 +185,7 @@ class Parser:
         device_type, device_argument = self.parse_type()
         self.parse_literal(SEMICOLON)
 
-        self.make_device(device_name, device_type, device_argument)
+        self.make_device(device_name, device_type.id, device_argument)
         return device_name, device_type, device_argument
 
     def parse_connection(self):

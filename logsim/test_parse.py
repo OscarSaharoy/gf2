@@ -81,5 +81,13 @@ def test_bad_outputs(new_parser):
 
 @pytest.mark.parametrize('path', ["logsim/tests/duplicatestatements.txt"])
 def test_duplicate_statements(new_parser):
+
+    new_parser.parse_network()
+    assert new_parser.error_count == 3
+
+
+@pytest.mark.parametrize('path', ["logsim/tests/badinputs.txt"])
+def test_duplicate_statements(new_parser):
+
     new_parser.parse_network()
     assert new_parser.error_count == 3

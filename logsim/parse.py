@@ -12,9 +12,9 @@ Classes
 Parser - parses the definition file and builds the logic network.
 """
 
+
 class ParseError(Exception):
     pass
-
 
 
 class Parser:
@@ -116,7 +116,7 @@ class Parser:
         SEMICOLON = Symbol(self.scanner.SEMICOLON)
         EOF = Symbol(self.scanner.EOF)
 
-        while self.sym not in [C_CLOSE, EOF] and self.lookahead != C_CLOSE:
+        while self.sym not in [SEMICOLON, EOF] and self.lookahead != C_CLOSE:
             self.next_sym()
 
     def parse_network(self):

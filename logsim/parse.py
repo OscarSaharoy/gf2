@@ -292,3 +292,19 @@ class Parser:
                 self.error("device already defined")
             else:
                 self.error("bad device")
+                
+    def make_connection(self, device_1, pin_1, device_2, pin_2):
+        if self.error_count == 0:
+            error_type = self.network.make_connection(device_1, pin_1, device_2, pin_2)
+            
+            if error_type != self.network.NO_ERROR:
+                elif error_type == self.INPUT_TO_INPUT:
+                    self.error("input cannot connect to input")
+                elif error_type == self.OUTPUT_TO_OUTPUT:
+                    self.error("output cannot connect to output")
+                elif error_type == self.INPUT_CONNECTED:
+                    self.error("input already connected")
+                elif error_type == self.DEVICE_ABSENT:
+                    self.error("device absent")
+                else:
+                    self.error("port absent")

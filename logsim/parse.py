@@ -200,11 +200,14 @@ class Parser:
         rhs_signal_name, rh2_signal_pin = self.parse_signal()
         self.parse_literal(SEMICOLON)
 
-        lhs_pin_id = rhs_pin_id = None
         if lhs_signal_pin is not None:
             lhs_pin_id = lhs_signal_pin.id
+        else:
+            lhs_pin_id = lhs_signal_name.id
         if rh2_signal_pin is not None:
             rhs_pin_id = rh2_signal_pin.id
+        else:
+            rhs_pin_id = rhs_signal_name.id
 
         self.make_connection(lhs_signal_name.id, lhs_pin_id,
                              rhs_signal_name.id, rhs_pin_id)
@@ -223,7 +226,7 @@ class Parser:
         self.parse_literal(SEMICOLON)
 
         if signal_pin is None:
-            pin_id = signal_name.id
+            pin_id = None
         else:
             pin_id = signal_pin.id
 

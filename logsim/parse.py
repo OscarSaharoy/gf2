@@ -222,7 +222,7 @@ class Parser:
         output_name = self.parse_name()
         self.parse_literal(SEMICOLON)
 
-        self.make_monitor(signal_name.id, signal_pin, output_name)
+        self.make_monitor(output_name.id, signal_pin.id)
         return signal_name, signal_pin, output_name
 
     def parse_type(self):

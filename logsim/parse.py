@@ -185,7 +185,7 @@ class Parser:
         device_type, device_argument = self.parse_type()
         self.parse_literal(SEMICOLON)
 
-        self.make_device(device_name, device_type.id, device_argument)
+        self.make_device(device_name.id, device_type.id, device_argument.id)
         return device_name, device_type, device_argument
 
     def parse_connection(self):
@@ -200,8 +200,8 @@ class Parser:
         rhs_signal_name, rh2_signal_pin = self.parse_signal()
         self.parse_literal(SEMICOLON)
 
-        self.make_connection(
-            lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin)
+        self.make_connection(lhs_signal_name.id, lhs_signal_pin.id,
+                             rhs_signal_name.id, rh2_signal_pin.id)
         return lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin
 
     def parse_output(self):
@@ -216,7 +216,7 @@ class Parser:
         output_name = self.parse_name()
         self.parse_literal(SEMICOLON)
 
-        self.make_monitor(signal_name, signal_pin, output_name)
+        self.make_monitor(signal_name.id, signal_pin.id, output_name.id)
         return signal_name, signal_pin, output_name
 
     def parse_type(self):

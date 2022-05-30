@@ -282,7 +282,7 @@ class Parser:
         error_type = self.devices.make_device(device_name, device_type, device_argument)
 
         if error_type != self.devices.NO_ERROR:
-            elif error_type == self.devices.INVALID_QUALIFIER:
+            if error_type == self.devices.INVALID_QUALIFIER:
                 self.error("invalid qualifier")
             elif error_type == self.devices.NO_QUALIFIER:
                 self.error("no qualifier")
@@ -298,7 +298,7 @@ class Parser:
             error_type = self.network.make_connection(device_1, pin_1, device_2, pin_2)
 
             if error_type != self.network.NO_ERROR:
-                elif error_type == self.network.INPUT_TO_INPUT:
+                if error_type == self.network.INPUT_TO_INPUT:
                     self.error("input cannot connect to input")
                 elif error_type == self.network.OUTPUT_TO_OUTPUT:
                     self.error("output cannot connect to output")

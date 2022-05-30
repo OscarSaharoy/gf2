@@ -279,7 +279,8 @@ class Parser:
         return device, pin
 
     def make_device(self, device_name, device_type, device_argument):
-        error_type = self.devices.make_device(device_name, device_type, device_argument)
+        error_type = self.devices.make_device(
+            device_name, device_type, device_argument)
 
         if error_type != self.devices.NO_ERROR:
             if error_type == self.devices.INVALID_QUALIFIER:
@@ -295,7 +296,8 @@ class Parser:
 
     def make_connection(self, device_1, pin_1, device_2, pin_2):
         if self.error_count == 0:
-            error_type = self.network.make_connection(device_1, pin_1, device_2, pin_2)
+            error_type = self.network.make_connection(
+                device_1, pin_1, device_2, pin_2)
 
             if error_type != self.network.NO_ERROR:
                 if error_type == self.network.INPUT_TO_INPUT:
@@ -311,7 +313,8 @@ class Parser:
 
     def make_monitor(self, device_id, output_id, cycles_completed=0):
         if self.error_count == 0:
-            error_type = self.monitors.make_monitor(device_id, output_id, cycles_completed)
+            error_type = self.monitors.make_monitor(
+                device_id, output_id, cycles_completed)
 
             if error_type != self.monitors.NO_ERROR:
                 if error_type == self.network.DEVICE_ABSENT:

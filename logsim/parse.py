@@ -40,7 +40,7 @@ class Parser:
     parse_network(self): Parses the circuit definition file.
     """
 
-    def __init__(self, names, devices, network, monitors, scanner):
+    def __init__(self, names, devices, network, monitors, scanner, no_stop=False):
         """Initialise constants."""
 
         self.names = names
@@ -48,6 +48,10 @@ class Parser:
         self.network = network
         self.monitors = monitors
         self.scanner = scanner
+        
+        # If this is true then the parser will attempt to make devices, connections
+        # and monitors even if an error has been found (for testing)
+        self.no_stop = no_stop
 
         self.sym = None  # current symbol from the scanner
         self.lookahead = self.scanner.get_symbol()  # one symbol ahead
@@ -293,7 +297,7 @@ class Parser:
         return device, pin
 
     def make_device(self, device_name, device_type, device_argument):
-        if self.error_count == 0:
+        if self.error_count == 0 or self.no_stop:
             error_type = self.devices.make_device(
                 device_name, device_type, device_argument)
 
@@ -310,7 +314,7 @@ class Parser:
                     self.error("bad device")
 
     def make_connection(self, device_1, pin_1, device_2, pin_2):
-        if self.error_count == 0:
+        if self.error_count == 0 or self.no_stop:
             error_type = self.network.make_connection(
                 device_1, pin_1, device_2, pin_2)
 
@@ -327,7 +331,7 @@ class Parser:
                     self.error("port absent")
 
     def make_monitor(self, device_id, output_id, cycles_completed=0):
-        if self.error_count == 0:
+        if self.error_count == 0 or self.no_stop:
             error_type = self.monitors.make_monitor(
                 device_id, output_id, cycles_completed)
 

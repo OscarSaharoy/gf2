@@ -40,7 +40,8 @@ class Parser:
     parse_network(self): Parses the circuit definition file.
     """
 
-    def __init__(self, names, devices, network, monitors, scanner, no_stop=False):
+    def __init__(self, names, devices, network, monitors, scanner,
+                 no_stop=False):
         """Initialise constants."""
 
         self.names = names
@@ -48,9 +49,10 @@ class Parser:
         self.network = network
         self.monitors = monitors
         self.scanner = scanner
-        
-        # If this is true then the parser will attempt to make devices, connections
-        # and monitors even if an error has been found (for testing)
+
+        # If no_stop is true then the parser will attempt to make devices,
+        # connections and monitors even if an error has been found
+        # (for testing)
         self.no_stop = no_stop
 
         self.sym = None  # current symbol from the scanner

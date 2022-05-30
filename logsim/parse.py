@@ -95,8 +95,6 @@ class Parser:
 
         self.error_count += 1
 
-        print("sym:", self.sym.string)
-
         print(f"\nat line {self.sym.line}, "
               f"offset {self.sym.char_offset}")
         print(self.scanner.get_file_line(self.sym.line).strip('\n'))
@@ -145,7 +143,8 @@ class Parser:
         self.parse_literal(END)
         self.parse_literal(EOF)
 
-        print(f"number of errors: {self.error_count}")
+        if self.error_count:
+            print(f"number of errors: {self.error_count}")
         return self.error_count == 0
 
     def parse_block(self, opening_symbol, inner_rule):

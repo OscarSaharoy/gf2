@@ -280,7 +280,7 @@ class Parser:
 
     def make_device(self, device_name, device_type, device_argument):
         error_type = self.devices.make_device(device_name, device_type, device_argument)
-        
+
         if error_type != self.devices.NO_ERROR:
             elif error_type == self.devices.INVALID_QUALIFIER:
                 self.error("invalid qualifier")
@@ -292,19 +292,33 @@ class Parser:
                 self.error("device already defined")
             else:
                 self.error("bad device")
-                
+
     def make_connection(self, device_1, pin_1, device_2, pin_2):
         if self.error_count == 0:
             error_type = self.network.make_connection(device_1, pin_1, device_2, pin_2)
-            
+
             if error_type != self.network.NO_ERROR:
-                elif error_type == self.INPUT_TO_INPUT:
+                elif error_type == self.network.INPUT_TO_INPUT:
                     self.error("input cannot connect to input")
-                elif error_type == self.OUTPUT_TO_OUTPUT:
+                elif error_type == self.network.OUTPUT_TO_OUTPUT:
                     self.error("output cannot connect to output")
-                elif error_type == self.INPUT_CONNECTED:
+                elif error_type == self.network.INPUT_CONNECTED:
                     self.error("input already connected")
-                elif error_type == self.DEVICE_ABSENT:
+                elif error_type == self.network.DEVICE_ABSENT:
                     self.error("device absent")
                 else:
                     self.error("port absent")
+
+    def make_monitor(self, device_id, output_id, cycles_completed=0):
+        if self.error_count == 0:
+            error_type = self.monitors.make_monitor(device_id, output_id, cycles_completed)
+
+            if error_type != self.monitors.NO_ERROR:
+                if error_type == self.network.DEVICE_ABSENT:
+                    self.error("device absent")
+                elif error_type == self.monitors.NOT_OUTPUT:
+                    self.error("pin is not an output")
+                elif error_type == self.monitors.MONITOR_PRESENT:
+                    self.error("output is already monitored")
+                else:
+                    self.error()

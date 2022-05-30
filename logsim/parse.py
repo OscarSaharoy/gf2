@@ -223,7 +223,7 @@ class Parser:
         self.parse_literal(SEMICOLON)
 
         if signal_pin is None:
-            pin_id = None
+            pin_id = signal_name.id
         else:
             pin_id = signal_pin.id
 

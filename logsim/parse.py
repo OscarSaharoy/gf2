@@ -223,9 +223,9 @@ class Parser:
         self.parse_literal(SEMICOLON)
 
         if signal_pin is None:
-            pin_id = signal_pin.id
-        else:
             pin_id = None
+        else:
+            pin_id = signal_pin.id
 
         self.make_monitor(signal_name.id, pin_id)
         return signal_name, signal_pin, output_name

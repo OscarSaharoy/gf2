@@ -12,6 +12,10 @@ Classes
 Parser - parses the definition file and builds the logic network.
 """
 
+class ParseError(Exception):
+    pass
+
+
 
 class Parser:
 
@@ -104,21 +108,16 @@ class Parser:
 
         print(self.scanner.get_file_line(self.scanner.line).strip('\n'))
 
-        self.recovery = True
+        raise ParseError
 
-    def recovery_step(self):
-
-        print(self.sym)
-        self.i += 1
-        if self.i > 10:
-            raise
+    def recover(self):
 
         C_CLOSE = Symbol(self.scanner.C_CLOSE)
         SEMICOLON = Symbol(self.scanner.SEMICOLON)
         EOF = Symbol(self.scanner.EOF)
 
-        if self.sym in [C_CLOSE, SEMICOLON, EOF]:
-            self.recovery = False
+        while self.sym not in [C_CLOSE, EOF] and self.lookahead != C_CLOSE:
+            self.next_sym()
 
     def parse_network(self):
         """Parse the circuit definition file."""
@@ -165,7 +164,10 @@ class Parser:
         self.parse_literal(C_OPEN)
 
         while self.lookahead != C_CLOSE:
-            inner_rule()
+            try:
+                inner_rule()
+            except ParseError:
+                self.recover()
 
         self.parse_literal(C_CLOSE)
 

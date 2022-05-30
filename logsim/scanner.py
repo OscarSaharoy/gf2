@@ -82,8 +82,8 @@ class Scanner:
         self.symbol_types = [self.EOF, self.SEMICOLON, self.EQUALS, self.COMMA,
                              self.DOT, self.TILDE, self.ARROW, self.B_OPEN,
                              self.B_CLOSE, self.C_OPEN, self.C_CLOSE,
-                             self.KEYWORD, self.NUMBER, self.NAME
-                             ] = range(14)
+                             self.KEYWORD, self.NUMBER, self.NAME, self.OTHER
+                             ] = range(15)
         """Symbols:
 
         EOF:        End of file
@@ -160,10 +160,15 @@ class Scanner:
             index = self.symbol_characters.index(self.current_character)
             symbol.type = self.symbol_types[index]
             symbol.string = self.current_character
+            # change empty string to "EOF" so you can read it
+            if symbol.string == "":
+                symbol.string = "EOF"
             self.advance()
 
         else:
-            # Something else, has no meaning, just skip it
+            # Something else, has no meaning
+            symbol.type = self.OTHER
+            symbol.string = self.current_character
             self.advance()
 
         return symbol

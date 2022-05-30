@@ -109,7 +109,8 @@ class Parser:
         SEMICOLON = Symbol(self.scanner.SEMICOLON)
         EOF = Symbol(self.scanner.EOF)
 
-        while self.sym not in [SEMICOLON, EOF] and self.lookahead != C_CLOSE:
+        while self.sym not in [SEMICOLON, EOF, C_CLOSE] \
+                and self.lookahead != C_CLOSE:
             self.next_sym()
 
     def parse_network(self):
@@ -134,14 +135,20 @@ class Parser:
 
         # program = "START", devices, connections, outputs, "END"
 
-        self.parse_literal(START)
+        try:
 
-        parse_devices()
-        parse_connections()
-        parse_outputs()
+            self.parse_literal(START)
 
-        self.parse_literal(END)
-        self.parse_literal(EOF)
+            parse_devices()
+            parse_connections()
+            parse_outputs()
+
+            self.parse_literal(END)
+            self.parse_literal(EOF)
+
+        # parsing failed
+        except ParseError:
+            pass
 
         if self.error_count:
             print(f"number of errors: {self.error_count}")
@@ -157,13 +164,14 @@ class Parser:
         self.parse_literal(opening_symbol)
         self.parse_literal(C_OPEN)
 
-        while self.lookahead != C_CLOSE:
+        while C_CLOSE not in [self.sym, self.lookahead]:
             try:
                 inner_rule()
             except ParseError:
                 self.recover()
 
-        self.parse_literal(C_CLOSE)
+        if self.sym != C_CLOSE:
+            self.parse_literal(C_CLOSE)
 
     def parse_device(self):
 
@@ -233,8 +241,9 @@ class Parser:
         try:
             return type_parsers[self.lookahead.id]()
         except KeyError:
+            self.next_sym()
             self.error(message=f'expected a device type name, '
-                               f'found "{self.lookahead.string}"')
+                               f'found "{self.sym.string}"')
 
     def parse_type_func(self, opening_symbol, inside_rule=None):
 

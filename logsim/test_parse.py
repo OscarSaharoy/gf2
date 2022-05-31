@@ -36,6 +36,7 @@ def new_classes(path):
 
     return devices, network, monitors, parser
 
+
 @pytest.mark.parametrize('path', ["logsim/tests/basic.txt"])
 def test_basic_parse(new_parser):
     """Check that the parser can handle a normal input file"""
@@ -114,3 +115,34 @@ def test_bad_inputs(new_parser):
 
     new_parser.parse_network()
     assert new_parser.error_count == 3
+
+
+@pytest.mark.parametrize('path', ["logsim/tests/basic.txt"])
+def test_devices_integration(new_classes):
+
+    devices, network, monitors, parser = new_classes
+
+    parser.parse_network()
+    assert len(devices.find_devices()) == 3
+    assert len(devices.find_devices(devices.CLOCK)) == 2
+    assert len(devices.find_devices(devices.OR)) == 1
+
+
+@pytest.mark.parametrize('path', ["logsim/tests/basic.txt"])
+def test_monitors_integration(new_classes):
+
+    devices, network, monitors, parser = new_classes
+
+    parser.parse_network()
+    assert len(monitors.get_signal_names()[0]) == 1
+    assert len(monitors.get_signal_names()[1]) == 2
+
+
+@pytest.mark.parametrize('path', ["logsim/tests/basic.txt"])
+def test_network_integration(new_classes):
+
+    devices, network, monitors, parser = new_classes
+
+    parser.parse_network()
+    assert network.check_network()
+    network.execute_network()

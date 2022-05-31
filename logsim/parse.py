@@ -71,7 +71,8 @@ class Parser:
         self.lookahead = self.scanner.get_symbol()
 
     def parse_literal(self, sym):
-        """Handle parsing of a specific provided symbol eg. a keyword or bracket"""
+        """Handle parsing of a specific provided symbol
+           eg. a keyword or bracket"""
 
         self.next_sym()
 
@@ -100,8 +101,9 @@ class Parser:
         return self.sym
 
     def error(self, message="error!"):
-        """Show the provided error message, increment the error count and raise
-           the ParseError to be caught further up the recursion and try to recover"""
+        """Show the provided error message, increment the error count and
+           raise the ParseError to be caught further up the recursion and
+           try to recover"""
 
         if not self.error_count:
             print("errors detected in input file :(")
@@ -117,9 +119,9 @@ class Parser:
         raise ParseError
 
     def recover(self):
-        """Try to forward the parser onto the next symbol where we know what state
-           we're in eg. to the end of the statement with a semicolon or the end of
-           the block with a curly bracket"""
+        """Try to forward the parser onto the next symbol where we know what
+           state we're in eg. to the end of the statement with a semicolon or
+           the end of the block with a curly bracket"""
 
         C_CLOSE = Symbol(self.scanner.C_CLOSE)
         SEMICOLON = Symbol(self.scanner.SEMICOLON)
@@ -192,7 +194,8 @@ class Parser:
             self.parse_literal(C_CLOSE)
 
     def parse_device(self):
-        """Parse a device statement that defines the name and type of a device"""
+        """Parse a device statement that defines the name and type
+           of a device"""
 
         EQUALS = Symbol(sym_type=self.scanner.EQUALS, string="=")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")

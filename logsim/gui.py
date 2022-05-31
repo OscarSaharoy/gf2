@@ -12,12 +12,12 @@ import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT
 
-# from names import Names
-# from devices import Devices
-# from network import Network
-# from monitors import Monitors
-# from scanner import Scanner
-# from parse import Parser
+from names import Names
+from devices import Devices
+from network import Network
+from monitors import Monitors
+from scanner import Scanner
+from parse import Parser
 
 
 class MyGLCanvas(wxcanvas.GLCanvas):
@@ -86,6 +86,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glLoadIdentity()
         GL.glTranslated(self.pan_x, self.pan_y, 0.0)
         GL.glScaled(self.zoom, self.zoom, self.zoom)
+
 
     def render(self, text):
         """Handle all drawing operations."""
@@ -231,12 +232,35 @@ class Gui(wx.Frame):
         """Initialise widgets and layout."""
         super().__init__(parent=None, title=title, size=(800, 600))
 
+        """Initialise the variables"""
+        self.names = names
+        self.devices = devices
+        self.monitors = monitors
+        self.network = network
+
+        self.cycles_completed = 0  # number of simulation cycles completed
+
+        self.character = ""  # current character
+        self.line = ""  # current string entered by the user
+        self.cursor = 0  # cursor position
+
+
+
+
         # Configure the file menu
         fileMenu = wx.Menu()
         menuBar = wx.MenuBar()
+
+        qmi = wx.MenuItem(fileMenu, 1, "&QQQuit\tCtrl+Q")
+        qmi.SetBitmap(wx.Bitmap(self.scale_image("images/logout.png", 15, 15)))
+        fileMenu.Append(qmi)
+
         fileMenu.Append(wx.ID_ABOUT, "&About")
         fileMenu.Append(wx.ID_EXIT, "&Exit")
+        fileMenu.Append(wx.ID_ANY, "&Test")
         menuBar.Append(fileMenu, "&File")
+
+
         self.SetMenuBar(menuBar)
 
         # Canvas for drawing signals
@@ -266,14 +290,22 @@ class Gui(wx.Frame):
         side_sizer.Add(self.spin, 1, wx.ALL, 5)
         side_sizer.Add(self.run_button, 1, wx.ALL, 5)
         side_sizer.Add(self.text_box, 1, wx.ALL, 5)
-
+        
         self.SetSizeHints(600, 600)
         self.SetSizer(main_sizer)
+
+    def scale_image(self, image, width, height):
+        """Method to rescale the image"""
+
+        my_image = wx.Image(image)
+        my_image = my_image.Scale(width, height ,wx.IMAGE_QUALITY_HIGH)
+        result = wx.BitmapFromImage(my_image)
+        return result
 
     def on_menu(self, event):
         """Handle the event when the user selects a menu item."""
         Id = event.GetId()
-        if Id == wx.ID_EXIT:
+        if Id == 1:#wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
             wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",
@@ -295,3 +327,4 @@ class Gui(wx.Frame):
         text_box_value = self.text_box.GetValue()
         text = "".join(["New text box value: ", text_box_value])
         self.canvas.render(text)
+

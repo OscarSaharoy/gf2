@@ -172,7 +172,9 @@ class Parser:
 
             # check that all device inputs are connected
             if not self.network.check_network():
-                self.error("Some device inputs are not connected")
+                self.error_count += 1
+                print("Some device inputs are not connected")
+                raise ParseError
 
         # parsing failed
         except ParseError:

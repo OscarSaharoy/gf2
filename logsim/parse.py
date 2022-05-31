@@ -170,18 +170,15 @@ class Parser:
             self.parse_literal(END)
             self.parse_literal(EOF)
 
-            # check that all device inputs are connected
-            if not self.network.check_network():
-                self.error_count += 1
-                print("Some device inputs are not connected")
-                raise ParseError
-
         # parsing failed
         except ParseError:
             pass
 
         if self.error_count:
             print(f"number of errors: {self.error_count}")
+        # check that all device inputs are connected
+        if not self.network.check_network():
+            print("Warning: Some device inputs are not connected")
         return self.error_count == 0
 
     def parse_block(self, opening_symbol, inner_rule):

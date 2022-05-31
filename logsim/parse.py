@@ -170,6 +170,10 @@ class Parser:
             self.parse_literal(END)
             self.parse_literal(EOF)
 
+            # check that all device inputs are connected
+            if not self.network.check_network():
+                self.error("Some device inputs are not connected")
+
         # parsing failed
         except ParseError:
             pass

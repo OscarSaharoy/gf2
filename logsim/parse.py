@@ -1,6 +1,3 @@
-from scanner import Symbol
-import functools
-
 """Parse the definition file and build the logic network.
 
 Used in the Logic Simulator project to analyse the syntactic and semantic
@@ -11,14 +8,22 @@ Classes
 -------
 Parser - parses the definition file and builds the logic network.
 """
+from scanner import Symbol
+import functools
 
 
 class ParseError(Exception):
+    """Represents an error in parsing.
+
+    Raised if there is an error in the parsing of a number, name or
+    symbol. It allows us to break out of recursion many levels deep and
+    recover to a known state.
+    """
+
     pass
 
 
 class Parser:
-
     """Parse the definition file and build the logic network.
 
     The parser deals with error handling. It analyses the syntactic and
@@ -43,7 +48,6 @@ class Parser:
     def __init__(self, names, devices, network, monitors, scanner,
                  no_stop=False):
         """Initialise constants."""
-
         self.names = names
         self.devices = devices
         self.network = network
@@ -60,20 +64,21 @@ class Parser:
         self.error_count = 0
 
     def make_keyword_symbol(self, string):
-        """Create a Symbol object correcponding to the provided string"""
+        """Create a Symbol object correcponding to the provided string."""
         return Symbol(sym_type=self.scanner.KEYWORD,
                       sym_id=self.names.lookup([string])[0],
                       string=string)
 
     def next_sym(self):
-        """Step forward to get the next sym and lookahead"""
+        """Step forward to get the next sym and lookahead."""
         self.sym = self.lookahead
         self.lookahead = self.scanner.get_symbol()
 
     def parse_literal(self, sym):
-        """Handle parsing of a specific provided symbol
-           eg. a keyword or bracket"""
+        """Handle parsing of a specific provided symbol.
 
+        eg. a keyword or bracket.
+        """
         self.next_sym()
 
         if sym and self.sym != sym:
@@ -81,8 +86,7 @@ class Parser:
                                f'found "{self.sym.string}"')
 
     def parse_number(self):
-        """Handle parsing of a number"""
-
+        """Handle parsing of a number and return its symbol."""
         self.next_sym()
 
         if self.sym.type != self.scanner.NUMBER:
@@ -91,8 +95,7 @@ class Parser:
         return self.sym
 
     def parse_name(self):
-        """Handle parsing of a name"""
-
+        """Handle parsing of a name and return the symbol representing it."""
         self.next_sym()
 
         if self.sym.type != self.scanner.NAME:
@@ -101,10 +104,12 @@ class Parser:
         return self.sym
 
     def error(self, message="error!"):
-        """Show the provided error message, increment the error count and
-           raise the ParseError to be caught further up the recursion and
-           try to recover"""
+        """Handle an error in parsing.
 
+        Show the provided error message, increment the error count and
+        raise the ParseError to be caught further up the recursion and
+        try to recover.
+        """
         if not self.error_count:
             print("errors detected in input file :(")
 
@@ -119,10 +124,12 @@ class Parser:
         raise ParseError
 
     def recover(self):
-        """Try to forward the parser onto the next symbol where we know what
-           state we're in eg. to the end of the statement with a semicolon or
-           the end of the block with a curly bracket"""
+        """Recover from a parsing error by proceeding to a known state.
 
+        Try to forward the parser onto the next symbol where we know what
+        state we're in eg. to the end of the statement with a semicolon or
+        the end of the block with a curly bracket.
+        """
         C_CLOSE = Symbol(self.scanner.C_CLOSE)
         SEMICOLON = Symbol(self.scanner.SEMICOLON)
         EOF = Symbol(self.scanner.EOF)
@@ -133,7 +140,6 @@ class Parser:
 
     def parse_network(self):
         """Parse the circuit definition file."""
-
         START = self.make_keyword_symbol("START")
         END = self.make_keyword_symbol("END")
         EOF = Symbol(sym_type=self.scanner.EOF, string="EOF")
@@ -173,9 +179,12 @@ class Parser:
         return self.error_count == 0
 
     def parse_block(self, opening_symbol, inner_rule):
-        """Parse a block, defined by an opening symbol followed by a set of
-           statements parsed by inner_rule inisde curly brackets"""
+        """Parse a block.
 
+        A block is defined by an opening symbol followed by a set of
+        statements parsed by inner_rule inisde curly brackets.
+        The DEVICS, CONNECTIONS, and OUTPUTS sections are all blocks.
+        """
         C_OPEN = Symbol(sym_type=self.scanner.C_OPEN, string="{")
         C_CLOSE = Symbol(sym_type=self.scanner.C_CLOSE, string="}")
 
@@ -194,9 +203,10 @@ class Parser:
             self.parse_literal(C_CLOSE)
 
     def parse_device(self):
-        """Parse a device statement that defines the name and type
-           of a device"""
+        """Parse a device statement.
 
+        A device statement defines the name and type of a device.
+        """
         EQUALS = Symbol(sym_type=self.scanner.EQUALS, string="=")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
@@ -211,8 +221,7 @@ class Parser:
         return device_name, device_type, device_argument
 
     def parse_connection(self):
-        """Parse a connection between two signals"""
-
+        """Parse a connection between two signals."""
         ARROW = Symbol(sym_type=self.scanner.ARROW, string=">")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
@@ -234,8 +243,7 @@ class Parser:
         return lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin
 
     def parse_output(self):
-        """Parse an output - a name assigned to a signal"""
-
+        """Parse an output - a name assigned to a signal."""
         TILDE = Symbol(sym_type=self.scanner.TILDE, string="~")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
@@ -255,8 +263,7 @@ class Parser:
         return signal_name, signal_pin, output_name
 
     def parse_type(self):
-        """Parse a device type definition expression"""
-
+        """Parse a device type definition expression."""
         types_taking_arg = ["CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR"]
         types_without_arg = ["DTYPE", "XOR"]
 
@@ -286,9 +293,11 @@ class Parser:
                                f'found "{self.sym.string}"')
 
     def parse_type_func(self, opening_symbol, inside_rule=None):
-        """inner function to parse_type that is constructed to match a certain
-           device type and return its parameters"""
+        """Inner function to parse_type.
 
+        This function is constructed to match a certain device type
+        and return its parameters.
+        """
         B_OPEN = Symbol(sym_type=self.scanner.B_OPEN, string="(")
         B_CLOSE = Symbol(sym_type=self.scanner.B_CLOSE, string=")")
         argument = None
@@ -305,8 +314,11 @@ class Parser:
         return opening_symbol, argument
 
     def parse_signal(self):
-        """parse a signal eg. a device pin output"""
+        """Parse a signal.
 
+        Parse eg. a device pin output and return the symbols
+        representing the device name and pin name.
+        """
         DOT = Symbol(sym_type=self.scanner.DOT, string=".")
         device = pin = None
 
@@ -321,6 +333,11 @@ class Parser:
         return device, pin
 
     def make_device(self, device_name, device_type, device_argument):
+        """Create a device from parsed information.
+
+        Take the device info in the parameters and pass it to the
+        devices object to add it into the network, handling errors.
+        """
         if self.error_count == 0 or self.no_stop:
             error_type = self.devices.make_device(
                 device_name, device_type, device_argument)
@@ -338,6 +355,7 @@ class Parser:
                     self.error("bad device")
 
     def make_connection(self, device_1, pin_1, device_2, pin_2):
+        """Add a connection between two devices parsed from the input file."""
         if self.error_count == 0 or self.no_stop:
             error_type = self.network.make_connection(
                 device_1, pin_1, device_2, pin_2)
@@ -355,6 +373,7 @@ class Parser:
                     self.error("port absent")
 
     def make_monitor(self, device_id, output_id, cycles_completed=0):
+        """Add monitored output to the self.monitors object."""
         if self.error_count == 0 or self.no_stop:
             error_type = self.monitors.make_monitor(
                 device_id, output_id, cycles_completed)

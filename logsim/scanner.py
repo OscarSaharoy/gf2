@@ -13,6 +13,7 @@ import linecache
 
 
 def space_or_line(character):
+    """Return True if the provided character is a space or newline."""
     if character.isspace() or character == "/n":
         return True
     else:
@@ -20,7 +21,6 @@ def space_or_line(character):
 
 
 class Symbol:
-
     """Encapsulate a symbol and store its properties.
 
     Parameters
@@ -40,7 +40,6 @@ class Symbol:
 
     def __eq__(self, other):
         """Check if this Symbol is the same as other."""
-
         if not isinstance(other, Symbol):
             return False
 
@@ -49,7 +48,6 @@ class Symbol:
 
 
 class Scanner:
-
     """Read circuit definition file and translate the characters into symbols.
 
     Once supplied with the path to a valid definition file, the scanner
@@ -67,9 +65,9 @@ class Scanner:
     get_symbol(self): Translates the next sequence of characters into a symbol
                       and returns the symbol.
     """
+
     def __init__(self, path, names):
         """Open specified file and initialise reserved words and IDs."""
-
         self.names = names
         self.path = path
 
@@ -113,7 +111,7 @@ class Scanner:
         self.advance()
 
     def advance(self):
-        """Move forward by one character in the file"""
+        """Move forward by one character in the file."""
         if self.current_character == '\n':
             self.line += 1
             self.char_offset = 0
@@ -131,8 +129,7 @@ class Scanner:
             sys.exit()
 
     def get_symbol(self):
-        """Translate the next sequence of characters into a symbol.
-        """
+        """Translate the next sequence of characters into a symbol."""
         self.skip_meaningless()
 
         symbol = Symbol()
@@ -170,11 +167,14 @@ class Scanner:
             symbol.type = self.OTHER
             symbol.string = self.current_character
             self.advance()
+            self.advance()
 
         return symbol
 
     def get_word(self):
-        """Returns the string of characters up until the next non-
+        """Return the next word in the file.
+
+        Returns the string of characters up until the next non-
         alphanumeric character.
         """
         word = ""
@@ -185,7 +185,10 @@ class Scanner:
         return word
 
     def get_number(self):
-        """Returns the integer represented by the next block of alphanumeric characters
+        """Return the next number in the file.
+
+        Returns the integer represented by the next block of alphanumeric
+        characters.
         """
         number = ""
         while self.current_character.isdigit() and \
@@ -195,13 +198,18 @@ class Scanner:
         return int(number)
 
     def skip_spaces_and_lines(self):
-        """A function to advance to the next character that is not a space or newline.
+        """Move the file pointer past spaces and newlines in the file.
+
+        A function to advance to the next character that is not a
+        space or newline.
         """
         while space_or_line(self.current_character):
             self.advance()
 
     def skip_meaningless(self):
-        """Advance until the current character is not a space, newline or
+        """Skip the file pointer over meaningless characters.
+
+        Advance until the current character is not a space, newline or
         part of a comment.
         """
         is_comment = False
@@ -225,4 +233,5 @@ class Scanner:
                     is_comment = True
 
     def get_file_line(self, line_number):
+        """Take a line_number and returns a string of that line in the file."""
         return linecache.getline(self.path, line_number)

@@ -1,10 +1,10 @@
-"""Test the names module"""
+"""Test the names module."""
 import pytest
-
 from names import Names
 
 
 def test_lookup_normal():
+    """Check that names can be looked up correctly."""
     new_names = Names()
     assert [0] == new_names.lookup(["Zero"])  # Adding new name
     # An existing name and a new name
@@ -17,6 +17,7 @@ def test_lookup_normal():
 
 
 def test_lookup_duplicates():
+    """Check that duplicate names are handled properly."""
     new_names = Names()
     # Lookup the same string several times
     assert [0, 0, 0] == new_names.lookup(["Zero", "Zero",
@@ -26,6 +27,7 @@ def test_lookup_duplicates():
 
 
 def test_lookup_exceptions():
+    """Check that names.lookup raises exceptions correctly."""
     new_names = Names()
     # Test that non-strings raise an error
     with pytest.raises(TypeError):
@@ -33,6 +35,7 @@ def test_lookup_exceptions():
 
 
 def test_query():
+    """Check names.query is working."""
     new_names = Names()
     IDs = new_names.lookup(["Zero", "One", "Two"])  # Populate names
     # Test query for a set of present names
@@ -43,6 +46,7 @@ def test_query():
 
 
 def test_get_name_string():
+    """Check a name string can be retreived with its ID."""
     new_names = Names()
     # Populate names
     IDs = new_names.lookup(["Zero", "One", "Two"])

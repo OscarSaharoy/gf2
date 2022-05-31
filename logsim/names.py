@@ -12,7 +12,6 @@ from collections import OrderedDict
 
 
 class Names:
-
     """Map variable names and string names to unique integers.
 
     This class deals with storing grammatical keywords and user-defined words,
@@ -59,7 +58,6 @@ class Names:
 
         If the name string is not present in the names list, return None.
         """
-
         # try to get the name id from the name map
         # and if it isnt there return none
         try:
@@ -72,7 +70,6 @@ class Names:
 
         If the name string is not present in the names list, add it.
         """
-
         # make sure all items in name list are strings
         if not all(isinstance(item, str) for item in name_list):
             raise TypeError(
@@ -100,7 +97,6 @@ class Names:
 
         If the name_id is not an index in the names list, return None.
         """
-
         # use a generator to find name string matching id,
         # None at end means None is returned if no match found
         return next((name for name, name_id in self.name_map.items()

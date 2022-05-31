@@ -55,7 +55,7 @@ def test_get_connected_output(network_with_devices):
 
 
 def test_get_input_signal(network_with_devices):
-    """Test if the signal at a given input port is correct"""
+    """Test if the signal at a given input port is correct."""
     network = network_with_devices
     devices = network.devices
     names = devices.names

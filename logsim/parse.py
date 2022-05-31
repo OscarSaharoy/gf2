@@ -60,15 +60,18 @@ class Parser:
         self.error_count = 0
 
     def make_keyword_symbol(self, string):
+        """Create a Symbol object correcponding to the provided string"""
         return Symbol(sym_type=self.scanner.KEYWORD,
                       sym_id=self.names.lookup([string])[0],
                       string=string)
 
     def next_sym(self):
+        """Step forward to get the next sym and lookahead"""
         self.sym = self.lookahead
         self.lookahead = self.scanner.get_symbol()
 
     def parse_literal(self, sym):
+        """Handle parsing of a specific provided symbol eg. a keyword or bracket"""
 
         self.next_sym()
 
@@ -77,6 +80,7 @@ class Parser:
                                f'found "{self.sym.string}"')
 
     def parse_number(self):
+        """Handle parsing of a number"""
 
         self.next_sym()
 
@@ -86,6 +90,7 @@ class Parser:
         return self.sym
 
     def parse_name(self):
+        """Handle parsing of a name"""
 
         self.next_sym()
 
@@ -95,6 +100,8 @@ class Parser:
         return self.sym
 
     def error(self, message="error!"):
+        """Show the provided error message, increment the error count and raise
+           the ParseError to be caught further up the recursion and try to recover"""
 
         if not self.error_count:
             print("errors detected in input file :(")
@@ -110,6 +117,9 @@ class Parser:
         raise ParseError
 
     def recover(self):
+        """Try to forward the parser onto the next symbol where we know what state
+           we're in eg. to the end of the statement with a semicolon or the end of
+           the block with a curly bracket"""
 
         C_CLOSE = Symbol(self.scanner.C_CLOSE)
         SEMICOLON = Symbol(self.scanner.SEMICOLON)
@@ -161,6 +171,8 @@ class Parser:
         return self.error_count == 0
 
     def parse_block(self, opening_symbol, inner_rule):
+        """Parse a block, defined by an opening symbol followed by a set of
+           statements parsed by inner_rule inisde curly brackets"""
 
         C_OPEN = Symbol(sym_type=self.scanner.C_OPEN, string="{")
         C_CLOSE = Symbol(sym_type=self.scanner.C_CLOSE, string="}")
@@ -180,6 +192,7 @@ class Parser:
             self.parse_literal(C_CLOSE)
 
     def parse_device(self):
+        """Parse a device statement that defines the name and type of a device"""
 
         EQUALS = Symbol(sym_type=self.scanner.EQUALS, string="=")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
@@ -195,6 +208,7 @@ class Parser:
         return device_name, device_type, device_argument
 
     def parse_connection(self):
+        """Parse a connection between two signals"""
 
         ARROW = Symbol(sym_type=self.scanner.ARROW, string=">")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
@@ -217,6 +231,7 @@ class Parser:
         return lhs_signal_name, lhs_signal_pin, rhs_signal_name, rh2_signal_pin
 
     def parse_output(self):
+        """Parse an output - a name assigned to a signal"""
 
         TILDE = Symbol(sym_type=self.scanner.TILDE, string="~")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
@@ -237,6 +252,7 @@ class Parser:
         return signal_name, signal_pin, output_name
 
     def parse_type(self):
+        """Parse a device type definition expression"""
 
         types_taking_arg = ["CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR"]
         types_without_arg = ["DTYPE", "XOR"]
@@ -267,6 +283,8 @@ class Parser:
                                f'found "{self.sym.string}"')
 
     def parse_type_func(self, opening_symbol, inside_rule=None):
+        """inner function to parse_type that is constructed to match a certain
+           device type and return its parameters"""
 
         B_OPEN = Symbol(sym_type=self.scanner.B_OPEN, string="(")
         B_CLOSE = Symbol(sym_type=self.scanner.B_CLOSE, string=")")
@@ -284,6 +302,7 @@ class Parser:
         return opening_symbol, argument
 
     def parse_signal(self):
+        """parse a signal eg. a device pin output"""
 
         DOT = Symbol(sym_type=self.scanner.DOT, string=".")
         device = pin = None

@@ -134,3 +134,21 @@ def test_network_integration(new_classes):
     parser.parse_network()
     assert network.check_network()
     network.execute_network()
+
+
+@pytest.mark.parametrize('path', ["logsim/tests/ir1_counter.txt"])
+def test_ir1_counter(new_classes):
+    """Check the parser parses the interrim report 1 counter."""
+    devices, network, monitors, parser = new_classes
+
+    assert parser.parse_network()
+    assert not network.execute_network()
+
+
+@pytest.mark.parametrize('path', ["logsim/tests/ir1_adder.txt"])
+def test_ir1_adder(new_classes):
+    """Check the parser parses the interrim report 1 adder."""
+    devices, network, monitors, parser = new_classes
+
+    assert parser.parse_network()
+    assert network.execute_network()

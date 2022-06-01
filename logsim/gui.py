@@ -323,8 +323,12 @@ class Gui(wx.Frame):
         self.text = wx.StaticText(self, wx.ID_ANY, "Cycles")
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
         self.run_button = wx.Button(self, wx.ID_ANY, "Run")
+        self.spin_cont = wx.SpinCtrl(self, wx.ID_ANY, "5")
+        self.cont_button = wx.Button(self, wx.ID_ANY, "Continue")
         self.text_box = wx.TextCtrl(self, wx.ID_ANY, "",
                                     style=wx.TE_PROCESS_ENTER)
+
+        self.mon_text = wx.StaticText(self, wx.ID_ANY, "Monitors")
 
 
 
@@ -335,6 +339,8 @@ class Gui(wx.Frame):
         self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
         self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
         self.text_box.Bind(wx.EVT_TEXT_ENTER, self.on_text_box)
+        self.cont_button.Bind(wx.EVT_BUTTON, self.on_cont_button)
+        self.spin_cont.Bind(wx.EVT_SPINCTRL, self.on_spin_cont)
 
         # Configure sizers for layout
         main_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -346,7 +352,10 @@ class Gui(wx.Frame):
         side_sizer.Add(self.text, 1, wx.TOP, 10)
         side_sizer.Add(self.spin, 1, wx.ALL, 5)
         side_sizer.Add(self.run_button, 1, wx.ALL, 5)
+        side_sizer.Add(self.spin_cont, 1, wx.ALL, 5)
+        side_sizer.Add(self.cont_button, 1, wx.ALL, 5)        
         side_sizer.Add(self.text_box, 1, wx.ALL, 5)
+        side_sizer.Add(self.mon_text, 1, wx.ALL, 10)
 
         # Configure the monitors
         monitors_name = self.get_monitored_signals_gui()
@@ -358,6 +367,8 @@ class Gui(wx.Frame):
             side_sizer.Add(self.monitor_button, 1, wx.BOTTOM, 5)
 
         # Configure the switches
+        self.switch_text = wx.StaticText(self, wx.ID_ANY, "Switches")
+        side_sizer.Add(self.switch_text, 1, wx.ALL, 10)
         switch_name = self.get_switch_gui()
         self.switch_name_checkbox_list = []
         for i, name in enumerate(switch_name):
@@ -391,14 +402,25 @@ class Gui(wx.Frame):
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
         spin_value = self.spin.GetValue()
-        text = "".join(["New spin control value: ", str(spin_value)])
+        text = "".join(["New run spin control value: ", str(spin_value)])
         self.canvas.render(text)
+
+    def on_spin_cont(self, event):
+        """Handle the event when the user changes the spin control value."""
+        spin_value = self.spin_cont.GetValue()
+        text = "".join(["New control spin control value: ", str(spin_value)])
+        self.canvas.render(text)    
 
     def on_run_button(self, event):
         """Handle the event when the user clicks the run button."""
-        text = "Run button pressed." + str(self.spin.GetValue())
+        # text = "Run button pressed." + str(self.spin.GetValue())
         self.run_command()
         #self.canvas.render(text)
+
+    def on_cont_button(self, event):
+        """Handle the event when the user clicks the continue button."""
+        self.continue_command()
+
 
     def on_text_box(self, event):
         """Handle the event when the user enters text."""
@@ -467,7 +489,7 @@ class Gui(wx.Frame):
 
     def continue_command(self):
         """Continue a previously run simulation."""
-        cycles = self.read_number(0, None)
+        cycles = self.spin_cont.GetValue()
         if cycles is not None:  # if the number of cycles provided is valid
             if self.cycles_completed == 0:
                 text = "Error! Nothing to continue. Run first."

@@ -6,7 +6,7 @@ DEVICES {
     nand3 = NAND(2);
     nand4 = NAND(2);
     nor1 = NOR(2);
-    and1 = AND(2);
+    xor1 = XOR;
 
     a = SWITCH(1);
     b = SWITCH(1);
@@ -25,16 +25,16 @@ CONNECTIONS {
     nand3 > nand4.I1;
     nand3 > nand4.I2;
 
-    nand4 > and1.I1;
+    nand4 > xor1.I1;
 
     a > nor1.I1;
     b > nor1.I2;
 
-    nor1 > and1.I2;
+    nor1 > xor1.I2;
 }
 
 OUTPUTS {
-    and1 ~ HIGH;
+    xor1 ~ HIGH;
 }
 
 END

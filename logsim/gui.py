@@ -11,6 +11,7 @@ Gui - configures the main window and all the widgets.
 import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT
+import yaml
 
 from names import Names
 from devices import Devices
@@ -58,6 +59,9 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         self.init = False
         self.context = wxcanvas.GLContext(self)
 
+        self.devices = devices
+        self.monitors = monitors
+
         # Initialise variables for panning
         self.pan_x = 0
         self.pan_y = 0
@@ -102,19 +106,22 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         # Draw specified text at position (10, 10)
         self.render_text(text, 10, 10)
 
+        # Draw the monitored signals
+        self.display_signals_gui()
+
         # Draw a sample signal trace
-        GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
-        GL.glBegin(GL.GL_LINE_STRIP)
-        for i in range(10):
-            x = (i * 20) + 10
-            x_next = (i * 20) + 30
-            if i % 2 == 0:
-                y = 75
-            else:
-                y = 100
-            GL.glVertex2f(x, y)
-            GL.glVertex2f(x_next, y)
-        GL.glEnd()
+        # GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+        # GL.glBegin(GL.GL_LINE_STRIP)
+        # for i in range(10):
+        #     x = (i * 20) + 10
+        #     x_next = (i * 20) + 30
+        #     if i % 2 == 0:
+        #         y = 75
+        #     else:
+        #         y = 100
+        #     GL.glVertex2f(x, y)
+        #     GL.glVertex2f(x_next, y)
+        # GL.glEnd()
 
         # We have been drawing to the back buffer, flush the graphics pipeline
         # and swap the back buffer to the front
@@ -204,6 +211,56 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             else:
                 GLUT.glutBitmapCharacter(font, ord(character))
 
+    def display_signals_gui(self):
+        """Display the signal trace(s) in the text console."""
+        initial_y = 120
+        initial_x = 10
+        y_ref = initial_y
+        margin = self.monitors.get_margin()
+        for device_id, output_id in self.monitors.monitors_dictionary:
+            monitor_name = self.devices.get_signal_name(device_id, output_id)
+            name_length = len(monitor_name)
+            signal_list = self.monitors.monitors_dictionary[(device_id, output_id)]
+            self.render_text(monitor_name + (margin - name_length) * " ", initial_x, y_ref)
+            # print(monitor_name + (margin - name_length) * " ", end=": ")
+            x = initial_x + margin * 5 + 5
+            GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
+            GL.glBegin(GL.GL_LINE_STRIP)
+            for signal in signal_list:
+                x_next = x + 20
+                if signal == self.devices.HIGH:
+                    y = y_ref + 25
+                    y_next = y_ref + 25
+                    GL.glVertex2f(x, y)
+                    GL.glVertex2f(x_next, y_next)
+                    # print("-", end="")
+                if signal == self.devices.LOW:
+                    y = y_ref
+                    y_next = y_ref
+                    # print("_", end="")
+                    GL.glVertex2f(x, y)
+                    GL.glVertex2f(x_next, y_next)
+                if signal == self.devices.RISING:
+                    y = y_ref
+                    y_next = y_ref + 25
+                    GL.glVertex2f(x, y)
+                    GL.glVertex2f(x_next, y_next)
+                    # print("/", end="")
+                if signal == self.devices.FALLING:
+                    y = y_ref + 25
+                    y_next = y_ref
+                    GL.glVertex2f(x, y)
+                    GL.glVertex2f(x_next, y_next)
+                    print("\\", end="")
+                if signal == self.devices.BLANK:
+                    y = y_ref
+                    #print(" ", end="")
+                x += 20
+            y_ref += 70
+            # print("\n", end="")
+            GL.glEnd()
+        
+
 
 class Gui(wx.Frame):
     """Configure the main window and all the widgets.
@@ -245,7 +302,7 @@ class Gui(wx.Frame):
         self.cursor = 0  # cursor position
 
 
-
+        
 
         # Configure the file menu
         fileMenu = wx.Menu()
@@ -273,6 +330,10 @@ class Gui(wx.Frame):
         self.text_box = wx.TextCtrl(self, wx.ID_ANY, "",
                                     style=wx.TE_PROCESS_ENTER)
 
+
+
+
+
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
         self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
@@ -290,16 +351,37 @@ class Gui(wx.Frame):
         side_sizer.Add(self.spin, 1, wx.ALL, 5)
         side_sizer.Add(self.run_button, 1, wx.ALL, 5)
         side_sizer.Add(self.text_box, 1, wx.ALL, 5)
+
+        # Configure the monitors
+        monitors_name = self.get_monitored_signals_gui()
+        for name in monitors_name:
+            self.monitor_name =  wx.StaticText(self, wx.ID_ANY, name)
+            self.monitor_button = wx.Button(self, wx.ID_ANY, "Remove")
+            self.monitor_button.Bind(wx.EVT_BUTTON, self.on_run_button)
+            side_sizer.Add(self.monitor_name, 1, wx.TOP, 5)
+            side_sizer.Add(self.monitor_button, 1, wx.BOTTOM, 5)
+
+        # Configure the switches
+        switch_name = self.get_switch_gui()
+        self.switch_name_checkbox_list = []
+        for i, name in enumerate(switch_name):
+            self.switch_name_checkbox_list.append(wx.CheckBox(self, wx.ID_ANY, name))
+            #self.switch_checkbox = wx.CheckBox(self, wx.ID_ANY, name)
+            #self.switch_checkbox.Bind(wx.EVT_CHECKBOX, self.on_switch_checkbox)
+            self.switch_name_checkbox_list[i].Bind(wx.EVT_CHECKBOX, self.on_switch_checkbox)
+            side_sizer.Add(self.switch_name_checkbox_list[i], 1, wx.ALL, 3)
         
         self.SetSizeHints(600, 600)
         self.SetSizer(main_sizer)
+
+        # Configure the switches
 
     def scale_image(self, image, width, height):
         """Method to rescale the image"""
 
         my_image = wx.Image(image)
         my_image = my_image.Scale(width, height ,wx.IMAGE_QUALITY_HIGH)
-        result = wx.BitmapFromImage(my_image)
+        result = wx.Bitmap(my_image)
         return result
 
     def on_menu(self, event):
@@ -319,8 +401,9 @@ class Gui(wx.Frame):
 
     def on_run_button(self, event):
         """Handle the event when the user clicks the run button."""
-        text = "Run button pressed."
-        self.canvas.render(text)
+        text = "Run button pressed." + str(self.spin.GetValue())
+        self.run_command()
+        #self.canvas.render(text)
 
     def on_text_box(self, event):
         """Handle the event when the user enters text."""
@@ -328,3 +411,84 @@ class Gui(wx.Frame):
         text = "".join(["New text box value: ", text_box_value])
         self.canvas.render(text)
 
+    def on_remove_button(self, event):
+        """Handle the event when the user clicks the remove button."""
+    
+    def on_switch_checkbox(self, event):
+        """Handle the event when the user clicks the switch check box"""
+        clicked = event.GetEventObject()
+        state = clicked.GetValue()
+        text = "check box clicked: " + str(state)
+        self.canvas.render(text)
+
+
+    def get_monitored_signals_gui(self):
+        """Return the monitors name list."""
+        result_monitors_name = []
+        for device_id, output_id in self.monitors.monitors_dictionary:
+            monitor_name = self.devices.get_signal_name(device_id, output_id)
+            result_monitors_name.append(monitor_name)
+        return result_monitors_name
+
+    def get_switch_gui(self):
+        """Return the switch name list"""
+        switch_name = []
+        switch_id_list = self.devices.find_devices(self.devices.SWITCH)
+        for id in switch_id_list:
+            switch_name.append(self.names.get_name_string(id))
+        return switch_name
+
+    def run_network(self, cycles):
+        """Run the network for the specified number of simulation cycles.
+
+        Return True if successful.
+        """
+        for _ in range(cycles):
+            if self.network.execute_network():
+                self.monitors.record_signals()
+            else:
+                text = "Error! Network oscillating."
+                self.canvas.render(text)
+                # print("Error! Network oscillating.")
+                return False
+        #self.monitors.display_signals()
+        self.canvas.render("run network for {} cycles.".format(cycles))
+
+        return True
+
+    def run_command(self):
+        """Run the simulation from scratch."""
+        self.cycles_completed = 0
+        cycles = self.spin.GetValue()
+
+        if cycles is not None:  # if the number of cycles provided is valid
+            self.monitors.reset_monitors()
+            text = "".join(["Running for ", str(cycles), " cycles"])
+            self.canvas.render(text)
+            # print("".join(["Running for ", str(cycles), " cycles"]))
+            self.devices.cold_startup()
+            if self.run_network(cycles):
+                self.cycles_completed += cycles
+
+    def continue_command(self):
+        """Continue a previously run simulation."""
+        cycles = self.read_number(0, None)
+        if cycles is not None:  # if the number of cycles provided is valid
+            if self.cycles_completed == 0:
+                text = "Error! Nothing to continue. Run first."
+                self.canvas.render(text)
+                # print("Error! Nothing to continue. Run first.")
+            elif self.run_network(cycles):
+                self.cycles_completed += cycles
+                text = " ".join(["Continuing for", str(cycles), "cycles.",
+                               "Total:", str(self.cycles_completed)])
+                self.canvas.render(text)
+                # print(" ".join(["Continuing for", str(cycles), "cycles.",
+                #                "Total:", str(self.cycles_completed)]))
+
+
+
+
+    
+
+    

@@ -8,18 +8,18 @@ Classes:
 MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
-from sqlalchemy import true
+# from sqlalchemy import true
 import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT
-import yaml
+# import yaml
 
-from names import Names
-from devices import Devices
-from network import Network
-from monitors import Monitors
-from scanner import Scanner
-from parse import Parser
+# from names import Names
+# from devices import Devices
+# from network import Network
+# from monitors import Monitors
+# from scanner import Scanner
+# from parse import Parser
 
 
 class MyGLCanvas(wxcanvas.GLCanvas):
@@ -256,7 +256,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                     print("\\", end="")
                 if signal == self.devices.BLANK:
                     y = y_ref
-                    #print(" ", end="")
+                    # print(" ", end="")
                 x += 20
             y_ref += 70
             # print("\n", end="")
@@ -386,8 +386,6 @@ class Gui(wx.Frame):
         for i, name in enumerate(switch_name):
             self.switch_name_checkbox_list.append(
                 wx.CheckBox(self, switch_id[i], name))
-            #self.switch_checkbox = wx.CheckBox(self, wx.ID_ANY, name)
-            #self.switch_checkbox.Bind(wx.EVT_CHECKBOX, self.on_switch_checkbox)
             self.switch_name_checkbox_list[i].Bind(
                 wx.EVT_CHECKBOX, self.on_switch_checkbox)
             if switch_state[i] == 1:
@@ -442,7 +440,6 @@ class Gui(wx.Frame):
 
     def on_text_box(self, event):
         """Handle the event when the user enters text, and set the monitor."""
-        text_box_value = self.text_box.GetValue()
         self.get_line()
         # if self.monitor_command():
         #     self.monitor_button = wx.Button(self, wx.ID_ANY, self.line)
@@ -453,9 +450,10 @@ class Gui(wx.Frame):
         # self.canvas.render(text)
 
     def on_monitor_button(self, event):
-        """Handle the event when the user clicks the monitor button (zap the monitor)"""
+        """Handle the event when the user clicks the
+
+           monitor button (zap the monitor)"""
         self.cursor = 0
-        id = event.GetId()  # get the monitor's device id
         self.line = event.GetEventObject().GetLabel()
         # while self.line == "":  # if the user enters a blank line
         #     self.line = input("#: ")
@@ -653,5 +651,3 @@ class Gui(wx.Frame):
                 text = " ".join(["Continuing for", str(cycles), "cycles.",
                                  "Total:", str(self.cycles_completed)])
                 self.canvas.render(text)
-                # print(" ".join(["Continuing for", str(cycles), "cycles.",
-                #                "Total:", str(self.cycles_completed)]))

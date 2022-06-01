@@ -1,0 +1,9 @@
+START
+DEVICES {
+    a = CLOCK(9);
+    b = CLOCK(a);
+    c : CLOCK(8):
+}
+CONNECTIONS {}
+OUTPUTS {}
+END

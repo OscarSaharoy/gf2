@@ -1,0 +1,12 @@
+START
+DEVICES {
+    a = CLOCK(1);
+    b = OR(2);
+    c = SWITCH(1);
+}
+CONNECTIONS {
+    a = b.I1;
+    c > b.I2
+}
+OUTPUTS {}
+END

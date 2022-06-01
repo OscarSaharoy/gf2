@@ -15,7 +15,7 @@ CONNECTIONS {
     a > b.I2;
 }
 OUTPUTS {
-    a;
-    a;
+    a ~ A;
+    a ~ B;
 }
 END

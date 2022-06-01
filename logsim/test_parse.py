@@ -142,7 +142,7 @@ def test_ir1_counter(new_classes):
     devices, network, monitors, parser = new_classes
 
     assert parser.parse_network()
-    assert not network.execute_network()
+    assert network.execute_network()
 
 
 @pytest.mark.parametrize('path', ["logsim/tests/ir1_adder.txt"])

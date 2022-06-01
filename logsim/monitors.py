@@ -55,11 +55,14 @@ class Monitors:
         # monitors_dictionary stores
         # {(device_id, output_id): [signal_list]}
         self.monitors_dictionary = collections.OrderedDict()
+        # {(device_id, output_id): display_name}
+        self.monitor_names_dictionary = collections.OrderedDict()
 
         [self.NO_ERROR, self.NOT_OUTPUT,
          self.MONITOR_PRESENT] = self.names.unique_error_codes(3)
 
-    def make_monitor(self, device_id, output_id, cycles_completed=0):
+    def make_monitor(self, device_id, output_id,
+                     cycles_completed=0, display_name=None):
         """Add the specified signal to the monitors dictionary.
 
         Return NO_ERROR if successful, or the corresponding error if not.
@@ -78,6 +81,11 @@ class Monitors:
             # list.
             self.monitors_dictionary[(device_id, output_id)] = [
                 self.devices.BLANK] * cycles_completed
+            if display_name is None:
+                display_name = self.devices.get_signal_name(device_id,
+                                                            output_id)
+            self.monitor_names_dictionary[(device_id, output_id)] = \
+                display_name
             return self.NO_ERROR
 
     def remove_monitor(self, device_id, output_id):
@@ -145,8 +153,9 @@ class Monitors:
         starting to draw the signal trace.
         """
         length_list = []  # for storing name lengths
-        for device_id, output_id in self.monitors_dictionary:
-            monitor_name = self.devices.get_signal_name(device_id, output_id)
+        for device_id, output_id in self.monitor_names_dictionary:
+            monitor_name = \
+                self.monitor_names_dictionary[device_id, output_id]
             name_length = len(monitor_name)
             length_list.append(name_length)
         if length_list:  # if the list is not empty
@@ -154,11 +163,14 @@ class Monitors:
         else:
             return None
 
+    def get_signal_name(self, device_id, output_id):
+        return self.monitor_names_dictionary[(device_id, output_id)]
+
     def display_signals(self):
         """Display the signal trace(s) in the text console."""
         margin = self.get_margin()
         for device_id, output_id in self.monitors_dictionary:
-            monitor_name = self.devices.get_signal_name(device_id, output_id)
+            monitor_name = self.get_signal_name(device_id, output_id)
             name_length = len(monitor_name)
             signal_list = self.monitors_dictionary[(device_id, output_id)]
             print(monitor_name + (margin - name_length) * " ", end=": ")

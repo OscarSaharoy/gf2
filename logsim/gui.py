@@ -369,10 +369,10 @@ class Gui(wx.Frame):
         # Configure the switches
         self.switch_text = wx.StaticText(self, wx.ID_ANY, "Switches")
         side_sizer.Add(self.switch_text, 1, wx.ALL, 10)
-        switch_name, switch_state = self.get_switch_gui()
+        switch_name, switch_state, switch_id = self.get_switch_gui()
         self.switch_name_checkbox_list = []
         for i, name in enumerate(switch_name):
-            self.switch_name_checkbox_list.append(wx.CheckBox(self, wx.ID_ANY, name))
+            self.switch_name_checkbox_list.append(wx.CheckBox(self, switch_id[i], name))
             #self.switch_checkbox = wx.CheckBox(self, wx.ID_ANY, name)
             #self.switch_checkbox.Bind(wx.EVT_CHECKBOX, self.on_switch_checkbox)
             self.switch_name_checkbox_list[i].Bind(wx.EVT_CHECKBOX, self.on_switch_checkbox)
@@ -460,7 +460,7 @@ class Gui(wx.Frame):
             switch_name.append(self.names.get_name_string(id))
             switch_state.append(self.devices.get_device(id).switch_state)
         # print("The switch_state is : " + str(switch_state))
-        return switch_name, switch_state
+        return switch_name, switch_state, switch_id_list
 
     def run_network(self, cycles):
         """Run the network for the specified number of simulation cycles.

@@ -9,6 +9,7 @@ DEVICES {
   
   clk = CLOCK(1);
   clear = SWITCH(0);
+  set = SWITCH(0);
 }
 
 CONNECTIONS {
@@ -26,6 +27,11 @@ CONNECTIONS {
   clear > ff1.CLEAR;
   clear > ff2.CLEAR;
   clear > ff3.CLEAR;
+
+  set > ff0.SET;
+  set > ff1.SET;
+  set > ff2.SET;
+  set > ff3.SET;
 }
 
 OUTPUTS {

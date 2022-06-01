@@ -255,8 +255,7 @@ class Parser:
 
         signal_name, signal_pin = self.parse_signal()
         self.parse_literal(TILDE)
-        output_name_sym = self.parse_name()
-        output_name = self.names.get_name_string(output_name_sym.id)
+        self.parse_name()
         self.parse_literal(SEMICOLON)
 
         if signal_pin is None:
@@ -264,8 +263,8 @@ class Parser:
         else:
             pin_id = signal_pin.id
 
-        self.make_monitor(signal_name.id, pin_id, display_name = output_name)
-        return signal_name, signal_pin, output_name
+        self.make_monitor(signal_name.id, pin_id)
+        return signal_name, signal_pin
 
     def parse_type(self):
         """Parse a device type definition expression."""
@@ -377,12 +376,11 @@ class Parser:
                 else:
                     self.error("port absent")
 
-    def make_monitor(self, device_id, output_id,
-            cycles_completed=0, display_name=None):
+    def make_monitor(self, device_id, output_id, cycles_completed=0):
         """Add monitored output to the self.monitors object."""
         if self.error_count == 0 or self.no_stop:
             error_type = self.monitors.make_monitor(
-                device_id, output_id, cycles_completed, display_name)
+                device_id, output_id, cycles_completed)
 
             if error_type != self.monitors.NO_ERROR:
                 if error_type == self.network.DEVICE_ABSENT:

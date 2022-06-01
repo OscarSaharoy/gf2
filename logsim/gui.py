@@ -311,7 +311,8 @@ class Gui(wx.Frame):
         fileMenu.Append(qmi)
 
         about = wx.MenuItem(fileMenu, wx.ID_ABOUT, "&About\tCtrl+A")
-        about.SetBitmap(wx.Bitmap(self.scale_image("images/floppy-disk.png", 15, 15)))
+        about.SetBitmap(wx.Bitmap(self.scale_image
+                        ("images/floppy-disk.png", 15, 15)))
         fileMenu.Append(about)
 
         # fileMenu.Append(wx.ID_EXIT, "&Exit")
@@ -416,7 +417,9 @@ class Gui(wx.Frame):
         if Id == 1:  # wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
-            wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",
+            wx.MessageBox("""Logic Simulator\nCreated by Mojisola Agboola\n2017\n
+                            Modified by Eric, Max, and Oscar\n
+                            with additional functionalities\n2022""",
                           "About Logsim", wx.ICON_INFORMATION | wx.OK)
 
     def on_spin(self, event):

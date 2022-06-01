@@ -254,8 +254,6 @@ class Parser:
         # output = signal, "~", name, ";"
 
         signal_name, signal_pin = self.parse_signal()
-        self.parse_literal(TILDE)
-        self.parse_name()
         self.parse_literal(SEMICOLON)
 
         if signal_pin is None:

@@ -1,0 +1,10 @@
+START
+DEVICES {
+    a = BING;
+    b = BONG;
+    c = BAP(8);
+    d = CLOCK(1);
+}
+CONNECTIONS {}
+OUTPUTS {}
+END

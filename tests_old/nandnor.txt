@@ -34,7 +34,7 @@ CONNECTIONS {
 }
 
 OUTPUTS {
-    xor1;
+    xor1 ~ LOW;
 }
 
 END

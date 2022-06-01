@@ -7,9 +7,9 @@ CONNECTIONS {
     a > b.I1;
 }
 OUTPUTS {
+    a a;
+    b =;
     a;
-    b;
-    a;
-    b;
+    b
 }
 END

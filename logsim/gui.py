@@ -456,8 +456,7 @@ class Gui(wx.Frame):
         # self.canvas.render(text)
 
     def on_monitor_button(self, event):
-        """Handle the event when the user clicks the
-        monitor button (zap the monitor)"""
+        """Handle the event when the user clicks the monitor button."""
         self.cursor = 0
         self.line = event.GetEventObject().GetLabel()
         # while self.line == "":  # if the user enters a blank line
@@ -480,7 +479,7 @@ class Gui(wx.Frame):
         """Handle the event when the user clicks the remove button."""
 
     def on_switch_checkbox(self, event):
-        """Handle the event when the user clicks the switch check box"""
+        """Handle the event when the user clicks the switch check box."""
         id = event.GetId()
         clicked = event.GetEventObject()
         state = clicked.GetValue()
@@ -507,7 +506,7 @@ class Gui(wx.Frame):
         return result_monitors_name
 
     def get_switch_gui(self):
-        """Return the switch name list"""
+        """Return the switch name list."""
         switch_name = []
         switch_state = []
         switch_id_list = self.devices.find_devices(self.devices.SWITCH)
@@ -616,7 +615,7 @@ class Gui(wx.Frame):
                 return False
 
     def config_monitors(self):
-        """Configurate the monitors and rerender the sizer."""
+        """Configure the monitors."""
         monitors_name = self.get_monitored_signals_gui()
         self.monitor_buttons = []
         # clear the sizer and then render the buttons again

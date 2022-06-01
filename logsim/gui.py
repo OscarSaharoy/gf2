@@ -471,9 +471,13 @@ class Gui(wx.Frame):
         if monitor is not None:
             [device, port] = monitor
             if self.monitors.remove_monitor(device, port):
-                print("Successfully zapped monitor")
+                text = "Successfully zapped monitor"
+                self.canvas.render(text)
+                # print("Successfully zapped monitor")
             else:
-                print("Error! Could not zap monitor.")
+                text = "Error! Could not zap monitor."
+                self.canvas.render(text)
+                # print("Error! Could not zap monitor.")
 
     def on_remove_button(self, event):
         """Handle the event when the user clicks the remove button."""
@@ -563,7 +567,9 @@ class Gui(wx.Frame):
         self.skip_spaces()
         name_string = ""
         if not self.character.isalpha():  # the string must start with a letter
-            print("Error! Expected a name.")
+            text = "Error! Expected a name."
+            self.canvas.render(text)
+            # print("Error! Expected a name.")
             return None
         while self.character.isalnum():
             name_string = "".join([name_string, self.character])
@@ -581,7 +587,9 @@ class Gui(wx.Frame):
         else:
             name_id = self.names.query(name_string)
         if name_id is None:
-            print("Error! Unknown name.")
+            text = "Error! Unknown name."
+            self.canvas.render(text)
+            # print("Error! Unknown name.")
         return name_id
 
     def read_signal_name(self):
@@ -608,10 +616,14 @@ class Gui(wx.Frame):
             monitor_error = self.monitors.make_monitor(device, port,
                                                        self.cycles_completed)
             if monitor_error == self.monitors.NO_ERROR:
-                print("Successfully made monitor.")
+                text = "Successfully made monitor."
+                self.canvas.render(text)
+                # print("Successfully made monitor.")
                 return True
             else:
-                print("Error! Could not make monitor.")
+                text = "Error! Could not make monitor."
+                self.canvas.render(text)
+                # print("Error! Could not make monitor.")
                 return False
 
     def config_monitors(self):

@@ -632,10 +632,13 @@ class Gui(wx.Frame):
         monitors_name = self.get_monitored_signals_gui()
         self.monitor_buttons= []
         self.side_sizer_3_2.Clear(True) # clear the sizer and then render the buttons again
+        self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL)
+        self.side_sizer_3.Add(self.side_sizer_3_2, 3, wx.ALL, 5)
         for i, name in enumerate(monitors_name):
             self.monitor_buttons.append(wx.Button(self, wx.ID_ANY, name))
             self.monitor_buttons[i].Bind(wx.EVT_BUTTON, self.on_monitor_button)
-            self.side_sizer_3_2.Add(self.monitor_buttons[i], 1, wx.ALL, 5)        
+            self.side_sizer_3_2.Add(self.monitor_buttons[i], 1, wx.ALL, 5)
+            self.side_sizer_3.Layout()      
 
 
 

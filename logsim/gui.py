@@ -437,10 +437,22 @@ class Gui(wx.Frame):
     
     def on_switch_checkbox(self, event):
         """Handle the event when the user clicks the switch check box"""
+        id = event.GetId()
         clicked = event.GetEventObject()
         state = clicked.GetValue()
-        text = "check box clicked: " + str(state)
-        self.canvas.render(text)
+        switch_state = 0
+        if state is True:
+            switch_state = 1
+        elif state is False:
+            switch_state = 0
+        if self.devices.set_switch(id, switch_state):
+            text = "Successfully set switch."
+            self.canvas.render(text)
+        else:
+            text = "Error! Invalid switch."
+            self.canvas.render(text)
+        # text = "check box clicked: " + str(state)
+        # self.canvas.render(text)
 
 
     def get_monitored_signals_gui(self):

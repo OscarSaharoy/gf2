@@ -248,7 +248,6 @@ class Parser:
 
     def parse_output(self):
         """Parse an output - a name assigned to a signal."""
-        TILDE = Symbol(sym_type=self.scanner.TILDE, string="~")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
         # output = signal, "~", name, ";"

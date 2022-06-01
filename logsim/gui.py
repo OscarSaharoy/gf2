@@ -21,6 +21,7 @@ from scanner import Scanner
 from parse import Parser
 
 
+
 class MyGLCanvas(wxcanvas.GLCanvas):
     """Handle all drawing operations.
 
@@ -90,7 +91,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         GL.glLoadIdentity()
         GL.glTranslated(self.pan_x, self.pan_y, 0.0)
         GL.glScaled(self.zoom, self.zoom, self.zoom)
-
 
     def render(self, text):
         """Handle all drawing operations."""
@@ -301,9 +301,6 @@ class Gui(wx.Frame):
         self.line = ""  # current string entered by the user
         self.cursor = 0  # cursor position
 
-
-        
-
         # Configure the file menu
         fileMenu = wx.Menu()
         menuBar = wx.MenuBar()
@@ -316,7 +313,6 @@ class Gui(wx.Frame):
         fileMenu.Append(wx.ID_EXIT, "&Exit")
         fileMenu.Append(wx.ID_ANY, "&Test")
         menuBar.Append(fileMenu, "&File")
-
 
         self.SetMenuBar(menuBar)
 
@@ -377,8 +373,7 @@ class Gui(wx.Frame):
         # Configure the switches
 
     def scale_image(self, image, width, height):
-        """Method to rescale the image"""
-
+        """Rescale the image."""
         my_image = wx.Image(image)
         my_image = my_image.Scale(width, height ,wx.IMAGE_QUALITY_HIGH)
         result = wx.Bitmap(my_image)
@@ -387,7 +382,7 @@ class Gui(wx.Frame):
     def on_menu(self, event):
         """Handle the event when the user selects a menu item."""
         Id = event.GetId()
-        if Id == 1:#wx.ID_EXIT:
+        if Id == 1:  # wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
             wx.MessageBox("Logic Simulator\nCreated by Mojisola Agboola\n2017",

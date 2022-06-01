@@ -31,7 +31,7 @@ CONNECTIONS {
 }
 
 OUTPUTS {
-  xor1 ~ SUM;
+  xor2 ~ SUM;
   or1 ~ CARRY;
 }
 

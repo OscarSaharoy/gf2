@@ -163,12 +163,14 @@ class Monitors:
         else:
             return None
 
+    def get_signal_name(self, device_id, output_id):
+        return self.monitor_names_dictionary[(device_id, output_id)]
+
     def display_signals(self):
         """Display the signal trace(s) in the text console."""
         margin = self.get_margin()
         for device_id, output_id in self.monitors_dictionary:
-            monitor_name = self.monitor_names_dictionary[(device_id,
-                                                          output_id)]
+            monitor_name = self.get_signal_name(device_id, output_id)
             name_length = len(monitor_name)
             signal_list = self.monitors_dictionary[(device_id, output_id)]
             print(monitor_name + (margin - name_length) * " ", end=": ")

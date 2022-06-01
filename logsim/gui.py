@@ -8,6 +8,7 @@ Classes:
 MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
+from sqlalchemy import true
 import wx
 import wx.glcanvas as wxcanvas
 from OpenGL import GL, GLUT
@@ -343,32 +344,46 @@ class Gui(wx.Frame):
         self.spin_cont.Bind(wx.EVT_SPINCTRL, self.on_spin_cont)
 
         # Configure sizers for layout
-        main_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        side_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.side_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.side_sizer_1 = wx.BoxSizer(wx.VERTICAL) # sizer for run cycles and switches
+        self.side_sizer_2 = wx.BoxSizer(wx.VERTICAL) # sizer for switches
+        self.side_sizer_3 = wx.BoxSizer(wx.VERTICAL) # sizer for monitors
 
-        main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
-        main_sizer.Add(side_sizer, 1, wx.ALL, 5)
+        self.side_sizer_3_1 = wx.BoxSizer(wx.VERTICAL) # sizer for monitors text and input text box
+        self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL) # sizer for monitors buttons
 
-        side_sizer.Add(self.text, 1, wx.TOP, 10)
-        side_sizer.Add(self.spin, 1, wx.ALL, 5)
-        side_sizer.Add(self.run_button, 1, wx.ALL, 5)
-        side_sizer.Add(self.spin_cont, 1, wx.ALL, 5)
-        side_sizer.Add(self.cont_button, 1, wx.ALL, 5)        
-        side_sizer.Add(self.text_box, 1, wx.ALL, 5)
-        side_sizer.Add(self.mon_text, 1, wx.ALL, 10)
+        self.main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
+        self.main_sizer.Add(self.side_sizer, 1, wx.ALL, 5)
+
+        self.side_sizer.Add(self.side_sizer_1, 1, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_2, 1, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_3, 1, wx.ALL, 5)
+
+        self.side_sizer_3.Add(self.side_sizer_3_1, 1, wx.ALL, 5)
+        self.side_sizer_3.Add(self.side_sizer_3_2, 3, wx.ALL, 5)
+        
+
+        self.side_sizer_1.Add(self.text, 1, wx.TOP, 10)
+        self.side_sizer_1.Add(self.spin, 1, wx.ALL, 5)
+        self.side_sizer_1.Add(self.run_button, 1, wx.ALL, 5)
+        self.side_sizer_1.Add(self.spin_cont, 1, wx.ALL, 5)
+        self.side_sizer_1.Add(self.cont_button, 1, wx.ALL, 5)
+        self.side_sizer_3_1.Add(self.mon_text, 1, wx.TOP, 10)        
+        self.side_sizer_3_1.Add(self.text_box, 1, wx.ALL, 5)
+
 
         # Configure the monitors
-        monitors_name = self.get_monitored_signals_gui()
-        for name in monitors_name:
-            self.monitor_name =  wx.StaticText(self, wx.ID_ANY, name)
-            self.monitor_button = wx.Button(self, wx.ID_ANY, "Remove")
-            self.monitor_button.Bind(wx.EVT_BUTTON, self.on_run_button)
-            side_sizer.Add(self.monitor_name, 1, wx.TOP, 5)
-            side_sizer.Add(self.monitor_button, 1, wx.BOTTOM, 5)
+        # monitors_name = self.get_monitored_signals_gui()
+        # for name in monitors_name:
+        #     self.monitor_button = wx.Button(self, wx.ID_ANY, name)
+        #     self.monitor_button.Bind(wx.EVT_BUTTON, self.on_run_button)
+        #     self.side_sizer_3_2.Add(self.monitor_button, 1, wx.ALL, 5)
+        self.config_monitors()
 
         # Configure the switches
         self.switch_text = wx.StaticText(self, wx.ID_ANY, "Switches")
-        side_sizer.Add(self.switch_text, 1, wx.ALL, 10)
+        self.side_sizer_2.Add(self.switch_text, 1, wx.TOP, 10)
         switch_name, switch_state, switch_id = self.get_switch_gui()
         self.switch_name_checkbox_list = []
         for i, name in enumerate(switch_name):
@@ -380,10 +395,10 @@ class Gui(wx.Frame):
                 self.switch_name_checkbox_list[i].SetValue(True)
             else:
                 self.switch_name_checkbox_list[i].SetValue(False)
-            side_sizer.Add(self.switch_name_checkbox_list[i], 1, wx.ALL, 3)
+            self.side_sizer_2.Add(self.switch_name_checkbox_list[i], 1, wx.ALL, 3)
         
         self.SetSizeHints(600, 600)
-        self.SetSizer(main_sizer)
+        self.SetSizer(self.main_sizer)
 
         # Configure the switches
 
@@ -427,10 +442,38 @@ class Gui(wx.Frame):
 
 
     def on_text_box(self, event):
-        """Handle the event when the user enters text."""
+        """Handle the event when the user enters text, and set the monitor."""
         text_box_value = self.text_box.GetValue()
-        text = "".join(["New text box value: ", text_box_value])
-        self.canvas.render(text)
+        self.get_line()
+        # if self.monitor_command():
+        #     self.monitor_button = wx.Button(self, wx.ID_ANY, self.line)
+        #     self.side_sizer_3_2.Add(self.monitor_button, 1, wx.ALL, 5)
+        self.monitor_command()
+        self.config_monitors()
+        # text = "".join(["New text box value: ", text_box_value])
+        # self.canvas.render(text)
+    
+    def on_monitor_button(self, event):
+        """Handle the event when the user clicks the monitor button (zap the monitor)"""
+        self.cursor = 0
+        id = event.GetId() # get the monitor's device id
+        self.line = event.GetEventObject().GetLabel()
+        # while self.line == "":  # if the user enters a blank line
+        #     self.line = input("#: ")    
+        self.zap_command()
+        self.config_monitors()
+        # print(self.line)
+           
+        
+    def zap_command(self):
+        """Remove the specified monitor."""
+        monitor = self.read_signal_name()
+        if monitor is not None:
+            [device, port] = monitor
+            if self.monitors.remove_monitor(device, port):
+                print("Successfully zapped monitor")
+            else:
+                print("Error! Could not zap monitor.")    
 
     def on_remove_button(self, event):
         """Handle the event when the user clicks the remove button."""
@@ -491,6 +534,110 @@ class Gui(wx.Frame):
         self.canvas.render("run network for {} cycles.".format(cycles))
 
         return True
+
+
+
+
+    def get_line(self):
+        """Get monitor value from the input text box."""
+        self.cursor = 0
+        self.line = self.text_box.GetValue()
+        # print(self.line)
+        # while self.line == "":  # if the user enters a blank line
+        #     self.line = input("#: ")
+        # if self.line == "":
+        #     print("Empty string is not allowed.")
+
+    def get_character(self):
+        """Move the cursor forward by one character in the user entry."""
+        if self.cursor < len(self.line):
+            self.character = self.line[self.cursor]
+            self.cursor += 1
+        else:  # end of the line
+            self.character = ""
+
+    def skip_spaces(self):
+        """Skip whitespace until a non-whitespace character is reached."""
+        self.get_character()
+        while self.character.isspace():
+            self.get_character()
+
+    def read_string(self):
+        """Return the next alphanumeric string."""
+        self.skip_spaces()
+        name_string = ""
+        if not self.character.isalpha():  # the string must start with a letter
+            print("Error! Expected a name.")
+            return None
+        while self.character.isalnum():
+            name_string = "".join([name_string, self.character])
+            self.get_character()
+        return name_string
+
+    def read_name(self):
+        """Return the name ID of the current string if valid.
+
+        Return None if the current string is not a valid name string.
+        """
+        name_string = self.read_string()
+        if name_string is None:
+            return None
+        else:
+            name_id = self.names.query(name_string)
+        if name_id is None:
+            print("Error! Unknown name.")
+        return name_id
+
+    def read_signal_name(self):
+        """Return the device and port IDs of the current signal name.
+
+        Return None if either is invalid.
+        """
+        device_id = self.read_name()
+        if device_id is None:
+            return None
+        elif self.character == ".":
+            port_id = self.read_name()
+            if port_id is None:
+                return None
+        else:
+            port_id = None
+        return [device_id, port_id]
+
+
+
+    def monitor_command(self):
+        """Set the specified monitor."""
+        monitor = self.read_signal_name()
+        if monitor is not None:
+            [device, port] = monitor
+            monitor_error = self.monitors.make_monitor(device, port,
+                                                       self.cycles_completed)
+            if monitor_error == self.monitors.NO_ERROR:
+                print("Successfully made monitor.")
+                return True
+            else:
+                print("Error! Could not make monitor.")
+                return False
+
+
+
+
+
+
+
+
+    def config_monitors(self):
+        """Configurate the monitors and rerender the sizer."""
+        monitors_name = self.get_monitored_signals_gui()
+        self.monitor_buttons= []
+        self.side_sizer_3_2.Clear(True) # clear the sizer and then render the buttons again
+        for i, name in enumerate(monitors_name):
+            self.monitor_buttons.append(wx.Button(self, wx.ID_ANY, name))
+            self.monitor_buttons[i].Bind(wx.EVT_BUTTON, self.on_monitor_button)
+            self.side_sizer_3_2.Add(self.monitor_buttons[i], 1, wx.ALL, 5)        
+
+
 
     def run_command(self):
         """Run the simulation from scratch."""

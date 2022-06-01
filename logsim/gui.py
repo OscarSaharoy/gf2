@@ -311,8 +311,8 @@ class Gui(wx.Frame):
         fileMenu.Append(qmi)
 
         fileMenu.Append(wx.ID_ABOUT, "&About")
-        fileMenu.Append(wx.ID_EXIT, "&Exit")
-        fileMenu.Append(wx.ID_ANY, "&Test")
+        # fileMenu.Append(wx.ID_EXIT, "&Exit")
+        # fileMenu.Append(wx.ID_ANY, "&Test")
         menuBar.Append(fileMenu, "&File")
 
         self.SetMenuBar(menuBar)

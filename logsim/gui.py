@@ -306,11 +306,14 @@ class Gui(wx.Frame):
         fileMenu = wx.Menu()
         menuBar = wx.MenuBar()
 
-        qmi = wx.MenuItem(fileMenu, 1, "&QQQuit\tCtrl+Q")
+        qmi = wx.MenuItem(fileMenu, 1, "&Quit\tCtrl+Q")
         qmi.SetBitmap(wx.Bitmap(self.scale_image("images/logout.png", 15, 15)))
         fileMenu.Append(qmi)
 
-        fileMenu.Append(wx.ID_ABOUT, "&About")
+        about = wx.MenuItem(fileMenu, wx.ID_ABOUT, "&About\tCtrl+A")
+        about.SetBitmap(wx.Bitmap(self.scale_image("images/floppy-disk.png", 15, 15)))
+        fileMenu.Append(about)
+
         # fileMenu.Append(wx.ID_EXIT, "&Exit")
         # fileMenu.Append(wx.ID_ANY, "&Test")
         menuBar.Append(fileMenu, "&File")
@@ -451,8 +454,7 @@ class Gui(wx.Frame):
 
     def on_monitor_button(self, event):
         """Handle the event when the user clicks the
-
-           monitor button (zap the monitor)"""
+        monitor button (zap the monitor)"""
         self.cursor = 0
         self.line = event.GetEventObject().GetLabel()
         # while self.line == "":  # if the user enters a blank line

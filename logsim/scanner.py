@@ -220,8 +220,10 @@ class Scanner:
 
         while is_comment:
             self.advance()
+            if self.current_character == "":
+                break
             # Advance until the comment end is found
-            if self.current_character == self.comment:
+            elif self.current_character == self.comment:
                 is_comment = False
 
                 # Comment has ended, skip any following whitespace

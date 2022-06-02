@@ -225,7 +225,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.render_text(
                 monitor_name + (margin - name_length) * " ", initial_x, y_ref)
             # print(monitor_name + (margin - name_length) * " ", end=": ")
-            x = initial_x + margin * 5 + 5
+            x = initial_x + margin * 7 + 5
             GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
             GL.glBegin(GL.GL_LINE_STRIP)
             for signal in signal_list:
@@ -361,18 +361,18 @@ class Gui(wx.Frame):
 
         self.side_sizer.Add(self.side_sizer_1, 1, wx.ALL, 5)
         self.side_sizer.Add(self.side_sizer_2, 1, wx.ALL, 5)
-        self.side_sizer.Add(self.side_sizer_3, 1, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_3, 2, wx.ALL, 5)
 
         self.side_sizer_3.Add(self.side_sizer_3_1, 1, wx.ALL, 5)
         self.side_sizer_3.Add(self.side_sizer_3_2, 3, wx.ALL, 5)
 
-        self.side_sizer_1.Add(self.text, 1, wx.TOP, 10)
-        self.side_sizer_1.Add(self.spin, 1, wx.ALL, 5)
-        self.side_sizer_1.Add(self.run_button, 1, wx.ALL, 5)
-        self.side_sizer_1.Add(self.spin_cont, 1, wx.ALL, 5)
-        self.side_sizer_1.Add(self.cont_button, 1, wx.ALL, 5)
-        self.side_sizer_3_1.Add(self.mon_text, 1, wx.TOP, 10)
-        self.side_sizer_3_1.Add(self.text_box, 1, wx.ALL, 5)
+        self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
+        self.side_sizer_1.Add(self.spin, 0, wx.ALL, 5)
+        self.side_sizer_1.Add(self.run_button, 0, wx.ALL, 5)
+        self.side_sizer_1.Add(self.spin_cont, 0, wx.ALL, 5)
+        self.side_sizer_1.Add(self.cont_button, 0, wx.ALL, 5)
+        self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
+        self.side_sizer_3_1.Add(self.text_box, 0, wx.ALL, 5)
 
         # Configure the monitors
         # monitors_name = self.get_monitored_signals_gui()
@@ -397,7 +397,7 @@ class Gui(wx.Frame):
             else:
                 self.switch_name_checkbox_list[i].SetValue(False)
             self.side_sizer_2.Add(
-                self.switch_name_checkbox_list[i], 1, wx.ALL, 3)
+                self.switch_name_checkbox_list[i], 0, wx.ALL, 3)
 
         self.SetSizeHints(600, 600)
         self.SetSizer(self.main_sizer)
@@ -637,7 +637,7 @@ class Gui(wx.Frame):
         for i, name in enumerate(monitors_name):
             self.monitor_buttons.append(wx.Button(self, wx.ID_ANY, name))
             self.monitor_buttons[i].Bind(wx.EVT_BUTTON, self.on_monitor_button)
-            self.side_sizer_3_2.Add(self.monitor_buttons[i], 1, wx.ALL, 5)
+            self.side_sizer_3_2.Add(self.monitor_buttons[i], 0, wx.ALL, 5)
             self.side_sizer_3.Layout()
 
     def run_command(self):

@@ -7,9 +7,9 @@ CONNECTIONS {
     a > b.I1;
 }
 OUTPUTS {
-    a a;
-    b =;
-    a;
-    b
+    a -- badoutput1;
+    b = badoutput2;
+    a ~ okoutput1;
+    b ~ badoutput 3;
 }
 END

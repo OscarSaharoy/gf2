@@ -146,7 +146,8 @@ class Monitors:
         """
         length_list = []  # for storing name lengths
         for device_id, output_id in self.monitors_dictionary:
-            monitor_name = self.devices.get_signal_name(device_id, output_id)
+            monitor_name = self.devices.get_signal_name(device_id,
+                                                        output_id)
             name_length = len(monitor_name)
             length_list.append(name_length)
         if length_list:  # if the list is not empty

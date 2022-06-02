@@ -35,10 +35,10 @@ CONNECTIONS {
 }
 
 OUTPUTS {
-  ff0.Q;
-  ff1.Q;
-  ff2.Q;
-  ff3.Q;
+  ff0.Q ~ Q0;
+  ff1.Q ~ Q1;
+  ff2.Q ~ Q2;
+  ff3.Q ~ Q3;
 }
 
 END

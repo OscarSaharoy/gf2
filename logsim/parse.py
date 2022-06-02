@@ -248,14 +248,11 @@ class Parser:
 
     def parse_output(self):
         """Parse an output - a name assigned to a signal."""
-        TILDE = Symbol(sym_type=self.scanner.TILDE, string="~")
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
         # output = signal, "~", name, ";"
 
         signal_name, signal_pin = self.parse_signal()
-        self.parse_literal(TILDE)
-        output_name = self.parse_name()
         self.parse_literal(SEMICOLON)
 
         if signal_pin is None:
@@ -264,7 +261,7 @@ class Parser:
             pin_id = signal_pin.id
 
         self.make_monitor(signal_name.id, pin_id)
-        return signal_name, signal_pin, output_name
+        return signal_name, signal_pin
 
     def parse_type(self):
         """Parse a device type definition expression."""

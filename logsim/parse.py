@@ -266,7 +266,7 @@ class Parser:
     def parse_type(self):
         """Parse a device type definition expression."""
         types_taking_arg = ["CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR"]
-        types_without_arg = ["DTYPE", "XOR"]
+        types_without_arg = ["DTYPE", "XOR", "NOT"]
 
         taking_arg_symbols = [self.make_keyword_symbol(string)
                               for string in types_taking_arg]
@@ -284,7 +284,7 @@ class Parser:
 
         type_parsers = {**arg_type_parsers, **no_arg_type_parsers}
 
-        # type = clock | switch | and | nand | or | nor | dtype | xor
+        # type = clock | switch | and | nand | or | nor | dtype | xor | not
 
         try:
             return type_parsers[self.lookahead.id]()

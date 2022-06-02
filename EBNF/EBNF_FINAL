@@ -31,7 +31,7 @@ signal          = name, [".", name] ;
 
 connection      = signal, ">", signal, ";" ;
 
-output          = signal, "~", name, ";" ;
+output          = signal, ";" ;
 
 
 devices         = "DEVICES", "{", device, {device}, "}";

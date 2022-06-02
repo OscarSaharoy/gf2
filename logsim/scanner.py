@@ -94,13 +94,13 @@ class Scanner:
 
         self.keywords = ["START", "END", "DEVICES", "CONNECTIONS", "OUTPUTS",
                          "CLOCK", "SWITCH", "AND", "NAND", "OR", "NOR", "XOR",
-                         "DTYPE"
+                         "DTYPE", "NOT"
                          ]
 
         [self.START_ID, self.END_ID, self.DEVICES_ID, self.CONNECTIONS_ID,
          self.OUTPUTS_ID, self.CLOCK_ID, self.SWITCH_ID, self.AND_ID,
          self.NAND_ID, self.OR_ID, self.NOR_ID, self.XOR_ID,
-         self.DTYPE_ID
+         self.DTYPE_ID, self.NOT_ID
          ] = self.names.lookup(self.keywords)
 
         self.open_file(path)

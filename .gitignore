@@ -4,3 +4,4 @@
 prelim/*
 .DS_Store
 contributions/*
+.env

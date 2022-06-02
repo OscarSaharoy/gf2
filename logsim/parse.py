@@ -250,7 +250,7 @@ class Parser:
         """Parse an output - a name assigned to a signal."""
         SEMICOLON = Symbol(sym_type=self.scanner.SEMICOLON, string=";")
 
-        # output = signal, "~", name, ";"
+        # output = signal, ";"
 
         signal_name, signal_pin = self.parse_signal()
         self.parse_literal(SEMICOLON)

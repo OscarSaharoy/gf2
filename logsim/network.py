@@ -359,7 +359,6 @@ class Network:
         xor_devices = self.devices.find_devices(self.devices.XOR)
         not_devices = self.devices.find_devices(self.devices.NOT)
 
-
         # This sets clock signals to RISING or FALLING, where necessary
         self.update_clocks()
 

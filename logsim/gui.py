@@ -335,7 +335,6 @@ class Gui(wx.Frame):
                                     style=wx.TE_PROCESS_ENTER)
 
         self.mon_text = wx.StaticText(self, wx.ID_ANY, "Monitors")
-        self.connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
 
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
@@ -359,11 +358,6 @@ class Gui(wx.Frame):
         # sizer for monitors buttons
         self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL)
 
-        # sizer for connections text
-        self.side_sizer_4_1 = wx.BoxSizer(wx.VERTICAL)
-        # sizer for connections ui
-        self.side_sizer_4_2 = wx.BoxSizer(wx.VERTICAL)
-
         self.main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
         self.main_sizer.Add(self.side_sizer, 1, wx.ALL, 5)
 
@@ -375,9 +369,6 @@ class Gui(wx.Frame):
         self.side_sizer_3.Add(self.side_sizer_3_1, 0, wx.ALL, 0)
         self.side_sizer_3.Add(self.side_sizer_3_2, 0, wx.ALL, 0)
 
-        self.side_sizer_4.Add(self.side_sizer_4_1, 0, wx.ALL, 0)
-        self.side_sizer_4.Add(self.side_sizer_4_2, 0, wx.ALL, 0)
-
         self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
         self.side_sizer_1.Add(self.spin, 0, wx.ALL, 5)
         self.side_sizer_1.Add(self.run_button, 0, wx.ALL, 5)
@@ -385,7 +376,19 @@ class Gui(wx.Frame):
         self.side_sizer_1.Add(self.cont_button, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
         self.side_sizer_3_1.Add(self.text_box, 0, wx.ALL, 5)
-        self.side_sizer_4_1.Add(self.connections_text, 0, wx.TOP, 10)
+
+        connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
+        connection_start_text = wx.StaticText(self, wx.ID_ANY,
+                                              "Connection Start")
+        connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
+        self.start_combobox = wx.ComboBox(self)
+        self.end_combobox = wx.ComboBox(self)
+
+        self.side_sizer_4.Add(connections_text, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(connection_start_text, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.start_combobox, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(connection_end_text, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.end_combobox, 0, wx.TOP, 10)
 
         # Configure the monitors
         # monitors_name = self.get_monitored_signals_gui()

@@ -11,6 +11,7 @@ Gui - configures the main window and all the widgets.
 # from sqlalchemy import true
 import wx
 import wx.glcanvas as wxcanvas
+import wx.lib.scrolledpanel
 from OpenGL import GL, GLUT
 # import yaml
 
@@ -334,6 +335,7 @@ class Gui(wx.Frame):
                                     style=wx.TE_PROCESS_ENTER)
 
         self.mon_text = wx.StaticText(self, wx.ID_ANY, "Monitors")
+        self.connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
 
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
@@ -350,21 +352,31 @@ class Gui(wx.Frame):
         self.side_sizer_1 = wx.BoxSizer(wx.VERTICAL)
         self.side_sizer_2 = wx.BoxSizer(wx.VERTICAL)  # sizer for switches
         self.side_sizer_3 = wx.BoxSizer(wx.VERTICAL)  # sizer for monitors
+        self.side_sizer_4 = wx.BoxSizer(wx.VERTICAL)  # sizer for connections
 
         # sizer for monitors text and input text box
         self.side_sizer_3_1 = wx.BoxSizer(wx.VERTICAL)
-        self.side_sizer_3_2 = wx.BoxSizer(
-            wx.VERTICAL)  # sizer for monitors buttons
+        # sizer for monitors buttons
+        self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL)
+
+        # sizer for connections text
+        self.side_sizer_4_1 = wx.BoxSizer(wx.VERTICAL)
+        # sizer for connections ui
+        self.side_sizer_4_2 = wx.BoxSizer(wx.VERTICAL)
 
         self.main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
         self.main_sizer.Add(self.side_sizer, 1, wx.ALL, 5)
 
-        self.side_sizer.Add(self.side_sizer_1, 1, wx.ALL, 5)
-        self.side_sizer.Add(self.side_sizer_2, 1, wx.ALL, 5)
-        self.side_sizer.Add(self.side_sizer_3, 2, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_1, 0, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_2, 0, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_3, 0, wx.ALL, 5)
+        self.side_sizer.Add(self.side_sizer_4, 0, wx.ALL, 5)
 
-        self.side_sizer_3.Add(self.side_sizer_3_1, 1, wx.ALL, 5)
-        self.side_sizer_3.Add(self.side_sizer_3_2, 3, wx.ALL, 5)
+        self.side_sizer_3.Add(self.side_sizer_3_1, 0, wx.ALL, 0)
+        self.side_sizer_3.Add(self.side_sizer_3_2, 0, wx.ALL, 0)
+
+        self.side_sizer_4.Add(self.side_sizer_4_1, 0, wx.ALL, 0)
+        self.side_sizer_4.Add(self.side_sizer_4_2, 0, wx.ALL, 0)
 
         self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
         self.side_sizer_1.Add(self.spin, 0, wx.ALL, 5)
@@ -373,6 +385,7 @@ class Gui(wx.Frame):
         self.side_sizer_1.Add(self.cont_button, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
         self.side_sizer_3_1.Add(self.text_box, 0, wx.ALL, 5)
+        self.side_sizer_4_1.Add(self.connections_text, 0, wx.TOP, 10)
 
         # Configure the monitors
         # monitors_name = self.get_monitored_signals_gui()
@@ -384,7 +397,7 @@ class Gui(wx.Frame):
 
         # Configure the switches
         self.switch_text = wx.StaticText(self, wx.ID_ANY, "Switches")
-        self.side_sizer_2.Add(self.switch_text, 1, wx.TOP, 10)
+        self.side_sizer_2.Add(self.switch_text, 0, wx.TOP, 10)
         switch_name, switch_state, switch_id = self.get_switch_gui()
         self.switch_name_checkbox_list = []
         for i, name in enumerate(switch_name):
@@ -633,12 +646,15 @@ class Gui(wx.Frame):
         # clear the sizer and then render the buttons again
         self.side_sizer_3_2.Clear(True)
         self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL)
-        self.side_sizer_3.Add(self.side_sizer_3_2, 3, wx.ALL, 5)
+        self.side_sizer_3.Add(self.side_sizer_3_2, 0, wx.ALL, 5)
         for i, name in enumerate(monitors_name):
             self.monitor_buttons.append(wx.Button(self, wx.ID_ANY, name))
             self.monitor_buttons[i].Bind(wx.EVT_BUTTON, self.on_monitor_button)
-            self.side_sizer_3_2.Add(self.monitor_buttons[i], 0, wx.ALL, 5)
-            self.side_sizer_3.Layout()
+            self.side_sizer_3_2.Add(self.monitor_buttons[i], 0, wx.ALL, 2)
+        self.side_sizer_3_2.Layout()
+        self.side_sizer_3.Layout()
+        self.side_sizer.Layout()
+        self.side_sizer_4.Layout()
 
     def run_command(self):
         """Run the simulation from scratch."""

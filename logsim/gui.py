@@ -383,12 +383,15 @@ class Gui(wx.Frame):
         connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
         self.start_combobox = wx.ComboBox(self)
         self.end_combobox = wx.ComboBox(self)
+        self.add_remove_connection_button = wx.Button(self, wx.ID_ANY,
+                                                      "Add Connection")
 
         self.side_sizer_4.Add(connections_text, 0, wx.TOP, 10)
         self.side_sizer_4.Add(connection_start_text, 0, wx.TOP, 10)
         self.side_sizer_4.Add(self.start_combobox, 0, wx.TOP, 10)
         self.side_sizer_4.Add(connection_end_text, 0, wx.TOP, 10)
         self.side_sizer_4.Add(self.end_combobox, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.add_remove_connection_button, 0, wx.TOP, 10)
 
         # Configure the monitors
         # monitors_name = self.get_monitored_signals_gui()

@@ -138,9 +138,9 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.init = True
 
         size = self.GetClientSize()
-        text = "".join(["Canvas redrawn on paint event, size is ",
-                        str(size.width), ", ", str(size.height)])
-        self.render(text)
+        # text = "".join(["Canvas redrawn on paint event, size is ",
+        #                 str(size.width), ", ", str(size.height)])
+        # self.render(text)
 
     def on_size(self, event):
         """Handle the canvas resize event."""
@@ -226,7 +226,17 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.render_text(
                 monitor_name + (margin - name_length) * " ", initial_x, y_ref)
             # print(monitor_name + (margin - name_length) * " ", end=": ")
-            x = initial_x + margin * 7 + 5
+            x = initial_x + margin * 7 + 15
+
+            # Draw high and low point
+            GL.glPointSize(5)
+            GL.glColor3f(1.0, 0.0, 0.0) # high low indicator is red
+            GL.glBegin(GL.GL_POINTS)
+            GL.glVertex2f(x,y_ref)
+            GL.glVertex2f(x,y_ref+25)
+            GL.glEnd()
+
+
             GL.glColor3f(0.0, 0.0, 1.0)  # signal trace is blue
             GL.glBegin(GL.GL_LINE_STRIP)
             for signal in signal_list:

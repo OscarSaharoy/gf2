@@ -196,7 +196,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             text = "".join(["Positive mouse wheel rotation. Zoom is now: ",
                             str(self.zoom)])
         if text:
-            self.render(text)
+            self.render("")
         else:
             self.Refresh()  # triggers the paint event
 
@@ -212,6 +212,15 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 GL.glRasterPos2f(x_pos, y_pos)
             else:
                 GLUT.glutBitmapCharacter(font, ord(character))
+
+    def reset(self):
+        """Reset the view point back back to beginning"""
+        self.pan_x = 0
+        self.pan_y = 0
+        self.zoom = 1.0
+        self.init = False
+        self.render("")
+
 
     def display_signals_gui(self):
         """Display the signal trace(s) in the text console."""
@@ -361,6 +370,7 @@ class Gui(wx.Frame):
 
         # Configure different language (Chinese)
         self.mylocale = wx.Locale(wx.LANGUAGE_CHINESE_SIMPLIFIED)
+        # self.mylocale = wx.Locale(wx.LANGUAGE_ENGLISH)
         self.mylocale.AddCatalogLookupPathPrefix('locale')
         self.mylocale.AddCatalog('translate_cn')
         global _ 
@@ -389,6 +399,9 @@ class Gui(wx.Frame):
         self.canvas = MyGLCanvas(self, devices, monitors)
 
         # Configure the widgets
+        self.reset_button = wx.Button(self, wx.ID_ANY, _("Reset"))
+        self.status_text = wx.StaticText(self, wx.ID_ANY, _("Current status: "))
+        self.status = wx.StaticText(self, wx.ID_ANY, _("Status of the system will be shown here. "))
         self.text = wx.StaticText(self, wx.ID_ANY, _("Cycles"))
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
         self.run_button = wx.Button(self, wx.ID_ANY, _("Run"))
@@ -403,10 +416,13 @@ class Gui(wx.Frame):
         self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
         self.cont_button.Bind(wx.EVT_BUTTON, self.on_cont_button)
         self.spin_cont.Bind(wx.EVT_SPINCTRL, self.on_spin_cont)
+        self.reset_button.Bind(wx.EVT_BUTTON, self.on_reset_button)
 
         # Configure sizers for layout
         self.main_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.side_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.left_sizer = wx.BoxSizer(wx.VERTICAL) # sizer for canvas and status bar
+        self.status_sizer = wx.BoxSizer(wx.VERTICAL)
         # sizer for run cycles and switches
         self.side_sizer_1 = wx.BoxSizer(wx.VERTICAL)
         self.side_sizer_2 = wx.BoxSizer(wx.VERTICAL)  # sizer for switches
@@ -418,7 +434,11 @@ class Gui(wx.Frame):
         # sizer for monitors buttons
         self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL)
 
-        self.main_sizer.Add(self.canvas, 5, wx.EXPAND | wx.ALL, 5)
+
+        self.main_sizer.Add(self.left_sizer, 5, wx.EXPAND | wx.ALL, 5)
+        self.left_sizer.Add(self.canvas, 9, wx.EXPAND | wx.ALL, 5)
+        self.left_sizer.Add(self.reset_button, 0, )
+        self.left_sizer.Add(self.status_sizer, 0, wx.ALL, 5)
         self.main_sizer.Add(self.side_sizer, 1, wx.ALL, 5)
 
         self.side_sizer.Add(self.side_sizer_1, 0, wx.ALL, 5)
@@ -437,6 +457,9 @@ class Gui(wx.Frame):
         self.mon_button = wx.Button(self, wx.ID_ANY, _("Add"))
         self.mon_button.Bind(wx.EVT_BUTTON, self.on_monitor_button)
         
+        self.status_sizer.Add(self.status_text, 0, wx.TOP, 1)
+        self.status_sizer.Add(self.status, 0, wx.TOP, 1)
+
         self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
         self.side_sizer_1.Add(self.spin, 0, wx.ALL, 5)
         self.side_sizer_1.Add(self.run_button, 0, wx.ALL, 5)
@@ -534,13 +557,13 @@ class Gui(wx.Frame):
         """Handle the event when the user changes the spin control value."""
         spin_value = self.spin.GetValue()
         text = "".join(["New run spin control value: ", str(spin_value)])
-        self.canvas.render(text)
+        self.canvas.render("")
 
     def on_spin_cont(self, event):
         """Handle the event when the user changes the spin control value."""
         spin_value = self.spin_cont.GetValue()
         text = "".join(["New control spin control value: ", str(spin_value)])
-        self.canvas.render(text)
+        self.canvas.render("")
 
     def on_run_button(self, event):
         """Handle the event when the user clicks the run button."""
@@ -581,10 +604,10 @@ class Gui(wx.Frame):
         mon_string = self.mon_combobox.GetStringSelection()
         if mon_string in self.monitors.get_signal_names()[0]:
             self.selected_monitor_present = True
-            self.mon_button.SetLabel("Remove")
+            self.mon_button.SetLabel(_("Remove"))
         else:
             self.selected_monitor_present = False
-            self.mon_button.SetLabel("Add")
+            self.mon_button.SetLabel(_("Add"))
 
     def remove_connection(self, second_device_id, second_port_id):
         device = self.devices.get_device(second_device_id)
@@ -601,10 +624,15 @@ class Gui(wx.Frame):
             if self.input_taken:
                 self.remove_connection(second_device_id, second_port_id)
                 self.update_connect_button()
+                text = _("Successfully removed connections. ")
+                self.status.SetLabel(text)
             elif first_device_id is not None:
                 self.network.make_connection(first_device_id, first_port_id,
                                              second_device_id, second_port_id)
                 self.update_connect_button()
+                text = _("Successfully added connections. ")
+                self.status.SetLabel(text)
+                self.status.SetLabel(text)
 
     def on_connect_select(self, event):
         self.update_connect_button()
@@ -631,13 +659,19 @@ class Gui(wx.Frame):
         if monitor is not None:
             [device, port] = monitor
             if self.monitors.remove_monitor(device, port):
-                text = "Successfully zapped monitor"
-                self.canvas.render(text)
+                text = _("Successfully zapped monitors. ")
+                self.status.SetLabel(text)
+                self.canvas.render("")
                 # print("Successfully zapped monitor")
             else:
-                text = "Error! Could not zap monitor."
-                self.canvas.render(text)
+                text = _("Error! Could not zap monitor. ")
+                self.status.SetLabel(text)
+                self.canvas.render("")
                 # print("Error! Could not zap monitor.")
+
+    def on_reset_button(self, event):
+        self.canvas.reset()
+        self.status.SetLabel(_("Reset the canvas. "))
 
     def on_switch_checkbox(self, event):
         """Handle the event when the user clicks the switch check box."""
@@ -650,11 +684,13 @@ class Gui(wx.Frame):
         elif state is False:
             switch_state = 0
         if self.devices.set_switch(id, switch_state):
-            text = "Successfully set switch."
-            self.canvas.render(text)
+            text = _("Successfully set switch. ")
+            self.status.SetLabel(text)
+            self.canvas.render("")
         else:
-            text = "Error! Invalid switch."
-            self.canvas.render(text)
+            text = _("Error! Invalid switch. ")
+            self.status.SetLabel(text)
+            self.canvas.render("")
         # text = "check box clicked: " + str(state)
         # self.canvas.render(text)
 
@@ -682,16 +718,20 @@ class Gui(wx.Frame):
 
         Return True if successful.
         """
-        for _ in range(cycles):
+        for i in range(cycles):
             if self.network.execute_network():
                 self.monitors.record_signals()
             else:
-                text = "Error! Network oscillating."
-                self.canvas.render(text)
+                text = _("Error! Network oscillating. ")
+                self.status.SetLabel(text)
+                self.canvas.render("")
                 # print("Error! Network oscillating.")
                 return False
         # self.monitors.display_signals()
-        self.canvas.render("run network for {} cycles.".format(cycles))
+        # text = "run network for {} cycles.".format(cycles)
+        text = _("run network for {} cycles. ").format(cycles)
+        self.status.SetLabel(text)
+        self.canvas.render("")
 
         return True
 
@@ -724,8 +764,9 @@ class Gui(wx.Frame):
         self.skip_spaces()
         name_string = ""
         if not self.character.isalpha():  # the string must start with a letter
-            text = "Error! Expected a name."
-            self.canvas.render(text)
+            text = _("Error! Expected a name. ")
+            self.status.SetLabel(text)
+            self.canvas.render("")
             # print("Error! Expected a name.")
             return None
         while self.character.isalnum():
@@ -744,8 +785,8 @@ class Gui(wx.Frame):
         else:
             name_id = self.names.query(name_string)
         if name_id is None:
-            text = "Error! Unknown name."
-            self.canvas.render(text)
+            text = "Error! Unknown name. "
+            self.canvas.render("")
             # print("Error! Unknown name.")
         return name_id
 
@@ -773,13 +814,15 @@ class Gui(wx.Frame):
             monitor_error = self.monitors.make_monitor(device, port,
                                                        self.cycles_completed)
             if monitor_error == self.monitors.NO_ERROR:
-                text = "Successfully made monitor."
-                self.canvas.render(text)
+                text = _("Successfully made monitor. ")
+                self.status.SetLabel(text)
+                self.canvas.render("")
                 # print("Successfully made monitor.")
                 return True
             else:
-                text = "Error! Could not make monitor."
-                self.canvas.render(text)
+                text = _("Error! Could not make monitor. ")
+                self.status.SetLabel(text)
+                self.canvas.render("")
                 # print("Error! Could not make monitor.")
                 return False
 
@@ -831,8 +874,8 @@ class Gui(wx.Frame):
 
         if cycles is not None:  # if the number of cycles provided is valid
             self.monitors.reset_monitors()
-            text = "".join(["Running for ", str(cycles), " cycles"])
-            self.canvas.render(text)
+            text = "".join(["Running for ", str(cycles), " cycles. "])
+            self.canvas.render("")
             # print("".join(["Running for ", str(cycles), " cycles"]))
             self.devices.cold_startup()
             if self.run_network(cycles):
@@ -844,10 +887,11 @@ class Gui(wx.Frame):
         if cycles is not None:  # if the number of cycles provided is valid
             if self.cycles_completed == 0:
                 text = "Error! Nothing to continue. Run first."
-                self.canvas.render(text)
+                self.canvas.render("")
                 # print("Error! Nothing to continue. Run first.")
             elif self.run_network(cycles):
                 self.cycles_completed += cycles
-                text = " ".join(["Continuing for", str(cycles), "cycles.",
-                                 "Total:", str(self.cycles_completed)])
-                self.canvas.render(text)
+                text = " ".join([_("Continuing for"), str(cycles), _("cycles."),
+                                 _("Total:"), str(self.cycles_completed), " "])
+                self.status.SetLabel(text)
+                self.canvas.render("")

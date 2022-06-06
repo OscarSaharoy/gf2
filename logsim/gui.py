@@ -10,6 +10,7 @@ Gui - configures the main window and all the widgets.
 """
 # from sqlalchemy import true
 import wx
+import itertools
 import wx.glcanvas as wxcanvas
 import wx.lib.scrolledpanel
 from OpenGL import GL, GLUT
@@ -709,15 +710,22 @@ class Gui(wx.Frame):
 
     def config_connections(self):
         """Set up the connections dropdown menus."""
-        # in_signal_names = []
-        # out_signal_names = []
+        potential_input_names = [f".I{i+1}" for i in range(16)]
+        potential_input_names += [".SET", ".CLEAR", ".CLK", ".DATA", ""]
+
+        potential_output_names = [".Q", ".QBAR", ""]
+
+        in_signal_names = []
+        out_signal_names = []
 
         device_ids = self.devices.find_devices()
         devices = [self.devices.get_device(_id) for _id in device_ids]
+        device_names = [self.names.get_name_string(_id) for _id in device_ids]
 
-        outputs = [key for device in devices for key in device.outputs.keys()]
+        # for device, i in enumerate(devices):
 
-        return outputs
+            # device_name = self.names.get_name_string(device.device_id)
+            # device_type = device.device_kind
 
         # add in_signal_names to self.start_choice
         # add out_signal_names to self.end_choice

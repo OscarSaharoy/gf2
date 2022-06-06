@@ -345,6 +345,14 @@ class Gui(wx.Frame):
                 self.output_strings_list.append(
                     self.devices.get_signal_name(device.device_id, output_id))
 
+        self.inputs_list = []
+        self.input_strings_list = []
+        for i, device in enumerate(self.devices.devices_list):
+            for input_id in device.inputs:
+                self.inputs_list.append((device.device_id, input_id))
+                self.input_strings_list.append(
+                    self.devices.get_signal_name(device.device_id, input_id))
+
         self.cycles_completed = 0  # number of simulation cycles completed
 
         self.character = ""  # current character
@@ -379,8 +387,6 @@ class Gui(wx.Frame):
         self.run_button = wx.Button(self, wx.ID_ANY, "Run")
         self.spin_cont = wx.SpinCtrl(self, wx.ID_ANY, "5")
         self.cont_button = wx.Button(self, wx.ID_ANY, "Continue")
-        self.text_box = wx.TextCtrl(self, wx.ID_ANY, "",
-                                    style=wx.TE_PROCESS_ENTER)
 
         self.mon_text = wx.StaticText(self, wx.ID_ANY, "Monitors")
 
@@ -388,7 +394,6 @@ class Gui(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_menu)
         self.spin.Bind(wx.EVT_SPINCTRL, self.on_spin)
         self.run_button.Bind(wx.EVT_BUTTON, self.on_run_button)
-        self.text_box.Bind(wx.EVT_TEXT_ENTER, self.on_text_box)
         self.cont_button.Bind(wx.EVT_BUTTON, self.on_cont_button)
         self.spin_cont.Bind(wx.EVT_SPINCTRL, self.on_spin_cont)
 
@@ -417,15 +422,14 @@ class Gui(wx.Frame):
         self.side_sizer_3.Add(self.side_sizer_3_1, 0, wx.ALL, 0)
         self.side_sizer_3.Add(self.side_sizer_3_2, 0, wx.ALL, 0)
 
-        all_signal_names = sum(monitors.get_signal_names(), [])
+        self.mon_selection = None
+        self.selected_monitor_present = False
         self.mon_combobox = wx.ComboBox(self, choices=self.output_strings_list,
                                         style=wx.CB_READONLY)
+        self.mon_combobox.Bind(wx.EVT_COMBOBOX, self.on_monitor_select) ######
 
-        self.add_mon_button = wx.Button(self, wx.ID_ANY, "Add")
-        self.remove_mon_button = wx.Button(self, wx.ID_ANY, "Remove")
-
-        self.add_mon_button.Bind(wx.EVT_BUTTON, self.on_add_mon_button)
-        self.remove_mon_button.Bind(wx.EVT_BUTTON, self.on_remove_mon_button)
+        self.mon_button = wx.Button(self, wx.ID_ANY, "Add")
+        self.mon_button.Bind(wx.EVT_BUTTON, self.on_monitor_button)
         
         self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
         self.side_sizer_1.Add(self.spin, 0, wx.ALL, 5)
@@ -434,18 +438,17 @@ class Gui(wx.Frame):
         self.side_sizer_1.Add(self.cont_button, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
         self.side_sizer_3_1.Add(self.mon_combobox, 0, wx.ALL, 5)
-        self.side_sizer_3_1.Add(self.add_mon_button, 0, wx.ALL, 5)
-        self.side_sizer_3_1.Add(self.remove_mon_button, 0, wx.ALL, 5)
-
-        in_signal_names = []
-        out_signal_names = []
+        self.side_sizer_3_1.Add(self.mon_button, 0, wx.ALL, 5)
 
         connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
         connection_start_text = wx.StaticText(self, wx.ID_ANY,
                                               "Connection Start")
+        self.connection_selection = None
+        self.input_taken = False
         connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
-        self.start_choice = wx.Choice(self, choices=out_signal_names)
-        self.end_choice = wx.Choice(self, choices=in_signal_names)
+        self.start_choice = wx.Choice(self, choices=self.output_strings_list)
+        self.end_choice = wx.Choice(self, choices=self.input_strings_list)
+        self.end_choice.Bind(wx.EVT_CHOICE, self.on_connect_button)
         self.add_remove_connection_button = wx.Button(self, wx.ID_ANY,
                                                       "Add Connection")
 
@@ -494,11 +497,17 @@ class Gui(wx.Frame):
         else:
             return self.outputs_list[index]
 
+    def get_input_from_index(self, index):
+        if index < 0:
+            return None
+        else:
+            return self.inputs_list[index]
+
     def scale_image(self, image, width, height):
         """Rescale the image."""
         my_image = wx.Image(image)
         my_image = my_image.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
-        result = wx.Bitmap(my_image)
+        result = wx.Bitmap(my_image)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
         return result
 
     def on_menu(self, event):
@@ -546,26 +555,54 @@ class Gui(wx.Frame):
         # self.canvas.render(text)
 
     def on_monitor_button(self, event):
-        """Handle the event when the user clicks the monitor button."""
-        self.cursor = 0
-        self.line = event.GetEventObject().GetLabel()
-        # while self.line == "":  # if the user enters a blank line
-        #     self.line = input("#: ")
-        self.zap_command()
-        self.config_monitors()
-        # print(self.line)
+        """Handle the event when the user clicks the add/remove button."""
+        if self.selected_monitor_present:
+            self.zap_command()
+            self.update_mon_button()
+        else:
+            self.monitor_command()
+            self.update_mon_button()
 
-    def on_add_mon_button(self, event):
-        """Handle the event when the user clicks the add button."""
-        self.monitor_command()
+    def on_monitor_select(self, event):
+        self.update_mon_button()
 
-    def on_remove_mon_button(self, event):
-        """Handle the event when the user clicks the remove button."""
-        self.zap_command()
+    def update_mon_button(self):
+        self.mon_selection = self.get_output_from_index(
+            self.mon_combobox.GetSelection())
+        mon_string = self.mon_combobox.GetStringSelection()
+        if mon_string in self.monitors.get_signal_names()[0]:
+            self.selected_monitor_present = True
+            self.mon_button.SetLabel("Remove")
+        else:
+            self.selected_monitor_present = False
+            self.mon_button.SetLabel("Add")
+
+    def on_connect_button(self, event):
+        """Handle the event when the user clicks the add/remove button."""
+        if self.input_taken:
+            self.update_connect_button()
+        else:
+            self.update_connect_button()
+
+    def on_connect_select(self, event):
+        self.update_connect_button()
+
+    def update_connect_button(self):
+        self.input_selection = self.get_input_from_index(
+            self.end_choice.GetSelection())
+
+        device_id, port_id = self.input_selection
+        device = self.devices.get_device(device_id)
+
+        self.input_taken = device.inputs[port_id] is not None
+        if self.input_taken:
+            self.mon_button.SetLabel("Remove")
+        else:
+            self.mon_button.SetLabel("Add")
 
     def zap_command(self):
         """Remove the specified monitor."""
-        monitor = self.get_output_from_index(self.mon_combobox.GetSelection())
+        monitor = self.mon_selection
         if monitor is not None:
             [device, port] = monitor
             if self.monitors.remove_monitor(device, port):
@@ -576,9 +613,6 @@ class Gui(wx.Frame):
                 text = "Error! Could not zap monitor."
                 self.canvas.render(text)
                 # print("Error! Could not zap monitor.")
-
-    def on_remove_button(self, event):
-        """Handle the event when the user clicks the remove button."""
 
     def on_switch_checkbox(self, event):
         """Handle the event when the user clicks the switch check box."""
@@ -708,7 +742,7 @@ class Gui(wx.Frame):
 
     def monitor_command(self):
         """Set the specified monitor."""
-        monitor = self.get_output_from_index(self.mon_combobox.GetSelection())
+        monitor = self.mon_selection
         if monitor is not None:
             [device, port] = monitor
             monitor_error = self.monitors.make_monitor(device, port,

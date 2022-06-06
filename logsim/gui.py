@@ -339,6 +339,14 @@ class Gui(wx.Frame):
         self.monitors = monitors
         self.network = network
 
+        self.outputs_list = []
+        self.output_strings_list = []
+        for i, device in enumerate(self.devices.devices_list):
+            for output_id in device.outputs:
+                self.outputs_list.append((device.device_id, output_id))
+                self.output_strings_list.append(
+                    self.devices.get_signal_name(device.device_id, output_id))
+
         self.cycles_completed = 0  # number of simulation cycles completed
 
         self.character = ""  # current character
@@ -411,13 +419,25 @@ class Gui(wx.Frame):
         self.side_sizer_3.Add(self.side_sizer_3_1, 0, wx.ALL, 0)
         self.side_sizer_3.Add(self.side_sizer_3_2, 0, wx.ALL, 0)
 
+        all_signal_names = sum(monitors.get_signal_names(), [])
+        self.mon_combobox = wx.ComboBox(self, choices=self.output_strings_list,
+                                        style=wx.CB_READONLY)
+
+        self.add_mon_button = wx.Button(self, wx.ID_ANY, "Add")
+        self.remove_mon_button = wx.Button(self, wx.ID_ANY, "Remove")
+
+        self.add_mon_button.Bind(wx.EVT_BUTTON, self.on_add_mon_button)
+        self.remove_mon_button.Bind(wx.EVT_BUTTON, self.on_remove_mon_button)
+        
         self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
         self.side_sizer_1.Add(self.spin, 0, wx.ALL, 5)
         self.side_sizer_1.Add(self.run_button, 0, wx.ALL, 5)
         self.side_sizer_1.Add(self.spin_cont, 0, wx.ALL, 5)
         self.side_sizer_1.Add(self.cont_button, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
-        self.side_sizer_3_1.Add(self.text_box, 0, wx.ALL, 5)
+        self.side_sizer_3_1.Add(self.mon_combobox, 0, wx.ALL, 5)
+        self.side_sizer_3_1.Add(self.add_mon_button, 0, wx.ALL, 5)
+        self.side_sizer_3_1.Add(self.remove_mon_button, 0, wx.ALL, 5)
 
         connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
         connection_start_text = wx.StaticText(self, wx.ID_ANY,
@@ -464,6 +484,12 @@ class Gui(wx.Frame):
         self.SetSizer(self.main_sizer)
 
         # Configure the switches
+
+    def get_output_from_index(self, index):
+        if index < 0:
+            return None
+        else:
+            return self.outputs_list[index]
 
     def scale_image(self, image, width, height):
         """Rescale the image."""
@@ -526,9 +552,17 @@ class Gui(wx.Frame):
         self.config_monitors()
         # print(self.line)
 
+    def on_add_mon_button(self, event):
+        """Handle the event when the user clicks the add button."""
+        self.monitor_command()
+
+    def on_remove_mon_button(self, event):
+        """Handle the event when the user clicks the remove button."""
+        self.zap_command()
+
     def zap_command(self):
         """Remove the specified monitor."""
-        monitor = self.read_signal_name()
+        monitor = self.get_output_from_index(self.mon_combobox.GetSelection())
         if monitor is not None:
             [device, port] = monitor
             if self.monitors.remove_monitor(device, port):
@@ -658,7 +692,7 @@ class Gui(wx.Frame):
 
         Return None if either is invalid.
         """
-        device_id = self.read_name()
+        device_id = self.r
         if device_id is None:
             return None
         elif self.character == ".":
@@ -671,7 +705,7 @@ class Gui(wx.Frame):
 
     def monitor_command(self):
         """Set the specified monitor."""
-        monitor = self.read_signal_name()
+        monitor = self.get_output_from_index(self.mon_combobox.GetSelection())
         if monitor is not None:
             [device, port] = monitor
             monitor_error = self.monitors.make_monitor(device, port,
@@ -688,8 +722,9 @@ class Gui(wx.Frame):
                 return False
 
     def config_monitors(self):
+        pass
         """Configure the monitors."""
-        monitors_name = self.get_monitored_signals_gui()
+        """monitors_name = self.get_monitored_signals_gui()
         self.monitor_buttons = []
         # clear the sizer and then render the buttons again
         self.side_sizer_3_2.Clear(True)
@@ -702,7 +737,7 @@ class Gui(wx.Frame):
         self.side_sizer_3_2.Layout()
         self.side_sizer_3.Layout()
         self.side_sizer.Layout()
-        self.side_sizer_4.Layout()
+        self.side_sizer_4.Layout()"""
 
     def run_command(self):
         """Run the simulation from scratch."""

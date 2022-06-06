@@ -218,7 +218,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         initial_y = 120
         initial_x = 10
         y_ref = initial_y
-        margin = self.monitors.get_margin()
+        margin = self.monitors.get_margin() or 0
         margin = max(margin, len("Time step"))
 
         # initial_y += 70

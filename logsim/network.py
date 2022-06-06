@@ -154,6 +154,20 @@ class Network:
 
         return error_type
 
+    def remove_connection(self, first_device_id, first_port_id, 
+                          second_device_id, second_port_id):
+        """Disconnect the first device from the second device."""
+        first_device = self.devices.get_device(first_device_id)
+        second_device = self.devices.get_device(second_device_id)
+
+        try:
+            if first_port_id in first_device.inputs:
+                del first_device.inputs[first_port_id]
+            elif first_port_id in first_device.outputs:
+                del second_device.inputs[second_port_id]
+        except KeyError:
+            pass
+
     def check_network(self):
         """Return True if all inputs in the network are connected."""
         for device_id in self.devices.find_devices():

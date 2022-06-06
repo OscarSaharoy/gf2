@@ -137,11 +137,11 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             self.init_gl()
             self.init = True
 
-        size = self.GetClientSize()
+        # size = self.GetClientSize()
         # text = "".join(["Canvas redrawn on paint event, size is ",
         #                 str(size.width), ", ", str(size.height)])
         # self.render(text)
-        self.render("") # Don't show the original text
+        self.render("")  # Don't show the original text
 
     def on_size(self, event):
         """Handle the canvas resize event."""
@@ -222,21 +222,21 @@ class MyGLCanvas(wxcanvas.GLCanvas):
         margin = max(margin, len("Time step"))
 
         # initial_y += 70
-        indicator = True # only render x_axis once
+        indicator = True  # only render x_axis once
 
         for device_id, output_id in self.monitors.monitors_dictionary:
             monitor_name = self.devices.get_signal_name(device_id, output_id)
             name_length = len(monitor_name)
             signal_list = self.monitors.monitors_dictionary[(
                 device_id, output_id)]
-            
-             # Draw x axis
+
+            # Draw x axis
             x = initial_x + margin * 7 + 15
 
             if indicator is True:
-                self.render_text(
-                    "Time step" + (margin - len("Time step")) * " ", initial_x, y_ref)
-                
+                self.render_text("Time step" + (margin -
+                                 len("Time step")) * " ", initial_x, y_ref)
+
                 for i in range(len(signal_list)):
                     if i % 5 == 0:
                         self.render_text(str(i), x, y_ref - 15)
@@ -250,8 +250,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                     GL.glEnd()
                     x += 20
                 indicator = False
-                y_ref += 70 
-                
+                y_ref += 70
 
             self.render_text(
                 monitor_name + (margin - name_length) * " ", initial_x, y_ref)
@@ -260,10 +259,10 @@ class MyGLCanvas(wxcanvas.GLCanvas):
 
             # Draw high and low points
             GL.glPointSize(5)
-            GL.glColor3f(1.0, 0.0, 0.0) # high low indicator is red
+            GL.glColor3f(1.0, 0.0, 0.0)  # high low indicator is red
             GL.glBegin(GL.GL_POINTS)
-            GL.glVertex2f(x,y_ref)
-            GL.glVertex2f(x,y_ref+25)
+            GL.glVertex2f(x, y_ref)
+            GL.glVertex2f(x, y_ref + 25)
             GL.glEnd()
 
             x = initial_x + margin * 7 + 15
@@ -303,7 +302,6 @@ class MyGLCanvas(wxcanvas.GLCanvas):
             y_ref += 70
             # print("\n", end="")
             GL.glEnd()
-        
 
 
 class Gui(wx.Frame):
@@ -419,7 +417,7 @@ class Gui(wx.Frame):
         self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
         self.side_sizer_3_1.Add(self.text_box, 0, wx.ALL, 5)
 
-        in_signal_names = ["a","b","c"]
+        in_signal_names = ["a", "b", "c"]
         out_signal_names = []
 
         connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
@@ -710,20 +708,19 @@ class Gui(wx.Frame):
         self.side_sizer_4.Layout()
 
     def config_connections(self):
-        """Setup the connections dropdown menus."""
-        in_signal_names = []
-        out_signal_names = []
+        """Set up the connections dropdown menus."""
+        # in_signal_names = []
+        # out_signal_names = []
 
         device_ids = self.devices.find_devices()
         devices = [self.devices.get_device(_id) for _id in device_ids]
 
         outputs = [key for device in devices for key in device.outputs.keys()]
 
-        # print(outputs)
+        return outputs
 
         # add in_signal_names to self.start_choice
         # add out_signal_names to self.end_choice
-        
 
     def run_command(self):
         """Run the simulation from scratch."""

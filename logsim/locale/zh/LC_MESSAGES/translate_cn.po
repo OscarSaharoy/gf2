@@ -1,0 +1,147 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-06 10:37+0100\n"
+"PO-Revision-Date: 2022-06-06 11:03+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: gui.py:379
+msgid "Cycles"
+msgstr "周期"
+
+#: gui.py:380
+msgid "10"
+msgstr "10"
+
+#: gui.py:381
+msgid "Run"
+msgstr "运行"
+
+#: gui.py:382
+msgid "5"
+msgstr "5"
+
+#: gui.py:383
+msgid "Continue"
+msgstr "继续"
+
+#: gui.py:387
+msgid "Monitors"
+msgstr "监视器"
+
+#: gui.py:430
+msgid "Connections"
+msgstr "连接"
+
+#: gui.py:432
+msgid "Connection Start"
+msgstr "连接开始"
+
+#: gui.py:433
+msgid "Connection End"
+msgstr "连接结束"
+
+#: gui.py:437
+msgid "Add Connection"
+msgstr "添加连接"
+
+#: gui.py:455
+msgid "Switches"
+msgstr "开关"
+
+#: gui.py:489
+msgid ""
+"Logic Simulator\n"
+"Created by Mojisola Agboola\n"
+"2017\n"
+"\n"
+"                            Modified by Eric, Max, and Oscar\n"
+"\n"
+"                            with additional functionalities\n"
+"2022"
+msgstr ""
+"逻辑门模拟器\n"
+"Mojisola Agboola开发\n"
+"2017\n"
+"\n"
+"宋淇， 麦克斯和 奥斯卡\n"
+"\n"
+"添加了额外的功能\n"
+"2022"
+
+#: gui.py:543
+msgid "Successfully zapped monitor"
+msgstr "成功移除监视器"
+
+#: gui.py:547
+msgid "Error! Could not zap monitor."
+msgstr "故障！无法移除监视器"
+
+#: gui.py:565
+msgid "Successfully set switch."
+msgstr "成功设置开关"
+
+#: gui.py:568
+msgid "Error! Invalid switch."
+msgstr "错误！无效的开关"
+
+#: gui.py:601
+msgid "Error! Network oscillating."
+msgstr "线路无法找到稳定的状态"
+
+#: gui.py:606
+msgid "run network for {} cycles."
+msgstr "运行网络  {}  个周期"
+
+#: gui.py:639
+msgid "Error! Expected a name."
+msgstr "故障！此处应该有名字。"
+
+#: gui.py:659
+msgid "Error! Unknown name."
+msgstr "故障！无效命名"
+
+#: gui.py:688
+msgid "Successfully made monitor."
+msgstr "成功设置监视器"
+
+#: gui.py:693
+msgid "Error! Could not make monitor."
+msgstr "故障！无法设置监视器"
+
+#: gui.py:722
+msgid "Running for "
+msgstr "运行了"
+
+#: gui.py:722
+msgid " cycles"
+msgstr " 周期"
+
+#: gui.py:734
+msgid "Error! Nothing to continue. Run first."
+msgstr "故障！无法继续，请首先运行"
+
+#: gui.py:739
+msgid "Continuing for"
+msgstr "继续运行"
+
+#: gui.py:739
+msgid "cycles."
+msgstr "周期。"
+
+#: gui.py:740
+msgid "Total:"
+msgstr "总共："

@@ -359,22 +359,29 @@ class Gui(wx.Frame):
         self.line = ""  # current string entered by the user
         self.cursor = 0  # cursor position
 
+        # Configure different language (Chinese)
+        self.mylocale = wx.Locale(wx.LANGUAGE_CHINESE_SIMPLIFIED)
+        self.mylocale.AddCatalogLookupPathPrefix('locale')
+        self.mylocale.AddCatalog('translate_cn')
+        global _ 
+        _ = wx.GetTranslation
+
         # Configure the file menu
         fileMenu = wx.Menu()
         menuBar = wx.MenuBar()
 
-        qmi = wx.MenuItem(fileMenu, 1, "&Quit\tCtrl+Q")
+        qmi = wx.MenuItem(fileMenu, 1, _("&Quit\tCtrl+Q"))
         qmi.SetBitmap(wx.Bitmap(self.scale_image("images/logout.png", 15, 15)))
         fileMenu.Append(qmi)
 
-        about = wx.MenuItem(fileMenu, wx.ID_ABOUT, "&About\tCtrl+A")
+        about = wx.MenuItem(fileMenu, wx.ID_ABOUT, _("&About\tCtrl+A"))
         about.SetBitmap(wx.Bitmap(self.scale_image
                         ("images/floppy-disk.png", 15, 15)))
         fileMenu.Append(about)
 
         # fileMenu.Append(wx.ID_EXIT, "&Exit")
         # fileMenu.Append(wx.ID_ANY, "&Test")
-        menuBar.Append(fileMenu, "&File")
+        menuBar.Append(fileMenu, _("&File"))
 
         self.SetMenuBar(menuBar)
 
@@ -382,13 +389,13 @@ class Gui(wx.Frame):
         self.canvas = MyGLCanvas(self, devices, monitors)
 
         # Configure the widgets
-        self.text = wx.StaticText(self, wx.ID_ANY, "Cycles")
+        self.text = wx.StaticText(self, wx.ID_ANY, _("Cycles"))
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
-        self.run_button = wx.Button(self, wx.ID_ANY, "Run")
+        self.run_button = wx.Button(self, wx.ID_ANY, _("Run"))
         self.spin_cont = wx.SpinCtrl(self, wx.ID_ANY, "5")
-        self.cont_button = wx.Button(self, wx.ID_ANY, "Continue")
+        self.cont_button = wx.Button(self, wx.ID_ANY, _("Continue"))
 
-        self.mon_text = wx.StaticText(self, wx.ID_ANY, "Monitors")
+        self.mon_text = wx.StaticText(self, wx.ID_ANY, _("Monitors"))
 
         # Bind events to widgets
         self.Bind(wx.EVT_MENU, self.on_menu)
@@ -427,7 +434,7 @@ class Gui(wx.Frame):
         self.mon_combobox = wx.Choice(self, choices=self.output_strings_list)
         self.mon_combobox.Bind(wx.EVT_CHOICE, self.on_monitor_select) ######
 
-        self.mon_button = wx.Button(self, wx.ID_ANY, "Add")
+        self.mon_button = wx.Button(self, wx.ID_ANY, _("Add"))
         self.mon_button.Bind(wx.EVT_BUTTON, self.on_monitor_button)
         
         self.side_sizer_1.Add(self.text, 0, wx.TOP, 10)
@@ -439,17 +446,17 @@ class Gui(wx.Frame):
         self.side_sizer_3_1.Add(self.mon_combobox, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_button, 0, wx.ALL, 5)
 
-        connections_text = wx.StaticText(self, wx.ID_ANY, "Change Connections")
+        connections_text = wx.StaticText(self, wx.ID_ANY, _("Change Connections"))
         self.connection_start_text = wx.StaticText(self, wx.ID_ANY,
-                                              "Connection Start")
+                                              _("Connection Start"))
         self.input_selection = (None, None)
         self.input_taken = True
-        self.connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
+        self.connection_end_text = wx.StaticText(self, wx.ID_ANY, _("Connection End"))
         self.start_choice = wx.Choice(self, choices=self.output_strings_list)
         self.end_choice = wx.Choice(self, choices=self.input_strings_list)
         self.end_choice.Bind(wx.EVT_CHOICE, self.on_connect_select)
         self.connect_button = wx.Button(self, wx.ID_ANY,
-                                                      "No Input")
+                                                      _("No Input"))
                                                      
         
         self.connect_button.Bind(wx.EVT_BUTTON, self.on_connect_button)
@@ -472,7 +479,7 @@ class Gui(wx.Frame):
         self.config_monitors()
 
         # Configure the switches
-        self.switch_text = wx.StaticText(self, wx.ID_ANY, "Switches")
+        self.switch_text = wx.StaticText(self, wx.ID_ANY, _("Switches"))
         self.side_sizer_2.Add(self.switch_text, 0, wx.TOP, 10)
         switch_name, switch_state, switch_id = self.get_switch_gui()
         self.switch_name_checkbox_list = []
@@ -518,10 +525,10 @@ class Gui(wx.Frame):
         if Id == 1:  # wx.ID_EXIT:
             self.Close(True)
         if Id == wx.ID_ABOUT:
-            wx.MessageBox("""Logic Simulator\nCreated by Mojisola Agboola\n2017\n
+            wx.MessageBox(_("""Logic Simulator\nCreated by Mojisola Agboola\n2017\n
                             Modified by Eric, Max, and Oscar\n
-                            with additional functionalities\n2022""",
-                          "About Logsim", wx.ICON_INFORMATION | wx.OK)
+                            with additional functionalities\n2022"""),
+                          _("About Logsim"), wx.ICON_INFORMATION | wx.OK)
 
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
@@ -612,11 +619,11 @@ class Gui(wx.Frame):
         if self.input_taken:
             self.start_choice.Hide()
             self.connection_start_text.Hide()
-            self.connect_button.SetLabel("Clear Input")
+            self.connect_button.SetLabel(_("Clear Input"))
         else:
             self.start_choice.Show()
             self.connection_start_text.Show()
-            self.connect_button.SetLabel("Connect")
+            self.connect_button.SetLabel(_("Connect"))
 
     def zap_command(self):
         """Remove the specified monitor."""

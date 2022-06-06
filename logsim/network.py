@@ -154,7 +154,7 @@ class Network:
 
         return error_type
 
-    def remove_connection(self, first_device_id, first_port_id, 
+    def remove_connection(self, first_device_id, first_port_id,
                           second_device_id, second_port_id):
         """Disconnect the first device from the second device."""
         first_device = self.devices.get_device(first_device_id)

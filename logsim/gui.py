@@ -419,21 +419,26 @@ class Gui(wx.Frame):
         self.side_sizer_3_1.Add(self.mon_text, 0, wx.TOP, 10)
         self.side_sizer_3_1.Add(self.text_box, 0, wx.ALL, 5)
 
+        in_signal_names = ["a","b","c"]
+        out_signal_names = []
+
         connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
         connection_start_text = wx.StaticText(self, wx.ID_ANY,
                                               "Connection Start")
         connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
-        self.start_combobox = wx.ComboBox(self)
-        self.end_combobox = wx.ComboBox(self)
+        self.start_choice = wx.Choice(self, choices=out_signal_names)
+        self.end_choice = wx.Choice(self, choices=in_signal_names)
         self.add_remove_connection_button = wx.Button(self, wx.ID_ANY,
                                                       "Add Connection")
 
         self.side_sizer_4.Add(connections_text, 0, wx.TOP, 10)
         self.side_sizer_4.Add(connection_start_text, 0, wx.TOP, 10)
-        self.side_sizer_4.Add(self.start_combobox, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.start_choice, 0, wx.TOP, 10)
         self.side_sizer_4.Add(connection_end_text, 0, wx.TOP, 10)
-        self.side_sizer_4.Add(self.end_combobox, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.end_choice, 0, wx.TOP, 10)
         self.side_sizer_4.Add(self.add_remove_connection_button, 0, wx.TOP, 10)
+
+        self.config_connections()
 
         # Configure the monitors
         # monitors_name = self.get_monitored_signals_gui()
@@ -703,6 +708,22 @@ class Gui(wx.Frame):
         self.side_sizer_3.Layout()
         self.side_sizer.Layout()
         self.side_sizer_4.Layout()
+
+    def config_connections(self):
+        """Setup the connections dropdown menus."""
+        in_signal_names = []
+        out_signal_names = []
+
+        device_ids = self.devices.find_devices()
+        devices = [self.devices.get_device(_id) for _id in device_ids]
+
+        outputs = [key for device in devices for key in device.outputs.keys()]
+
+        # print(outputs)
+
+        # add in_signal_names to self.start_choice
+        # add out_signal_names to self.end_choice
+        
 
     def run_command(self):
         """Run the simulation from scratch."""

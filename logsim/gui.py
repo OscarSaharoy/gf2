@@ -10,7 +10,6 @@ Gui - configures the main window and all the widgets.
 """
 # from sqlalchemy import true
 import wx
-import itertools
 import wx.glcanvas as wxcanvas
 import wx.lib.scrolledpanel
 from OpenGL import GL, GLUT
@@ -437,7 +436,7 @@ class Gui(wx.Frame):
         self.side_sizer_4.Add(self.end_choice, 0, wx.TOP, 10)
         self.side_sizer_4.Add(self.add_remove_connection_button, 0, wx.TOP, 10)
 
-        self.config_connections()
+        # self.config_connections()
 
         # Configure the monitors
         # monitors_name = self.get_monitored_signals_gui()
@@ -708,27 +707,28 @@ class Gui(wx.Frame):
         self.side_sizer.Layout()
         self.side_sizer_4.Layout()
 
-    def config_connections(self):
-        """Set up the connections dropdown menus."""
-        potential_input_names = [f".I{i+1}" for i in range(16)]
-        potential_input_names += [".SET", ".CLEAR", ".CLK", ".DATA", ""]
+    # def config_connections(self):
+    #     """Set up the connections dropdown menus."""
+    #     potential_input_names = [f".I{i+1}" for i in range(16)]
+    #     potential_input_names += [".SET", ".CLEAR", ".CLK", ".DATA", ""]
 
-        potential_output_names = [".Q", ".QBAR", ""]
+    #     potential_output_names = [".Q", ".QBAR", ""]
 
-        in_signal_names = []
-        out_signal_names = []
+    #     in_signal_names = []
+    #     out_signal_names = []
 
-        device_ids = self.devices.find_devices()
-        devices = [self.devices.get_device(_id) for _id in device_ids]
-        device_names = [self.names.get_name_string(_id) for _id in device_ids]
+    #     device_ids = self.devices.find_devices()
+    #     devices = [self.devices.get_device(_id) for _id in device_ids]
+    #     device_names = [self.names.get_name_string(_id)
+    #                     for _id in device_ids]
 
-        # for device, i in enumerate(devices):
+    #     # for device, i in enumerate(devices):
 
-            # device_name = self.names.get_name_string(device.device_id)
-            # device_type = device.device_kind
+    #         # device_name = self.names.get_name_string(device.device_id)
+    #         # device_type = device.device_kind
 
-        # add in_signal_names to self.start_choice
-        # add out_signal_names to self.end_choice
+    #     # add in_signal_names to self.start_choice
+    #     # add out_signal_names to self.end_choice
 
     def run_command(self):
         """Run the simulation from scratch."""

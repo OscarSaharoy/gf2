@@ -9,10 +9,12 @@ MyGLCanvas - handles all canvas drawing operations.
 Gui - configures the main window and all the widgets.
 """
 # from sqlalchemy import true
+# from keyword import softkwlist
 import wx
 import wx.glcanvas as wxcanvas
 import wx.lib.scrolledpanel
 from OpenGL import GL, GLUT
+import locale
 # import yaml
 
 # from names import Names
@@ -368,8 +370,15 @@ class Gui(wx.Frame):
         self.line = ""  # current string entered by the user
         self.cursor = 0  # cursor position
 
-        # Configure different language (Chinese)
-        self.mylocale = wx.Locale(wx.LANGUAGE_CHINESE_SIMPLIFIED)
+        # configure the system language
+        system_locale = locale.getdefaultlocale()
+        lang = system_locale[0]
+        if lang == "zh_CN":
+            software_lang = wx.LANGUAGE_CHINESE_SIMPLIFIED
+        else:
+            software_lang = wx.LANGUAGE_ENGLISH
+        # Configure different language
+        self.mylocale = wx.Locale(software_lang)
         # self.mylocale = wx.Locale(wx.LANGUAGE_ENGLISH)
         self.mylocale.AddCatalogLookupPathPrefix('locale')
         self.mylocale.AddCatalog('translate_cn')

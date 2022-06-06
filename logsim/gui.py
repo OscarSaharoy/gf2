@@ -57,7 +57,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                          attribList=[wxcanvas.WX_GL_RGBA,
                                      wxcanvas.WX_GL_DOUBLEBUFFER,
                                      wxcanvas.WX_GL_DEPTH_SIZE, 16, 0])
-        GLUT.glutInit()
+        #GLUT.glutInit()
         self.init = False
         self.context = wxcanvas.GLContext(self)
 
@@ -422,11 +422,10 @@ class Gui(wx.Frame):
         self.side_sizer_3.Add(self.side_sizer_3_1, 0, wx.ALL, 0)
         self.side_sizer_3.Add(self.side_sizer_3_2, 0, wx.ALL, 0)
 
-        self.mon_selection = None
+        self.mon_selection = (None, None)
         self.selected_monitor_present = False
-        self.mon_combobox = wx.ComboBox(self, choices=self.output_strings_list,
-                                        style=wx.CB_READONLY)
-        self.mon_combobox.Bind(wx.EVT_COMBOBOX, self.on_monitor_select) ######
+        self.mon_combobox = wx.Choice(self, choices=self.output_strings_list)
+        self.mon_combobox.Bind(wx.EVT_CHOICE, self.on_monitor_select) ######
 
         self.mon_button = wx.Button(self, wx.ID_ANY, "Add")
         self.mon_button.Bind(wx.EVT_BUTTON, self.on_monitor_button)
@@ -440,24 +439,27 @@ class Gui(wx.Frame):
         self.side_sizer_3_1.Add(self.mon_combobox, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_button, 0, wx.ALL, 5)
 
-        connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")
-        connection_start_text = wx.StaticText(self, wx.ID_ANY,
+        connections_text = wx.StaticText(self, wx.ID_ANY, "Change Connections")
+        self.connection_start_text = wx.StaticText(self, wx.ID_ANY,
                                               "Connection Start")
-        self.connection_selection = None
-        self.input_taken = False
-        connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
+        self.input_selection = (None, None)
+        self.input_taken = True
+        self.connection_end_text = wx.StaticText(self, wx.ID_ANY, "Connection End")
         self.start_choice = wx.Choice(self, choices=self.output_strings_list)
         self.end_choice = wx.Choice(self, choices=self.input_strings_list)
-        self.end_choice.Bind(wx.EVT_CHOICE, self.on_connect_button)
-        self.add_remove_connection_button = wx.Button(self, wx.ID_ANY,
-                                                      "Add Connection")
+        self.end_choice.Bind(wx.EVT_CHOICE, self.on_connect_select)
+        self.connect_button = wx.Button(self, wx.ID_ANY,
+                                                      "No Input")
+                                                     
+        
+        self.connect_button.Bind(wx.EVT_BUTTON, self.on_connect_button)
 
         self.side_sizer_4.Add(connections_text, 0, wx.TOP, 10)
-        self.side_sizer_4.Add(connection_start_text, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.connection_start_text, 0, wx.TOP, 10)
         self.side_sizer_4.Add(self.start_choice, 0, wx.TOP, 10)
-        self.side_sizer_4.Add(connection_end_text, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.connect_button, 0, wx.TOP, 10)
+        self.side_sizer_4.Add(self.connection_end_text, 0, wx.TOP, 10)
         self.side_sizer_4.Add(self.end_choice, 0, wx.TOP, 10)
-        self.side_sizer_4.Add(self.add_remove_connection_button, 0, wx.TOP, 10)
 
         # self.config_connections()
 
@@ -507,7 +509,7 @@ class Gui(wx.Frame):
         """Rescale the image."""
         my_image = wx.Image(image)
         my_image = my_image.Scale(width, height, wx.IMAGE_QUALITY_HIGH)
-        result = wx.Bitmap(my_image)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
+        result = wx.Bitmap(my_image)
         return result
 
     def on_menu(self, event):
@@ -577,12 +579,25 @@ class Gui(wx.Frame):
             self.selected_monitor_present = False
             self.mon_button.SetLabel("Add")
 
+    def remove_connection(self, second_device_id, second_port_id):
+        device = self.devices.get_device(second_device_id)
+        first_device_id, first_port_id = device.inputs[second_port_id]
+        self.network.remove_connection(first_device_id, first_port_id,
+                                       second_device_id, second_port_id)
+
     def on_connect_button(self, event):
         """Handle the event when the user clicks the add/remove button."""
-        if self.input_taken:
-            self.update_connect_button()
-        else:
-            self.update_connect_button()
+        second_device_id, second_port_id = self.input_selection
+        if second_device_id is not None:
+            first_device_id, first_port_id = self.get_output_from_index(
+                self.start_choice.GetSelection())
+            if self.input_taken:
+                self.remove_connection(second_device_id, second_port_id)
+                self.update_connect_button()
+            elif first_device_id is not None:
+                self.network.make_connection(first_device_id, first_port_id,
+                                             second_device_id, second_port_id)
+                self.update_connect_button()
 
     def on_connect_select(self, event):
         self.update_connect_button()
@@ -593,12 +608,15 @@ class Gui(wx.Frame):
 
         device_id, port_id = self.input_selection
         device = self.devices.get_device(device_id)
-
         self.input_taken = device.inputs[port_id] is not None
         if self.input_taken:
-            self.mon_button.SetLabel("Remove")
+            self.start_choice.Hide()
+            self.connection_start_text.Hide()
+            self.connect_button.SetLabel("Clear Input")
         else:
-            self.mon_button.SetLabel("Add")
+            self.start_choice.Show()
+            self.connection_start_text.Show()
+            self.connect_button.SetLabel("Connect")
 
     def zap_command(self):
         """Remove the specified monitor."""

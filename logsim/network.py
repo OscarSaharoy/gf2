@@ -162,9 +162,9 @@ class Network:
 
         try:
             if first_port_id in first_device.inputs:
-                del first_device.inputs[first_port_id]
+                first_device.inputs[first_port_id] = None
             elif first_port_id in first_device.outputs:
-                del second_device.inputs[second_port_id]
+                second_device.inputs[second_port_id] = None
         except KeyError:
             pass
 

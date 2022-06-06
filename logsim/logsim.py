@@ -76,6 +76,9 @@ def main(arg_list):
             gui = Gui("Logic Simulator", path, names, devices, network,
                       monitors)
             gui.Show(True)
+
+            gui.update_connect_button()
+            gui.update_mon_button()
             app.MainLoop()
 
 

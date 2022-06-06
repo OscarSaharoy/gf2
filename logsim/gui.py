@@ -437,7 +437,7 @@ class Gui(wx.Frame):
         self.side_sizer_3_1.Add(self.add_mon_button, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.remove_mon_button, 0, wx.ALL, 5)
 
-        in_signal_names = ["a", "b", "c"]
+        in_signal_names = []
         out_signal_names = []
 
         connections_text = wx.StaticText(self, wx.ID_ANY, "Connections")

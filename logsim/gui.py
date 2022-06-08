@@ -656,7 +656,7 @@ class Gui(wx.Frame):
         self.update_connect_button()
 
     def update_connect_button(self):
-        """Change connect button appearance"""
+        """Change connect button appearance."""
         self.input_selection = self.get_input_from_index(
             self.end_choice.GetSelection())
 

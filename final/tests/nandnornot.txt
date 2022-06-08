@@ -1,0 +1,37 @@
+START
+
+DEVICES {
+    nand1 = NAND(2);
+    not1 = NOT;
+    not2 = NOT;
+    not3 = NOT;
+    nor1 = NOR(2);
+    xor1 = XOR;
+
+    a = SWITCH(1);
+    b = SWITCH(1);
+}
+
+CONNECTIONS {
+    a > not1.I1;
+
+    b > not2.I1;
+
+    not1 > nand1.I1;
+    not2 > nand1.I2;
+
+    nand1 > not3.I1;
+
+    not3 > xor1.I1;
+
+    a > nor1.I1;
+    b > nor1.I2;
+
+    nor1 > xor1.I2;
+}
+
+OUTPUTS {
+    xor1;
+}
+
+END

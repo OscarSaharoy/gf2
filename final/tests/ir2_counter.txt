@@ -1,0 +1,45 @@
+
+START
+
+DEVICES {
+  ff0 = DTYPE;
+  ff1 = DTYPE;
+  ff2 = DTYPE;
+  ff3 = DTYPE;
+  
+  clk = CLOCK(1);
+  clear = SWITCH(0);
+  set = SWITCH(0);
+}
+
+CONNECTIONS {
+  ff0.QBAR > ff0.DATA;
+  ff1.QBAR > ff1.DATA;
+  ff2.QBAR > ff2.DATA;
+  ff3.QBAR > ff3.DATA;
+  
+  clk   > ff0.CLK;
+  ff0.Q > ff1.CLK;
+  ff1.Q > ff2.CLK;
+  ff2.Q > ff3.CLK;
+  
+  clear > ff0.CLEAR;
+  clear > ff1.CLEAR;
+  clear > ff2.CLEAR;
+  clear > ff3.CLEAR;
+
+  set > ff0.SET;
+  set > ff1.SET;
+  set > ff2.SET;
+  set > ff3.SET;
+}
+
+OUTPUTS {
+  ff0.Q;
+  ff1.Q;
+  ff2.Q;
+  ff3.Q;
+}
+
+END
+

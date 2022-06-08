@@ -1,0 +1,15 @@
+START
+DEVICES {
+    a = CLOCK(1);
+    b = NOR(1);
+}
+CONNECTIONS {
+    a > b.I1;
+}
+OUTPUTS {
+    a a;
+    b =;
+    a;
+    b
+}
+END

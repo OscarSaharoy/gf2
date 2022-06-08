@@ -1,0 +1,21 @@
+# Each group of statements contains a duplicate,
+so we expect 3 errors
+#
+
+START
+DEVICES {
+    a = CLOCK(1);
+    b = OR(2);
+    c = SWITCH(1);
+    c = SWITCH(1);
+}
+CONNECTIONS {
+    a > b.I1;
+    c > b.I2;
+    a > b.I2;
+}
+OUTPUTS {
+    a;
+    a;
+}
+END

@@ -1,0 +1,179 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-06-06 22:46+0100\n"
+"PO-Revision-Date: 2022-06-06 22:51+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: gui.py:383
+msgid "&Quit\tCtrl+Q"
+msgstr "&退出\tCtrl+Q"
+
+#: gui.py:387
+msgid "&About\tCtrl+A"
+msgstr "&关于\tCtrl+A"
+
+#: gui.py:394
+msgid "&File"
+msgstr "&文件"
+
+#: gui.py:402
+msgid "Reset"
+msgstr "重置"
+
+#: gui.py:403
+msgid "Current status: "
+msgstr "目前状态： "
+
+#: gui.py:404
+msgid "Status of the system will be shown here. "
+msgstr "系统状态将在这里显示 "
+
+#: gui.py:405
+msgid "Cycles"
+msgstr "周期"
+
+#: gui.py:407
+msgid "Run"
+msgstr "运行"
+
+#: gui.py:409
+msgid "Continue"
+msgstr "继续"
+
+#: gui.py:411
+msgid "Monitors"
+msgstr "监视器"
+
+#: gui.py:457 gui.py:610
+msgid "Add"
+msgstr "添加连接"
+
+#: gui.py:472
+msgid "Change Connections"
+msgstr "更改连接 "
+
+#: gui.py:474
+msgid "Connection Start"
+msgstr "连接开始 "
+
+#: gui.py:477
+msgid "Connection End"
+msgstr "连接结束 "
+
+#: gui.py:482
+msgid "No Input"
+msgstr "无输入"
+
+#: gui.py:505
+msgid "Switches"
+msgstr "开关"
+
+#: gui.py:551
+msgid ""
+"Logic Simulator\n"
+"Created by Mojisola Agboola\n"
+"2017\n"
+"\n"
+"                            Modified by Eric, Max, and Oscar\n"
+"\n"
+"                            with additional functionalities\n"
+"2022"
+msgstr ""
+"逻辑门模拟器\n"
+"Mojisola Agboola开发\n"
+"2017\n"
+"\n"
+"宋淇， 麦克斯和 奥斯卡\n"
+"\n"
+"添加了额外的功能\n"
+"2022"
+
+#: gui.py:554
+msgid "About Logsim"
+msgstr "关于逻辑门模拟器"
+
+#: gui.py:607
+msgid "Remove"
+msgstr "移除"
+
+#: gui.py:627
+msgid "Successfully removed connections. "
+msgstr "成功移除连接。 "
+
+#: gui.py:633
+msgid "Successfully added connections. "
+msgstr "成功添加连接。 "
+
+#: gui.py:650
+msgid "Clear Input"
+msgstr "清除输入"
+
+#: gui.py:654
+msgid "Connect"
+msgstr "连接"
+
+#: gui.py:662
+msgid "Successfully zapped monitors. "
+msgstr "成功移除监视器。 "
+
+#: gui.py:667
+msgid "Error! Could not zap monitor. "
+msgstr "故障！无法移除监视器。 "
+
+#: gui.py:674
+msgid "Reset the canvas. "
+msgstr "重置画布。 "
+
+#: gui.py:687
+msgid "Successfully set switch. "
+msgstr "成功设置开关。 "
+
+#: gui.py:691
+msgid "Error! Invalid switch. "
+msgstr "错误！无效的开关。 "
+
+#: gui.py:725
+msgid "Error! Network oscillating. "
+msgstr "故障！ 线路无法找到稳定的状态。 "
+
+#: gui.py:732
+msgid "run network for {} cycles. "
+msgstr "运行网络  {}  个周期。 "
+
+#: gui.py:767
+msgid "Error! Expected a name. "
+msgstr "故障！此处应该有名字。 "
+
+#: gui.py:817
+msgid "Successfully made monitor. "
+msgstr "成功设置监视器。 "
+
+#: gui.py:823
+msgid "Error! Could not make monitor. "
+msgstr "故障！无法设置监视器。 "
+
+#: gui.py:894
+msgid "Continuing for"
+msgstr "继续运行"
+
+#: gui.py:894
+msgid "cycles."
+msgstr "周期。"
+
+#: gui.py:895
+msgid "Total:"
+msgstr "总共："

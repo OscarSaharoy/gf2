@@ -536,16 +536,14 @@ class Gui(wx.Frame):
         # Configure the switches
 
     def get_output_from_index(self, index):
-        """Return the output at this index, or return None if the index is
-        invalid."""
+        """Return the output at this index, or None if the index is invalid."""
         if index < 0:
             return None
         else:
             return self.outputs_list[index]
 
     def get_input_from_index(self, index):
-        """Return the input at this index, or return None if the index is
-        invalid."""
+        """Return the input at this index, or None if the index is invalid."""
         if index < 0:
             return None
         else:
@@ -571,13 +569,13 @@ class Gui(wx.Frame):
 
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
-        spin_value = self.spin.GetValue()
+        # spin_value = self.spin.GetValue()
         # text = "".join(["New run spin control value: ", str(spin_value)])
         self.canvas.render("")
 
     def on_spin_cont(self, event):
         """Handle the event when the user changes the spin control value."""
-        spin_value = self.spin_cont.GetValue()
+        # spin_value = self.spin_cont.GetValue()
         # text = "".join(["New control spin control value: ", str(spin_value)])
         self.canvas.render("")
 
@@ -612,13 +610,11 @@ class Gui(wx.Frame):
             self.update_mon_button()
 
     def on_monitor_select(self, event):
-        """When a monitor is selected from the dropdown, update the
-        add/remove button appearance."""
+        """Update the add/remove button appearance."""
         self.update_mon_button()
 
     def update_mon_button(self):
-        """Change the appearance of the add/remove monitor button to
-        show the correct function."""
+        """Change the appearance of the add/remove monitor button."""
         self.mon_selection = self.get_output_from_index(
             self.mon_combobox.GetSelection())
         mon_string = self.mon_combobox.GetStringSelection()
@@ -630,8 +626,7 @@ class Gui(wx.Frame):
             self.mon_button.SetLabel(_("Add"))
 
     def remove_connection(self, second_device_id, second_port_id):
-        """Given the input device id and pin, remove the connection
-        from the network."""
+        """Remove the connection from the network."""
         device = self.devices.get_device(second_device_id)
         first_device_id, first_port_id = device.inputs[second_port_id]
         self.network.remove_connection(first_device_id, first_port_id,
@@ -657,13 +652,11 @@ class Gui(wx.Frame):
                 self.status.SetLabel(text)
 
     def on_connect_select(self, event):
-        """When an input is selected, update the add/remove button to show
-        correct function."""
+        """Update the add/remove button when selection is changed."""
         self.update_connect_button()
 
     def update_connect_button(self):
-        """Change connect button text and show/hide the connection start
-        dropdown menu."""
+        """Change connect button appearance"""
         self.input_selection = self.get_input_from_index(
             self.end_choice.GetSelection())
 

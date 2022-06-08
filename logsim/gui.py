@@ -59,7 +59,7 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                          attribList=[wxcanvas.WX_GL_RGBA,
                                      wxcanvas.WX_GL_DOUBLEBUFFER,
                                      wxcanvas.WX_GL_DEPTH_SIZE, 16, 0])
-        #GLUT.glutInit()
+        GLUT.glutInit()
         self.init = False
         self.context = wxcanvas.GLContext(self)
 
@@ -650,6 +650,11 @@ class Gui(wx.Frame):
         self.input_selection = self.get_input_from_index(
             self.end_choice.GetSelection())
 
+        if self.input_selection is None:
+            self.start_choice.Show()
+            self.connection_start_text.Show()
+            self.connect_button.SetLabel(_("Connect"))
+            return
         device_id, port_id = self.input_selection
         device = self.devices.get_device(device_id)
         self.input_taken = device.inputs[port_id] is not None

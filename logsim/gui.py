@@ -216,13 +216,12 @@ class MyGLCanvas(wxcanvas.GLCanvas):
                 GLUT.glutBitmapCharacter(font, ord(character))
 
     def reset(self):
-        """Reset the view point back back to beginning"""
+        """Reset the view point back back to beginning."""
         self.pan_x = 0
         self.pan_y = 0
         self.zoom = 1.0
         self.init = False
         self.render("")
-
 
     def display_signals_gui(self):
         """Display the signal trace(s) in the text console."""
@@ -382,7 +381,7 @@ class Gui(wx.Frame):
         # self.mylocale = wx.Locale(wx.LANGUAGE_ENGLISH)
         self.mylocale.AddCatalogLookupPathPrefix('locale')
         self.mylocale.AddCatalog('translate_cn')
-        global _ 
+        global _
         _ = wx.GetTranslation
 
         # Configure the file menu
@@ -409,8 +408,11 @@ class Gui(wx.Frame):
 
         # Configure the widgets
         self.reset_button = wx.Button(self, wx.ID_ANY, _("Reset"))
-        self.status_text = wx.StaticText(self, wx.ID_ANY, _("Current status: "))
-        self.status = wx.StaticText(self, wx.ID_ANY, _("Status of the system will be shown here. "))
+        self.status_text = wx.StaticText(self, wx.ID_ANY,
+                                         _("Current status: "))
+        self.status = wx.StaticText(self, wx.ID_ANY,
+                                    _("Status of the system \
+                                    will be shown here. "))
         self.text = wx.StaticText(self, wx.ID_ANY, _("Cycles"))
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
         self.run_button = wx.Button(self, wx.ID_ANY, _("Run"))
@@ -430,7 +432,8 @@ class Gui(wx.Frame):
         # Configure sizers for layout
         self.main_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.side_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.left_sizer = wx.BoxSizer(wx.VERTICAL) # sizer for canvas and status bar
+        # sizer for canvas and status bar
+        self.left_sizer = wx.BoxSizer(wx.VERTICAL)
         self.status_sizer = wx.BoxSizer(wx.VERTICAL)
         # sizer for run cycles and switches
         self.side_sizer_1 = wx.BoxSizer(wx.VERTICAL)
@@ -442,7 +445,6 @@ class Gui(wx.Frame):
         self.side_sizer_3_1 = wx.BoxSizer(wx.VERTICAL)
         # sizer for monitors buttons
         self.side_sizer_3_2 = wx.BoxSizer(wx.VERTICAL)
-
 
         self.main_sizer.Add(self.left_sizer, 5, wx.EXPAND | wx.ALL, 5)
         self.left_sizer.Add(self.canvas, 9, wx.EXPAND | wx.ALL, 5)
@@ -461,11 +463,11 @@ class Gui(wx.Frame):
         self.mon_selection = (None, None)
         self.selected_monitor_present = False
         self.mon_combobox = wx.Choice(self, choices=self.output_strings_list)
-        self.mon_combobox.Bind(wx.EVT_CHOICE, self.on_monitor_select) ######
+        self.mon_combobox.Bind(wx.EVT_CHOICE, self.on_monitor_select)
 
         self.mon_button = wx.Button(self, wx.ID_ANY, _("Add"))
         self.mon_button.Bind(wx.EVT_BUTTON, self.on_monitor_button)
-        
+
         self.status_sizer.Add(self.status_text, 0, wx.TOP, 1)
         self.status_sizer.Add(self.status, 0, wx.TOP, 1)
 
@@ -478,19 +480,20 @@ class Gui(wx.Frame):
         self.side_sizer_3_1.Add(self.mon_combobox, 0, wx.ALL, 5)
         self.side_sizer_3_1.Add(self.mon_button, 0, wx.ALL, 5)
 
-        connections_text = wx.StaticText(self, wx.ID_ANY, _("Change Connections"))
+        connections_text = wx.StaticText(self, wx.ID_ANY,
+                                         _("Change Connections"))
         self.connection_start_text = wx.StaticText(self, wx.ID_ANY,
-                                              _("Connection Start"))
+                                                   _("Connection Start"))
         self.input_selection = (None, None)
         self.input_taken = True
-        self.connection_end_text = wx.StaticText(self, wx.ID_ANY, _("Connection End"))
+        self.connection_end_text = wx.StaticText(self, wx.ID_ANY,
+                                                 _("Connection End"))
         self.start_choice = wx.Choice(self, choices=self.output_strings_list)
         self.end_choice = wx.Choice(self, choices=self.input_strings_list)
         self.end_choice.Bind(wx.EVT_CHOICE, self.on_connect_select)
         self.connect_button = wx.Button(self, wx.ID_ANY,
-                                                      _("No Input"))
-                                                     
-        
+                                        _("No Input"))
+
         self.connect_button.Bind(wx.EVT_BUTTON, self.on_connect_button)
 
         self.side_sizer_4.Add(connections_text, 0, wx.TOP, 10)
@@ -533,12 +536,16 @@ class Gui(wx.Frame):
         # Configure the switches
 
     def get_output_from_index(self, index):
+        """Return the output at this index, or return None if the index is
+        invalid."""
         if index < 0:
             return None
         else:
             return self.outputs_list[index]
 
     def get_input_from_index(self, index):
+        """Return the input at this index, or return None if the index is
+        invalid."""
         if index < 0:
             return None
         else:
@@ -565,13 +572,13 @@ class Gui(wx.Frame):
     def on_spin(self, event):
         """Handle the event when the user changes the spin control value."""
         spin_value = self.spin.GetValue()
-        text = "".join(["New run spin control value: ", str(spin_value)])
+        # text = "".join(["New run spin control value: ", str(spin_value)])
         self.canvas.render("")
 
     def on_spin_cont(self, event):
         """Handle the event when the user changes the spin control value."""
         spin_value = self.spin_cont.GetValue()
-        text = "".join(["New control spin control value: ", str(spin_value)])
+        # text = "".join(["New control spin control value: ", str(spin_value)])
         self.canvas.render("")
 
     def on_run_button(self, event):
@@ -605,9 +612,13 @@ class Gui(wx.Frame):
             self.update_mon_button()
 
     def on_monitor_select(self, event):
+        """When a monitor is selected from the dropdown, update the
+        add/remove button appearance."""
         self.update_mon_button()
 
     def update_mon_button(self):
+        """Change the appearance of the add/remove monitor button to
+        show the correct function."""
         self.mon_selection = self.get_output_from_index(
             self.mon_combobox.GetSelection())
         mon_string = self.mon_combobox.GetStringSelection()
@@ -619,6 +630,8 @@ class Gui(wx.Frame):
             self.mon_button.SetLabel(_("Add"))
 
     def remove_connection(self, second_device_id, second_port_id):
+        """Given the input device id and pin, remove the connection
+        from the network."""
         device = self.devices.get_device(second_device_id)
         first_device_id, first_port_id = device.inputs[second_port_id]
         self.network.remove_connection(first_device_id, first_port_id,
@@ -644,9 +657,13 @@ class Gui(wx.Frame):
                 self.status.SetLabel(text)
 
     def on_connect_select(self, event):
+        """When an input is selected, update the add/remove button to show
+        correct function."""
         self.update_connect_button()
 
     def update_connect_button(self):
+        """Change connect button text and show/hide the connection start
+        dropdown menu."""
         self.input_selection = self.get_input_from_index(
             self.end_choice.GetSelection())
 
@@ -684,6 +701,7 @@ class Gui(wx.Frame):
                 # print("Error! Could not zap monitor.")
 
     def on_reset_button(self, event):
+        """Reset the canvas."""
         self.canvas.reset()
         self.status.SetLabel(_("Reset the canvas. "))
 
@@ -799,7 +817,7 @@ class Gui(wx.Frame):
         else:
             name_id = self.names.query(name_string)
         if name_id is None:
-            text = "Error! Unknown name. "
+            # text = "Error! Unknown name. "
             self.canvas.render("")
             # print("Error! Unknown name.")
         return name_id
@@ -841,8 +859,8 @@ class Gui(wx.Frame):
                 return False
 
     def config_monitors(self):
-        pass
         """Configure the monitors."""
+        pass
         """monitors_name = self.get_monitored_signals_gui()
         self.monitor_buttons = []
         # clear the sizer and then render the buttons again
@@ -888,7 +906,7 @@ class Gui(wx.Frame):
 
         if cycles is not None:  # if the number of cycles provided is valid
             self.monitors.reset_monitors()
-            text = "".join(["Running for ", str(cycles), " cycles. "])
+            # text = "".join(["Running for ", str(cycles), " cycles. "])
             self.canvas.render("")
             # print("".join(["Running for ", str(cycles), " cycles"]))
             self.devices.cold_startup()
@@ -905,7 +923,8 @@ class Gui(wx.Frame):
                 # print("Error! Nothing to continue. Run first.")
             elif self.run_network(cycles):
                 self.cycles_completed += cycles
-                text = " ".join([_("Continuing for"), str(cycles), _("cycles."),
-                                 _("Total:"), str(self.cycles_completed), " "])
+                text = " ".join([_("Continuing for"), str(cycles),
+                                 _("cycles."), _("Total:"),
+                                 str(self.cycles_completed), " "])
                 self.status.SetLabel(text)
                 self.canvas.render("")

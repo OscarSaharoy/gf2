@@ -411,8 +411,8 @@ class Gui(wx.Frame):
         self.status_text = wx.StaticText(self, wx.ID_ANY,
                                          _("Current status: "))
         self.status = wx.StaticText(self, wx.ID_ANY,
-                                    _("Status of the system \
-                                    will be shown here. "))
+                                    _("Status of the system "
+                                      "will be shown here. "))
         self.text = wx.StaticText(self, wx.ID_ANY, _("Cycles"))
         self.spin = wx.SpinCtrl(self, wx.ID_ANY, "10")
         self.run_button = wx.Button(self, wx.ID_ANY, _("Run"))

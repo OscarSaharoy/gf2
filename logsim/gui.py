@@ -538,14 +538,14 @@ class Gui(wx.Frame):
     def get_output_from_index(self, index):
         """Return the output at this index, or None if the index is invalid."""
         if index < 0:
-            return None
+            return (None, None)
         else:
             return self.outputs_list[index]
 
     def get_input_from_index(self, index):
         """Return the input at this index, or None if the index is invalid."""
         if index < 0:
-            return None
+            return (None, None)
         else:
             return self.inputs_list[index]
 

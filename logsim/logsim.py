@@ -78,8 +78,7 @@ def main(arg_list):
                       monitors)
             gui.Show(True)
 
-            gui.update_connect_button()
-            gui.update_mon_button()
+            
             app.MainLoop()
 
 
